@@ -49,6 +49,14 @@ JustGage = function(config) {
     // hide or display min and max values
     showMinMax : (config.showMinMax != null) ? config.showMinMax : true,
     
+    // humanFriendly : bool
+    // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
+    humanFriendly : (config.humanFriendly) ? config.humanFriendly : false,
+    
+    // humanFriendlyDecimal : int
+    // number of decimal places for our human friendly number to contain
+    humanFriendlyDecimal : (config.humanFriendlyDecimal) ? config.humanFriendlyDecimal : 0,
+    
     // gaugeWidthScale : float
     // width of the gauge element
     gaugeWidthScale : (config.gaugeWidthScale) ? config.gaugeWidthScale : 1.0,
@@ -242,6 +250,7 @@ JustGage = function(config) {
   this.txtTitle.id = this.config.id+"-txttitle";
   
   // value
+  if( this.config.humanFriendly ) this.originalValue = humanFriendlyNumber( this.originalValue, this.config.humanFriendlyDecimal );
   this.txtValue = this.canvas.text(this.params.valueX, this.params.valueY, this.originalValue);
   this.txtValue. attr({
     "font-size":this.params.valueFontSize,
@@ -264,7 +273,9 @@ JustGage = function(config) {
   this.txtLabel.id = this.config.id+"-txtlabel";
   
   // min
-  this.txtMin = this.canvas.text(this.params.minX, this.params.minY, this.config.min);
+  this.txtMinimum = this.config.min;
+  if( this.config.humanFriendly ) this.txtMinimum = humanFriendlyNumber( this.config.min, this.config.humanFriendlyDecimal );
+  this.txtMin = this.canvas.text(this.params.minX, this.params.minY, this.txtMinimum);
   this.txtMin. attr({
     "font-size":this.params.minFontSize,
     "font-weight":"normal",
@@ -275,7 +286,9 @@ JustGage = function(config) {
   this.txtMin.id = this.config.id+"-txtmin";
   
   // max
-  this.txtMax = this.canvas.text(this.params.maxX, this.params.maxY, this.config.max);
+  this.txtMaximum = this.config.max;
+  if( this.config.humanFriendly ) this.txtMaximum = humanFriendlyNumber( this.config.max, this.config.humanFriendlyDecimal );
+  this.txtMax = this.canvas.text(this.params.maxX, this.params.maxY, this.txtMaximum);
   this.txtMax. attr({
     "font-size":this.params.maxFontSize,
     "font-weight":"normal",
@@ -418,6 +431,21 @@ function getRandomInt (min, max) {
 
 /**  Cut hex  */
 function cutHex(str) {return (str.charAt(0)=="#") ? str.substring(1,7):str}
+
+/**  Human friendly number suffix */
+// From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator
+function humanFriendlyNumber( n, d ) {
+	var p = Math.pow;
+	var d = p(10,d);
+	var i = 7
+	while( i ) {
+		s = p(10,i--*3)
+		if( s <= n ) {
+			n = Math.round(n*d/s)/d+"kMGTPE"[i]
+		}
+	}
+	return n;
+}
 
 /**  Get style  */
 function getStyle(oElm, strCssRule){
