@@ -134,12 +134,31 @@ JustGage = function(config) {
   
   // widget dimensions
   var widgetW, widgetH;
-  if ((canvasW / canvasH) > 1.25) {
-    widgetW = 1.25 * canvasH;
+  
+  // width more than height
+  if(canvasW > canvasH) {
     widgetH = canvasH;
+    widgetW = widgetH * 1.25;
+    //if width doesn't fit, rescale both
+    if(widgetW > canvasW) {
+        aspect = widgetW / canvasW;
+        widgetW = widgetW / aspect;
+        widgetH = widgetH / aspect;
+    }
+  // width less than height
+  } else if (canvasW < canvasH) {
+    widgetW = canvasW;
+    widgetH = widgetW / 1.25;
+    // if height don't fit, rescale both
+    if(widgetH > canvasH) {
+      aspect = widgetH / canvasH;
+      widgetH = widgetH / aspect;
+      widgetW = widgetH / aspect;
+    }
+  // equal
   } else {
     widgetW = canvasW;
-    widgetH = canvasW / 1.25;
+    widgetH = widgetW * 0.75;
   }
   
   // delta 
@@ -208,9 +227,9 @@ JustGage = function(config) {
           Cy = h / 1.25 + dy,
           
           Xo = w / 2 + dx + Ro * Math.cos(alpha),
-          Yo = h - (h - Cy) + dy - Ro * Math.sin(alpha),
+          Yo = h - (h - Cy) + 0 - Ro * Math.sin(alpha),
           Xi = w / 2 + dx + Ri * Math.cos(alpha),
-          Yi = h - (h - Cy) + dy - Ri * Math.sin(alpha),
+          Yi = h - (h - Cy) + 0 - Ri * Math.sin(alpha),
           path;
     
       path += "M" + (Cx - Ri) + "," + Cy + " ";
