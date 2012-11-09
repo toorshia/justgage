@@ -115,7 +115,27 @@ JustGage = function(config) {
     
     // refreshAnimationType : string
     // type of refresh animation (linear, >, <,  <>, bounce) 
-    refreshAnimationType : (config.refreshAnimationType) ? config.refreshAnimationType : ">"
+    refreshAnimationType : (config.refreshAnimationType) ? config.refreshAnimationType : ">",
+
+    // valueMinFontSize : int
+    // absolute minimum font size for the value
+    valueMinFontSize : config.valueMinFontSize || 16,
+	
+    // titleMinFontSize
+    // absolute minimum font size for the title
+    titleMinFontSize : config.titleMinFontSize || 10,
+	
+    // labelMinFontSize
+    // absolute minimum font size for the label
+    labelMinFontSize : config.labelMinFontSize || 10,
+	
+    // minLabelMinFontSize
+    // absolute minimum font size for the minimum label
+    minLabelMinFontSize : config.minLabelMinFontSize || 10,
+	
+    // maxLabelMinFontSize
+    // absolute minimum font size for the maximum label
+    maxLabelMinFontSize : config.maxLabelMinFontSize || 10
   };
   
   // overflow values
@@ -166,28 +186,28 @@ JustGage = function(config) {
   var dy = (canvasH - widgetH)/2;
   
   // title 
-  var titleFontSize = ((widgetH / 8) > 10) ? (widgetH / 10) : 10;
+  var titleFontSize = ((widgetH / 8) > this.config.titleMinFontSize) ? (widgetH / 10) : this.config.titleMinFontSize;
   var titleX = dx + widgetW / 2;
   var titleY = dy + widgetH / 6.5;
   
   // value 
-  var valueFontSize = ((widgetH / 6.4) > 16) ? (widgetH / 6.4) : 16;
+  var valueFontSize = ((widgetH / 6.4) > this.config.valueMinFontSize) ? (widgetH / 6.4) : this.config.valueMinFontSize;
   var valueX = dx + widgetW / 2;
   var valueY = dy + widgetH / 1.4;
   
   // label 
-  var labelFontSize = ((widgetH / 16) > 10) ? (widgetH / 16) : 10;
+  var labelFontSize = ((widgetH / 16) > this.config.labelMinFontSize) ? (widgetH / 16) : this.config.labelMinFontSize;
   var labelX = dx + widgetW / 2;
   //var labelY = dy + widgetH / 1.126760563380282;
   var labelY = valueY + valueFontSize / 2 + 6;
   
   // min 
-  var minFontSize = ((widgetH / 16) > 10) ? (widgetH / 16) : 10;
+  var minFontSize = ((widgetH / 16) > this.config.minLabelMinFontSize) ? (widgetH / 16) : this.config.minLabelMinFontSize;
   var minX = dx + (widgetW / 10) + (widgetW / 6.666666666666667 * this.config.gaugeWidthScale) / 2 ;
   var minY = dy + widgetH / 1.126760563380282;
   
   // max 
-  var maxFontSize = ((widgetH / 16) > 10) ? (widgetH / 16) : 10;
+  var maxFontSize = ((widgetH / 16) > this.config.maxLabelMinFontSize) ? (widgetH / 16) : this.config.maxLabelMinFontSize;
   var maxX = dx + widgetW - (widgetW / 10) - (widgetW / 6.666666666666667 * this.config.gaugeWidthScale) / 2 ;
   var maxY = dy + widgetH / 1.126760563380282;
   
