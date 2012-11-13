@@ -7,6 +7,7 @@
  * LATEST UPDATES
  *
  * 11/13/12
+ * Option to hide value label
  * Option to enable responsive gauge size
  * Removed default title attribute
  * Option to accept min and max defined as string values
