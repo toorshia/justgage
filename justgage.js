@@ -48,6 +48,10 @@ JustGage = function(config) {
     // color of label showing current value
     valueFontColor : (config.valueFontColor) ? config.valueFontColor : "#010101",
     
+    // showValue : bool
+    // hide or display value text
+    showValue : (config.showValue != null) ? config.showValue : true,
+    
     // min : int
     // min value
     min : (config.min) ? parseFloat(config.min) : 0,
@@ -467,7 +471,9 @@ if (this.config.donut) {
   // animate 
   this.level.animate({pki: [this.config.value, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]},  this.config.startAnimationTime, this.config.startAnimationType);
   
-  this.txtValue.animate({"fill-opacity":"1"}, this.config.startAnimationTime, this.config.startAnimationType); 
+  if (this.config.showValue) {
+    this.txtValue.animate({"fill-opacity":"1"}, this.config.startAnimationTime, this.config.startAnimationType); 
+  }
   this.txtLabel.animate({"fill-opacity":"1"}, this.config.startAnimationTime, this.config.startAnimationType);  
 };
 
