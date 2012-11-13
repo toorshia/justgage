@@ -6,7 +6,7 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
-######November 13 2012
+######November 13, 2012.
 
  * Option to hide value label
  * Option to enable responsive gauge size
