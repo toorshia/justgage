@@ -488,6 +488,7 @@ JustGage.prototype.refresh = function(val) {
   var color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient);
   this.canvas.getById(this.config.id+"-txtvalue").attr({"text":originalVal + this.config.symbol});
   this.canvas.getById(this.config.id+"-level").animate({pki: [val, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut], "fill":color},  this.config.refreshAnimationTime, this.config.refreshAnimationType);
+  this.config.value = val;
 };
 
 /** Generate shadow */
