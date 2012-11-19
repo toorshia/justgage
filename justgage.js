@@ -179,6 +179,7 @@ JustGage = function(config) {
   }
   
   // canvas dimensions
+  var canvasW, canvasH;
   if (this.config.relativeGaugeSize) {
     canvasW = 200;
     canvasH = 150;
@@ -187,11 +188,13 @@ JustGage = function(config) {
     canvasH = getStyle(document.getElementById(this.config.id), "height").slice(0, -2) * 1;
   }
   
-if (this.config.donut) {
+  // widget dimensions
+  var widgetW, widgetH, aspect;
+  
+  if (this.config.donut) {
     
     // DONUT ******************************* 
-    // widget dimensions
-    var widgetW, widgetH;
+
     // width more than height
     if(canvasW > canvasH) {
       widgetH = canvasH;
@@ -243,8 +246,6 @@ if (this.config.donut) {
     
   } else {
     // HALF ******************************* 
-    // widget dimensions
-    var widgetW, widgetH;
     
     // width more than height
     if(canvasW > canvasH) {
@@ -343,7 +344,7 @@ if (this.config.donut) {
             Yo = h - (h - Cy) + 0 - Ro * Math.sin(alpha),
             Xi = w / 2 + dx + Ri * Math.cos(alpha),
             Yi = h - (h - Cy) + 0 - Ri * Math.sin(alpha),
-            path;
+            path = "";
       
           path += "M" + (Cx - Ri) + "," + Cy + " ";
           path += "L" + (Cx - Ro) + "," + Cy + " ";
@@ -373,7 +374,7 @@ if (this.config.donut) {
             Yo = h - (h - Cy) + 0 - Ro * Math.sin(alpha),
             Xi = w / 2 + dx + Ri * Math.cos(alpha),
             Yi = h - (h - Cy) + 0 - Ri * Math.sin(alpha),
-            path;
+            path = "";
       
         path += "M" + (Cx - Ri) + "," + Cy + " ";
         path += "L" + (Cx - Ro) + "," + Cy + " ";
@@ -464,14 +465,14 @@ if (this.config.donut) {
   var defs = this.canvas.canvas.childNodes[1];
   var svg = "http://www.w3.org/2000/svg";
   
-  
-  
   if (ie < 9) {
     onCreateElementNsReady(function() {
       this.generateShadow();
     });  
   } else {
     this.generateShadow(svg, defs);
+    defs = null;
+    svg = null;
   }
   
   // animate 
@@ -486,14 +487,18 @@ if (this.config.donut) {
 /** Refresh gauge level */
 JustGage.prototype.refresh = function(val) {
   // overflow values
-  originalVal = val;
+  var originalVal = val;
+  var displayVal = val;
   if (val > this.config.max) {val = this.config.max;}
   if (val < this.config.min) {val = this.config.min;}
     
   var color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient);
-  this.canvas.getById(this.config.id+"-txtvalue").attr({"text":originalVal + this.config.symbol});
+  if( this.config.humanFriendly ) displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal );
+  this.canvas.getById(this.config.id+"-txtvalue").attr({"text":displayVal + this.config.symbol});
   this.canvas.getById(this.config.id+"-level").animate({pki: [val, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut], "fill":color},  this.config.refreshAnimationTime, this.config.refreshAnimationType);
   this.config.value = val;
+  originalVal = null;
+  displayVal = null;
 };
 
 /** Generate shadow */
@@ -508,12 +513,14 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     feOffset.setAttribute("dx", 0);
     feOffset.setAttribute("dy", this.config.shadowVerticalOffset);
     gaussFilter.appendChild(feOffset);
+    feOffset = null;
     
     // blur
     var feGaussianBlur = document.createElementNS(svg,"feGaussianBlur");
     feGaussianBlur.setAttribute("result","offset-blur");
     feGaussianBlur.setAttribute("stdDeviation", this.config.shadowSize);
     gaussFilter.appendChild(feGaussianBlur);
+    feGaussianBlur = null;
     
     // composite 1
     var feComposite1 = document.createElementNS(svg,"feComposite");
@@ -522,6 +529,7 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     feComposite1.setAttribute("in2","offset-blur");
     feComposite1.setAttribute("result","inverse");
     gaussFilter.appendChild(feComposite1);
+    feComposite1 = null;
     
     // flood
     var feFlood = document.createElementNS(svg,"feFlood");
@@ -529,6 +537,7 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     feFlood.setAttribute("flood-opacity", this.config.shadowOpacity);
     feFlood.setAttribute("result","color");
     gaussFilter.appendChild(feFlood);
+    feFlood = null;
     
     // composite 2
     var feComposite2 = document.createElementNS(svg,"feComposite");
@@ -537,6 +546,7 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     feComposite2.setAttribute("in2","inverse");
     feComposite2.setAttribute("result","shadow");
     gaussFilter.appendChild(feComposite2);
+    feComposite2 = null;
     
     // composite 3
     var feComposite3 = document.createElementNS(svg,"feComposite");
@@ -544,16 +554,21 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     feComposite3.setAttribute("in", "shadow");
     feComposite3.setAttribute("in2","SourceGraphic");
     gaussFilter.appendChild(feComposite3);
+    feComposite3 = null;
 
     // set shadow
     if (this.config.showInnerShadow == true) {
       this.canvas.canvas.childNodes[2].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
       this.canvas.canvas.childNodes[3].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
     }
+    
+    // clear vars
+    gaussFilter = null;
+    
 }
 
 /** Get color for value percentage */
-var getColorForPercentage = function(pct, col, grad) {
+function getColorForPercentage(pct, col, grad) {
     
     var no = col.length;
     if (no === 1) return col[0];
@@ -568,26 +583,28 @@ var getColorForPercentage = function(pct, col, grad) {
     }
         
     if(pct == 0) return 'rgb(' + [colors[0].color.r, colors[0].color.g, colors[0].color.b].join(',') + ')';
-      for (var i = 0; i < colors.length; i++) {
-          if (pct <= colors[i].pct) {
-            if (grad == true) {
-              var lower = colors[i - 1];
-              var upper = colors[i];
-              var range = upper.pct - lower.pct;
-              var rangePct = (pct - lower.pct) / range;
-              var pctLower = 1 - rangePct;
-              var pctUpper = rangePct;
-              var color = {
-                  r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-                  g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-                  b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-              };
-              return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
-            } else {
-              return 'rgb(' + [colors[i].color.r, colors[i].color.g, colors[i].color.b].join(',') + ')'; 
-            }
+    
+    for (var i = 0; i < colors.length; i++) {
+        if (pct <= colors[i].pct) {
+          if (grad == true) {
+            var lower = colors[i - 1];
+            var upper = colors[i];
+            var range = upper.pct - lower.pct;
+            var rangePct = (pct - lower.pct) / range;
+            var pctLower = 1 - rangePct;
+            var pctUpper = rangePct;
+            var color = {
+                r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+                g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+                b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+            };
+            return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+          } else {
+            return 'rgb(' + [colors[i].color.r, colors[i].color.g, colors[i].color.b].join(',') + ')'; 
           }
-      }
+        }
+    }
+
 } 
 
 /** Random integer  */
@@ -607,7 +624,7 @@ function humanFriendlyNumber( n, d ) {
 	while( i ) {
 		s = p(10,i--*3)
 		if( s <= n ) {
-			n = Math.round(n*d/s)/d+"kMGTPE"[i]
+			n = Math.round(n*d/s)/d+"kMGTPE"[i];
 		}
 	}
 	return n;
