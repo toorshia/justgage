@@ -6,6 +6,10 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######November 19, 2012.
+
+ * Config.value is now updated after gauge refresh
+
 ######November 13, 2012.
 
  * Option to hide value label
