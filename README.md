@@ -8,6 +8,7 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ######November 19, 2012.
 
+ * Fix for human friendly option when refreshing 
  * Config.value is now updated after gauge refresh
 
 ######November 13, 2012.
