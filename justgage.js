@@ -5,8 +5,13 @@
  * @author Bojan Djuricic  (@Toorshia)
  * 
  * LATEST UPDATES
- *
- * 11/13/12
+ * -----------------------------
+ * November 19, 2012.
+ * -----------------------------
+ * Config.value is now updated after gauge refresh
+ * -----------------------------
+ * November 13, 2012.
+ * -----------------------------
  * Option to hide value label
  * Option to enable responsive gauge size
  * Removed default title attribute
