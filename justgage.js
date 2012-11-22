@@ -113,11 +113,15 @@ JustGage = function(config) {
       "#f9c802",
       "#ff0000"
     ],
-    
+
     // levelColorsGradient : bool
     // whether to use gradual color change for value, or sector-based
     levelColorsGradient : (config.levelColorsGradient != null) ? config.levelColorsGradient : true,
-    
+
+    // levelThresholds : int[]
+    // Threshold level that change the color, refer to levelColors for each 'level'
+    levelThresholds : (config.levelThresholds != null) ? config.levelThresholds : [],
+
     // labelFontColor : string
     // color of label showing label under value
     labelFontColor : (config.labelFontColor) ? config.labelFontColor : "#b3b3b3",
@@ -395,9 +399,14 @@ JustGage = function(config) {
   this.gauge.id = this.config.id+"-gauge";
   
   // level
+  if(!this.config.levelColorsGradient && this.config.levelThresholds && (this.config.levelThresholds.length < this.config.levelColors.length) ) 
+    var fill_color = getColorForValue(this.config.value,this.config.levelColors,this.config.levelThresholds)
+  else
+    var fill_color = getColorForPercentage((this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient, this.config.levelThresholds)
+
   this.level = this.canvas.path().attr({
     "stroke": "none",
-    "fill": getColorForPercentage((this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient),  
+    "fill": fill_color,
     pki: [this.config.min, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]
   });
   this.level.id = this.config.id+"-level";
@@ -491,8 +500,12 @@ JustGage.prototype.refresh = function(val) {
   var displayVal = val;
   if (val > this.config.max) {val = this.config.max;}
   if (val < this.config.min) {val = this.config.min;}
-    
-  var color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient);
+
+  if(!this.config.levelColorsGradient && this.config.levelThresholds && (this.config.levelThresholds.length < this.config.levelColors.length))
+    var color = getColorForValue(val,this.config.levelColors,this.config.levelThresholds)
+  else
+    var color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient,this.config.levelThresholds);
+
   if( this.config.humanFriendly ) displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal );
   this.canvas.getById(this.config.id+"-txtvalue").attr({"text":displayVal + this.config.symbol});
   this.canvas.getById(this.config.id+"-level").animate({pki: [val, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut], "fill":color},  this.config.refreshAnimationTime, this.config.refreshAnimationType);
@@ -567,8 +580,34 @@ JustGage.prototype.generateShadow = function(svg, defs) {
     
 }
 
+/** Get color for value */
+function getColorForValue(val,col,lvl){
+    var no = col.length;
+    if (no === 1) return col[0];
+    var inc = 1 / no
+    var colors = new Array();
+    for (var i = 0; i < col.length; i++) {
+      var percentage = inc * (i + 1);
+      var rval = parseInt((cutHex(col[i])).substring(0,2),16);
+      var gval = parseInt((cutHex(col[i])).substring(2,4),16);
+      var bval = parseInt((cutHex(col[i])).substring(4,6),16);
+      colors[i] =  { r: rval, g: gval, b: bval  };
+    }
+
+    //threshold lvl
+    for (var i = 0; i < lvl.length; i++)
+      if(val < lvl[i])
+        return 'rgb(' + [colors[i].r, colors[i].g, colors[i].b].join(',') + ')';
+    
+    //if no value found
+    var last_index = lvl.length
+    return 'rgb(' + [colors[last_index].r, colors[last_index].g, colors[last_index].b].join(',') + ')';
+
+    
+}
+
 /** Get color for value percentage */
-function getColorForPercentage(pct, col, grad) {
+function getColorForPercentage(pct, col, grad, lvl) {
     
     var no = col.length;
     if (no === 1) return col[0];
@@ -583,7 +622,8 @@ function getColorForPercentage(pct, col, grad) {
     }
         
     if(pct == 0) return 'rgb(' + [colors[0].color.r, colors[0].color.g, colors[0].color.b].join(',') + ')';
-    
+
+    //non threshold process
     for (var i = 0; i < colors.length; i++) {
         if (pct <= colors[i].pct) {
           if (grad == true) {
