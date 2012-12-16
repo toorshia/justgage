@@ -173,7 +173,7 @@ JustGage = function(config) {
     
     // relativeGaugeSize : bool
     // whether gauge size should follow changes in container element size
-    relativeGaugeSize : (config.relativeGaugeSize != null) ? config.relativeGaugeSize : false,
+    relativeGaugeSize : (config.relativeGaugeSize != null) ? config.relativeGaugeSize : false
   };
   
   // overflow values
