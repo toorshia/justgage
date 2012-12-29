@@ -6,6 +6,10 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######November 25, 2012.
+
+ * Option to define custom rendering function for displayed value 
+
 ######November 19, 2012.
 
  * Fix for human friendly option when refreshing 
@@ -13,6 +17,7 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ######November 13, 2012.
 
+ * Donut display mode added
  * Option to hide value label
  * Option to enable responsive gauge size
  * Removed default title attribute
@@ -21,4 +26,3 @@ Checkout http://justgage.com for details, demos, current release and more.
  * Fixed bad aspect ratio calculations
  * Option to configure minimum font size for all texts
  * Option to show shorthand big numbers (human friendly)
-

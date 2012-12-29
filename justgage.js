@@ -1,17 +1,22 @@
 /**
- * JustGage - this is work-in-progress, unreleased, unofficial code, so everything might not work top notch 
+ * JustGage - this is work-in-progress, unreleased, unofficial code, so it might not work top-notch :) 
  * Check http://www.justgage.com for official releases
  * Licensed under MIT.
  * @author Bojan Djuricic  (@Toorshia)
  * 
  * LATEST UPDATES
  * -----------------------------
+ * November 25, 2012.
+ * -----------------------------
+ * Option to define custom rendering function for displayed value
+ * ----------------------------- 
  * November 19, 2012.
  * -----------------------------
  * Config.value is now updated after gauge refresh
  * -----------------------------
  * November 13, 2012.
  * -----------------------------
+ * Donut display mode added
  * Option to hide value label
  * Option to enable responsive gauge size
  * Removed default title attribute
@@ -78,6 +83,10 @@ JustGage = function(config) {
     // number of decimal places for our human friendly number to contain
     humanFriendlyDecimal : (config.humanFriendlyDecimal) ? config.humanFriendlyDecimal : 0,
     
+    // textRenderer: func
+    // function applied before rendering text
+    textRenderer  : (config.textRenderer) ? config.textRenderer : null,
+
     // gaugeWidthScale : float
     // width of the gauge element
     gaugeWidthScale : (config.gaugeWidthScale) ? config.gaugeWidthScale : 1.0,
@@ -414,8 +423,12 @@ JustGage = function(config) {
   this.txtTitle.id = this.config.id+"-txttitle";
   
   // value
-  if( this.config.humanFriendly ) this.originalValue = humanFriendlyNumber( this.originalValue, this.config.humanFriendlyDecimal );
-  this.txtValue = this.canvas.text(this.params.valueX, this.params.valueY, this.originalValue + this.config.symbol);
+  if(this.config.textRenderer)
+    this.originalValue = this.config.textRenderer(this.originalValue);
+  else if( this.config.humanFriendly ) 
+    this.originalValue = humanFriendlyNumber( this.originalValue, this.config.humanFriendlyDecimal ) + this.config.symbol;
+
+  this.txtValue = this.canvas.text(this.params.valueX, this.params.valueY, this.originalValue);
   this.txtValue. attr({
     "font-size":this.params.valueFontSize,
     "font-weight":"bold",
@@ -493,8 +506,13 @@ JustGage.prototype.refresh = function(val) {
   if (val < this.config.min) {val = this.config.min;}
     
   var color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.levelColorsGradient);
-  if( this.config.humanFriendly ) displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal );
-  this.canvas.getById(this.config.id+"-txtvalue").attr({"text":displayVal + this.config.symbol});
+  
+  if(this.config.textRenderer)
+    displayVal = this.config.textRenderer(displayVal);
+  else if( this.config.humanFriendly ) 
+    displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal ) + this.config.symbol;
+
+  this.canvas.getById(this.config.id+"-txtvalue").attr({"text":displayVal});
   this.canvas.getById(this.config.id+"-level").animate({pki: [val, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut], "fill":color},  this.config.refreshAnimationTime, this.config.refreshAnimationType);
   this.config.value = val;
   originalVal = null;
