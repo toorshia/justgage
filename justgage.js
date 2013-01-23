@@ -58,7 +58,7 @@
     // titleFontColor : string
     // color of gauge title 
     titleFontColor : (config.titleFontColor) ? config.titleFontColor : "#999999",
-    
+
     // value : int
     // value gauge is showing 
     value : (config.value) ? config.value : 0,
@@ -548,12 +548,15 @@
   // var clear
   defs, svg = null;
   
-  // animate 
+  // animate gauge level 
   this.level.animate({pki: [this.config.value, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]},  this.config.startAnimationTime, this.config.startAnimationType);
   
+  // show value
   if (!this.config.hideValue) {
     this.txtValue.animate({"fill-opacity":"1"}, this.config.startAnimationTime, this.config.startAnimationType); 
   }
+
+  // show label
   this.txtLabel.animate({"fill-opacity":"1"}, this.config.startAnimationTime, this.config.startAnimationType);  
 };
 
