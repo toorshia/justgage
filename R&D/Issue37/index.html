@@ -1,0 +1,100 @@
+<!doctype html>
+<html> 
+
+  <head>
+    <meta charset="utf-8"/>
+    <title>Yeah, baby!</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    
+    <style>
+      .container {
+        height: 200px;
+      }
+      .gauge {
+        width: 20%;
+        height: 200px;
+        display: inline-block;
+        border: solid 10px #ccc;
+      }
+      
+      svg {
+        border: solid 1px red;
+      }
+    </style>
+    
+  </head>
+
+
+  <body>
+    <div class="container">
+      <div id="gg1" class="gauge"></div>
+      <div id="gg2" class="gauge"></div>
+      <div id="gg3" class="gauge"></div>
+      <div id="gg4" class="gauge"></div>
+    </div>
+
+    <script src="raphael.2.1.0.min.js"></script>
+    <script src="../../justgage.js"></script>
+    
+    <script>
+      var gg1 = new JustGage({
+        id: 'gg1', 
+        value: getRandomInt(0, 100), 
+        symbol: '\xB0',
+        min: 0,
+        max: 100,
+        showMinMax : false,
+        label: 'label',
+        title: 'title',
+        donut: false,
+        relativeGaugeSize: true
+      });
+      
+      var gg2 = new JustGage({
+        id: 'gg2', 
+        value: getRandomInt(0, 100),
+        symbol: '\xB0',
+        min: 0,
+        max: 100,
+        showMinMax : false,
+        label: 'label',
+        title: false,
+        donut: false,
+        relativeGaugeSize: true
+      });
+      
+      var gg3 = new JustGage({
+        id: 'gg3', 
+        value: getRandomInt(0, 100), 
+        symbol: '\xB0',
+        min: 0,
+        max: 100,
+        showMinMax : false,
+        label: false,
+        title: "title",
+        donut: false,
+        relativeGaugeSize: true,
+        value: getRandomInt(0, 100),
+        hideMinMax: true,
+        hideValue: true,
+      });
+      
+      var gg3 = new JustGage({
+        id: 'gg4', 
+        value: getRandomInt(0, 100), 
+        symbol: '\xB0',
+        min: 0,
+        max: 100,
+        showMinMax : false,
+        label: false,
+        title: false,
+        donut: false,
+        relativeGaugeSize: true,
+        value: getRandomInt(0, 100),
+        hideMinMax: true,
+        hideValue: true,
+      });
+      
+    </script>
+  </body>
+</html>

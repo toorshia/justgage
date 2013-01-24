@@ -247,21 +247,21 @@
     if(canvasW > canvasH) {
       widgetH = canvasH;
       widgetW = widgetH;
-    // width less than height
-  } else if (canvasW < canvasH) {
-    widgetW = canvasW;
-    widgetH = widgetW;
-      // if height don't fit, rescale both
-      if(widgetH > canvasH) {
-        aspect = widgetH / canvasH;
-        widgetH = widgetH / aspect;
-        widgetW = widgetH / aspect;
-      }
-    // equal
-  } else {
-    widgetW = canvasW;
-    widgetH = widgetW;
-  }
+      // width less than height
+    } else if (canvasW < canvasH) {
+      widgetW = canvasW;
+      widgetH = widgetW;
+        // if height don't fit, rescale both
+        if(widgetH > canvasH) {
+          aspect = widgetH / canvasH;
+          widgetH = widgetH / aspect;
+          widgetW = widgetH / aspect;
+        }
+      // equal
+    } else {
+      widgetW = canvasW;
+      widgetH = widgetW;
+    }
 
     // delta 
     dx = (canvasW - widgetW)/2;
@@ -303,41 +303,71 @@
     if(canvasW > canvasH) {
       widgetH = canvasH;
       widgetW = widgetH * 1.25;
-      //if width doesn't fit, rescale both
-      if(widgetW > canvasW) {
-        aspect = widgetW / canvasW;
-        widgetW = widgetW / aspect;
-        widgetH = widgetH / aspect;
+      if(!this.config.title && this.config.label) {
+        widgetH = canvasH * 1.2;
+        widgetW = widgetH * 1.7;
       }
-    // width less than height
-  } else if (canvasW < canvasH) {
-    widgetW = canvasW;
-    widgetH = widgetW / 1.25;
-      // if height don't fit, rescale both
-      if(widgetH > canvasH) {
-        aspect = widgetH / canvasH;
-        widgetH = widgetH / aspect;
-        widgetW = widgetH / aspect;
+      else {
+        if(!this.config.title && !this.config.label) {
+          widgetH = canvasH * 1.25;
+          widgetW = widgetH * 1.7;
+        }
+        else {
+          //if width doesn't fit, rescale both
+          if(widgetW > canvasW) {
+            aspect = widgetW / canvasW;
+            widgetW = widgetW / aspect;
+            widgetH = widgetH / aspect;
+          }
+        }
       }
-    // equal
-  } else {
-    widgetW = canvasW;
-    widgetH = widgetW * 0.75;
-  }
-  
+      // width less than height
+    } else if (canvasW < canvasH) {
+      widgetW = canvasW;
+      widgetH = widgetW / 1.25;
+        // if height don't fit, rescale both
+        if(widgetH > canvasH) {
+          aspect = widgetH / canvasH;
+          widgetH = widgetH / aspect;
+          widgetW = widgetH / aspect;
+        }
+      // equal
+    } else {
+      widgetW = canvasW;
+      widgetH = widgetW * 0.75;
+    }
+    /*
+    if(!this.config.title) {
+      widgetW = canvasW * 2;
+    }
+    if(!this.config.title && !this.config.label) {
+      widgetW = canvasW * 1.75;
+      widgetH = widgetH * 1.6;
+    }
+    */
     // delta 
     dx = (canvasW - widgetW)/2;
     dy = (canvasH - widgetH)/2;
+    console.log('canvasW / canvasH : ' + canvasW + ' / ' + canvasH);
+    console.log('widgetW / widgetH : ' + widgetW + ' / ' + widgetH);
+
+    console.log('dx: ' + dx);
+    console.log('dy: ' + dy);
+
     
     // title 
-    titleFontSize = ((widgetH / 8) > this.config.titleMinFontSize) ? (widgetH / 10) : this.config.titleMinFontSize;
-    titleX = dx + widgetW / 2;
-    titleY = dy + widgetH / 6.4;
+    if(this.config.title) {
+      titleFontSize = ((widgetH / 8) > this.config.titleMinFontSize) ? (widgetH / 10) : this.config.titleMinFontSize;
+      titleX = dx + widgetW / 2;
+      titleY = dy + widgetH / 6.4;
+    }
     
     // value 
-    valueFontSize = ((widgetH / 6.5) > this.config.valueMinFontSize) ? (widgetH / 6.5) : this.config.valueMinFontSize;
-    valueX = dx + widgetW / 2;
-    valueY = dy + widgetH / 1.275;
+    if(this.config.value) {
+      valueFontSize = ((widgetH / 6.5) > this.config.valueMinFontSize) ? (widgetH / 6.5) : this.config.valueMinFontSize;
+      valueX = dx + widgetW / 2;
+      valueY = dy + widgetH / 1.275;
+    }
 
     // label 
     labelFontSize = ((widgetH / 16) > this.config.labelMinFontSize) ? (widgetH / 16) : this.config.labelMinFontSize;
@@ -354,7 +384,7 @@
     maxX = dx + widgetW - (widgetW / 10) - (widgetW / 6.666666666666667 * this.config.gaugeWidthScale) / 2 ;
     maxY = labelY;
   }
-
+  
   // parameters
   this.params  = {
     canvasW : canvasW,
@@ -385,7 +415,7 @@
   
   // pki - custom attribute for generating gauge paths
   this.canvas.customAttributes.pki = function (value, min, max, w, h, dx, dy, gws, donut) {
-
+    
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
 
     if (donut) {
@@ -435,18 +465,19 @@
       path += "L" + Xi + "," + Yi + " ";
       path += "A" + Ri + "," + Ri + " 0 0 0 " + (Cx - Ri) + "," + Cy + " ";
       path += "Z ";
-
       return { path: path };
     }
+    
 
     // var clear
     alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path = null;
   }; 
   
   // gauge
+  // (value, min, max, w, h, dx, dy, gws, donut)
   this.gauge = this.canvas.path().attr({
     "stroke": "none",
-    "fill": this.config.gaugeColor,   
+    "fill": this.config.gaugeColor,
     pki: [this.config.max, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]
   });
   this.gauge.id = this.config.id+"-gauge";
@@ -454,25 +485,26 @@
   // level
   this.level = this.canvas.path().attr({
     "stroke": "none",
-    "fill": getColorForPercentage((this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient),  
+    "fill": getColorForPercentage((this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient),
     pki: [this.config.min, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]
   });
   if(this.config.donut) {
     this.level.transform("r" + this.config.donutStartAngle + ", " + (this.params.widgetW/2 + this.params.dx) + ", " + (this.params.widgetH/1.95 + this.params.dy));
   }
   this.level.id = this.config.id+"-level";
-  
-  // title
-  this.txtTitle = this.canvas.text(this.params.titleX, this.params.titleY, this.config.title);
-  this.txtTitle.attr({
-    "font-size":this.params.titleFontSize,
-    "font-weight":"bold",
-    "font-family":"Arial",
-    "fill":this.config.titleFontColor,
-    "fill-opacity":"1"
-  });
-  setDy(this.txtTitle, this.params.titleFontSize, this.params.titleY);
-  this.txtTitle.id = this.config.id+"-txttitle";
+  if(this.config.title) {
+    // title
+    this.txtTitle = this.canvas.text(this.params.titleX, this.params.titleY, this.config.title);
+    this.txtTitle.attr({
+      "font-size":this.params.titleFontSize,
+      "font-weight":"bold",
+      "font-family":"Arial",
+      "fill":this.config.titleFontColor,
+      "fill-opacity":"1"
+    });
+    setDy(this.txtTitle, this.params.titleFontSize, this.params.titleY);
+    this.txtTitle.id = this.config.id+"-txttitle";
+  }
   
   // value
   if(this.config.textRenderer) {
@@ -561,7 +593,7 @@
 JustGage.prototype.refresh = function(val) {
   
   var originalVal, displayVal, color;
-
+  
   // overflow values
   originalVal = val;
   displayVal = val;
