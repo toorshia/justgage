@@ -6,6 +6,13 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######March 19, 2013.
+ * refresh method - added optional 'max' parameter to use when you need to update max value
+
+######February 26, 2013.
+ * decimals - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
+ * fixed a missing parameters bug when calling generateShadow()  for IE < 9
+
 ######December 31, 2012.
 
  * fixed text y-position for hidden divs - workaround for Raphael <tspan> 'dy' bug - https://github.com/DmitryBaranovskiy/raphael/issues/491 
