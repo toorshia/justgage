@@ -1,21 +1,21 @@
 <!doctype html>
-<html> 
+<html>
 
   <head>
     <meta charset="utf-8"/>
     <title>Donuts, baby!</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
-    
-    <link rel="stylesheet" href="style.css">
-    
+
+    <link rel="stylesheet" href="../lib/style.css">
+
     <style>
-      
+
       .container {
         width: 940px;
         margin: 0 auto;
         text-align: center;
       }
-      
+
       .gauge_container {
         text-align: left;
         height: 450px;
@@ -23,28 +23,28 @@
         border: 1px solid #ccc;
         margin: 40px 5px 0 5px;
       }
-      
+
       .gauge {
         width: 300px;
         height: 200px;
         display: inline-block;
       }
-      
+
       .controls {
         text-align: left;
       }
-      
+
       li {
         padding: 10px 0 0 0;
       }
-      
+
       li.refresh {
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
         padding-top:15px;
         padding-bottom: 15px;
       }
-      
+
       label {
         font-family: Arial;
         display: inline-block;
@@ -54,7 +54,7 @@
         padding: 5px;
         color: #919191;
       }
-      
+
       input {
         font-weight: bold;
         font-size: 13px;
@@ -62,7 +62,7 @@
         border: 1px solid #ccc;
         margin: 5px;
       }
-      
+
       input[disabled=disabled] {
         font-weight: normal;
         font-size: 11px;
@@ -72,7 +72,7 @@
         border-color: transparent;
         background: #fff;
       }
-      
+
       a:link.button,
       a:active.button,
       a:visited.button,
@@ -80,14 +80,14 @@
         margin: 0px 5px 0 2px;
         padding: 7px 13px;
       }
-      
+
     </style>
-    
+
   </head>
 
 
   <body>
-    
+
     <div class="container clearfix">
       <!-- Ttfb -->
       <div class="gauge_container">
@@ -112,12 +112,12 @@
         </div>
       </div>
     </div>
-    
-    
-    <script src="jquery-1.7.2.min.js"></script>
-    <script src="raphael.2.1.0.min.js"></script>
+
+
+    <script src="../lib/jquery-1.7.2.min.js"></script>
+    <script src="../lib/raphael.2.1.0.min.js"></script>
     <script src="../../justgage.js"></script>
-    
+
     <script>
       $(document).ready(function(){
         reload(gg1);
@@ -125,12 +125,12 @@
            reload(gg1);
           return false;
         });
-        
+
       });
-    
+
       var gg1 = new JustGage({
-        id: "gg1", 
-        value: 65, 
+        id: "gg1",
+        value: 65,
         symbol: "\xB0",
         min: 0,
         max: 100,
@@ -138,8 +138,8 @@
         label: "",
         title: " ",
         donut: true
-      }); 
-      
+      });
+
       function reload(gid) {
         var id = gid.config.id;
         var title = gid.config.title;
@@ -149,19 +149,19 @@
         var showMinMax = gid.config.showMinMax;
         if($('#'+ id + '_gaugevalue') != null ) { var gaugevalue = $('#'+ id + '_gaugevalue').attr('value'); } else { var gaugevalue = 0; }
         if($('#'+ id + '_gaugeunit') != null ) { var gaugeunit = $('#'+ id + '_gaugeunit').attr('value'); } else { var gaugeunit = ""; }
-        
+
         var notNumber = isNaN(gaugevalue);
-        
+
         if (notNumber) {
           alert("Please enter integer or float value!");
           return false;
         }
-        
+
         $('#' + id).empty();
-        gid = "";  
+        gid = "";
         gid = new JustGage({
-          id: id, 
-          value: gaugevalue, 
+          id: id,
+          value: gaugevalue,
           symbol: gaugeunit,
           min: 0,
           max: 100,
@@ -175,7 +175,7 @@
           gid.refresh(getRandomInt(0, 100));
           return false;
         });
-        
+
       }
     </script>
   </body>
