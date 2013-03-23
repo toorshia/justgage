@@ -6,6 +6,11 @@
  *
  * LATEST UPDATES
 
+* -----------------------------
+ * March 23, 2013.
+ * -----------------------------
+     * * counter - option to animate value  in counting fashion
+
  * -----------------------------
  * March 13, 2013.
  * -----------------------------
@@ -14,7 +19,6 @@
  * -----------------------------
  * February 26, 2013.
  * -----------------------------
-     * counter - option to animate value  in counting fashion
      * decimals - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
      * fixed a missing parameters bug when calling generateShadow()  for IE < 9
 
