@@ -10,6 +10,7 @@
  * March 23, 2013.
  * -----------------------------
      * counter - option to animate value  in counting fashion
+     * fix - https://github.com/toorshia/justgage/issues/45
 
  * -----------------------------
  * March 13, 2013.
@@ -765,7 +766,9 @@ function getColorForPercentage(pct, col, noGradient) {
 
 /** Fix Raphael display:none tspan dy attribute bug */
 function setDy(elem, fontSize, txtYpos) {
-  elem.node.firstChild.attributes.dy.value = 0;
+  if (!ie || ie > 9) {
+    elem.node.firstChild.attributes.dy.value = 0;
+  }
 }
 
 /** Random integer  */
