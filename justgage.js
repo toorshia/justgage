@@ -14,6 +14,7 @@
  * -----------------------------
  * February 26, 2013.
  * -----------------------------
+     * counter - option to animate value  in counting fashion
      * decimals - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
      * fixed a missing parameters bug when calling generateShadow()  for IE < 9
 
@@ -561,6 +562,27 @@
   // var clear
   defs, svg = null;
 
+  // execute on each animation frame
+  function onAnimate() {
+    if (obj.config.counter) {
+      var currentValue = obj.level.attr("pki");
+
+      if(obj.config.textRenderer) {
+        // this.originalValue = this.config.textRenderer(this.originalValue);
+        obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
+      } else if(obj.config.humanFriendly) {
+        // this.originalValue = humanFriendlyNumber( this.originalValue, this.config.humanFriendlyDecimal ) + this.config.symbol;
+        obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
+      } else {
+        // this.originalValue += this.config.symbol;
+        obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+      }
+
+      setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
+      currentValue = null;
+    }
+  }
+
   if(!obj.config.counter) {
     if(obj.config.textRenderer) {
       obj.originalValue = obj.config.textRenderer(obj.originalValue);
@@ -573,6 +595,9 @@
     obj.txtValue.attr("text", obj.originalValue + obj.config.symbol);
     setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
   }
+
+  //event fired on each animation frame
+  eve.on("raphael.anim.frame.*", onAnimate);
 
   // animate gauge level
   this.level.animate({pki: [this.config.value, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]},  this.config.startAnimationTime, this.config.startAnimationType);
@@ -766,17 +791,17 @@ function humanFriendlyNumber( n, d ) {
 
 /**  Get style  */
 function getStyle(oElm, strCssRule){
-	var strValue = "";
-	if(document.defaultView && document.defaultView.getComputedStyle){
-		strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
-	}
-	else if(oElm.currentStyle){
-		strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
-			return p1.toUpperCase();
-		});
-		strValue = oElm.currentStyle[strCssRule];
-	}
-	return strValue;
+  var strValue = "";
+  if(document.defaultView && document.defaultView.getComputedStyle){
+    strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+  }
+  else if(oElm.currentStyle){
+    strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+      return p1.toUpperCase();
+    });
+    strValue = oElm.currentStyle[strCssRule];
+  }
+  return strValue;
 }
 
 /**  Create Element NS Ready  */
