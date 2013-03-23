@@ -630,7 +630,7 @@ JustGage.prototype.refresh = function(val, max) {
 
   // overflow values
   originalVal = val;
-  displayVal = val.toFixed(this.config.decimals);
+  displayVal = val;
   if (val > this.config.max) {val = this.config.max;}
   if (val < this.config.min) {val = this.config.min;}
 
@@ -641,7 +641,7 @@ JustGage.prototype.refresh = function(val, max) {
   } else if( this.config.humanFriendly ) {
     displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal ) + this.config.symbol;
   } else {
-    displayVal += this.config.symbol;
+    displayVal = displayVal.toFixed(this.config.decimals) + this.config.symbol;
   }
 
   if(!this.config.counter) {
@@ -659,125 +659,126 @@ JustGage.prototype.refresh = function(val, max) {
 /** Generate shadow */
 JustGage.prototype.generateShadow = function(svg, defs) {
 
-    var gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3;
+  var gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3;
 
-    // FILTER
-    gaussFilter=document.createElementNS(svg,"filter");
-    gaussFilter.setAttribute("id", this.config.id + "-inner-shadow");
-    defs.appendChild(gaussFilter);
+  // FILTER
+  gaussFilter=document.createElementNS(svg,"filter");
+  gaussFilter.setAttribute("id", this.config.id + "-inner-shadow");
+  defs.appendChild(gaussFilter);
 
-    // offset
-    feOffset = document.createElementNS(svg,"feOffset");
-    feOffset.setAttribute("dx", 0);
-    feOffset.setAttribute("dy", this.config.shadowVerticalOffset);
-    gaussFilter.appendChild(feOffset);
+  // offset
+  feOffset = document.createElementNS(svg,"feOffset");
+  feOffset.setAttribute("dx", 0);
+  feOffset.setAttribute("dy", this.config.shadowVerticalOffset);
+  gaussFilter.appendChild(feOffset);
 
-    // blur
-    feGaussianBlur = document.createElementNS(svg,"feGaussianBlur");
-    feGaussianBlur.setAttribute("result","offset-blur");
-    feGaussianBlur.setAttribute("stdDeviation", this.config.shadowSize);
-    gaussFilter.appendChild(feGaussianBlur);
+  // blur
+  feGaussianBlur = document.createElementNS(svg,"feGaussianBlur");
+  feGaussianBlur.setAttribute("result","offset-blur");
+  feGaussianBlur.setAttribute("stdDeviation", this.config.shadowSize);
+  gaussFilter.appendChild(feGaussianBlur);
 
-    // composite 1
-    feComposite1 = document.createElementNS(svg,"feComposite");
-    feComposite1.setAttribute("operator","out");
-    feComposite1.setAttribute("in", "SourceGraphic");
-    feComposite1.setAttribute("in2","offset-blur");
-    feComposite1.setAttribute("result","inverse");
-    gaussFilter.appendChild(feComposite1);
+  // composite 1
+  feComposite1 = document.createElementNS(svg,"feComposite");
+  feComposite1.setAttribute("operator","out");
+  feComposite1.setAttribute("in", "SourceGraphic");
+  feComposite1.setAttribute("in2","offset-blur");
+  feComposite1.setAttribute("result","inverse");
+  gaussFilter.appendChild(feComposite1);
 
-    // flood
-    feFlood = document.createElementNS(svg,"feFlood");
-    feFlood.setAttribute("flood-color","black");
-    feFlood.setAttribute("flood-opacity", this.config.shadowOpacity);
-    feFlood.setAttribute("result","color");
-    gaussFilter.appendChild(feFlood);
+  // flood
+  feFlood = document.createElementNS(svg,"feFlood");
+  feFlood.setAttribute("flood-color","black");
+  feFlood.setAttribute("flood-opacity", this.config.shadowOpacity);
+  feFlood.setAttribute("result","color");
+  gaussFilter.appendChild(feFlood);
 
-    // composite 2
-    feComposite2 = document.createElementNS(svg,"feComposite");
-    feComposite2.setAttribute("operator","in");
-    feComposite2.setAttribute("in", "color");
-    feComposite2.setAttribute("in2","inverse");
-    feComposite2.setAttribute("result","shadow");
-    gaussFilter.appendChild(feComposite2);
+  // composite 2
+  feComposite2 = document.createElementNS(svg,"feComposite");
+  feComposite2.setAttribute("operator","in");
+  feComposite2.setAttribute("in", "color");
+  feComposite2.setAttribute("in2","inverse");
+  feComposite2.setAttribute("result","shadow");
+  gaussFilter.appendChild(feComposite2);
 
-    // composite 3
-    feComposite3 = document.createElementNS(svg,"feComposite");
-    feComposite3.setAttribute("operator","over");
-    feComposite3.setAttribute("in", "shadow");
-    feComposite3.setAttribute("in2","SourceGraphic");
-    gaussFilter.appendChild(feComposite3);
+  // composite 3
+  feComposite3 = document.createElementNS(svg,"feComposite");
+  feComposite3.setAttribute("operator","over");
+  feComposite3.setAttribute("in", "shadow");
+  feComposite3.setAttribute("in2","SourceGraphic");
+  gaussFilter.appendChild(feComposite3);
 
-    // set shadow
-    if (!this.config.hideInnerShadow) {
-      this.canvas.canvas.childNodes[2].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
-      this.canvas.canvas.childNodes[3].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
-    }
+  // set shadow
+  if (!this.config.hideInnerShadow) {
+    this.canvas.canvas.childNodes[2].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
+    this.canvas.canvas.childNodes[3].setAttribute("filter", "url(#" + this.config.id + "-inner-shadow)");
+  }
 
-    // var clear
-    gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3 = null;
+  // var clear
+  gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3 = null;
 
-  };
+};
 
-  /** Get color for value percentage */
-  function getColorForPercentage(pct, col, noGradient) {
+/** Get color for value percentage */
+function getColorForPercentage(pct, col, noGradient) {
 
-    var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
+  var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
 
-    no = col.length;
-    if (no === 1) return col[0];
-    inc = (noGradient) ? (1 / no) : (1 / (no - 1));
-    colors = [];
-    for (var i = 0; i < col.length; i++) {
-      percentage = (noGradient) ? (inc * (i + 1)) : (inc * i);
-      rval = parseInt((cutHex(col[i])).substring(0,2),16);
-      gval = parseInt((cutHex(col[i])).substring(2,4),16);
-      bval = parseInt((cutHex(col[i])).substring(4,6),16);
-      colors[i] = { pct: percentage, color: { r: rval, g: gval, b: bval  } };
-    }
+  no = col.length;
+  if (no === 1) return col[0];
+  inc = (noGradient) ? (1 / no) : (1 / (no - 1));
+  colors = [];
+  for (var i = 0; i < col.length; i++) {
+    percentage = (noGradient) ? (inc * (i + 1)) : (inc * i);
+    rval = parseInt((cutHex(col[i])).substring(0,2),16);
+    gval = parseInt((cutHex(col[i])).substring(2,4),16);
+    bval = parseInt((cutHex(col[i])).substring(4,6),16);
+    colors[i] = { pct: percentage, color: { r: rval, g: gval, b: bval  } };
+  }
 
-    if(pct === 0) {
-      return 'rgb(' + [colors[0].color.r, colors[0].color.g, colors[0].color.b].join(',') + ')';
-    }
+  if(pct === 0) {
+    return 'rgb(' + [colors[0].color.r, colors[0].color.g, colors[0].color.b].join(',') + ')';
+  }
 
-    for (var j = 0; j < colors.length; j++) {
-      if (pct <= colors[j].pct) {
-        if (noGradient) {
-          return 'rgb(' + [colors[j].color.r, colors[j].color.g, colors[j].color.b].join(',') + ')';
-        } else {
-          lower = colors[j - 1];
-          upper = colors[j];
-          range = upper.pct - lower.pct;
-          rangePct = (pct - lower.pct) / range;
-          pctLower = 1 - rangePct;
-          pctUpper = rangePct;
-          color = {
-            r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-            g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-            b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-          };
-          return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
-        }
+  for (var j = 0; j < colors.length; j++) {
+    if (pct <= colors[j].pct) {
+      if (noGradient) {
+        return 'rgb(' + [colors[j].color.r, colors[j].color.g, colors[j].color.b].join(',') + ')';
+      } else {
+        lower = colors[j - 1];
+        upper = colors[j];
+        range = upper.pct - lower.pct;
+        rangePct = (pct - lower.pct) / range;
+        pctLower = 1 - rangePct;
+        pctUpper = rangePct;
+        color = {
+          r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+          g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+          b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+        };
+        return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
       }
     }
-
   }
 
-  /** Fix Raphael display:none tspan dy attribute bug */
-  function setDy(elem, fontSize, txtYpos) {
-    elem.node.firstChild.attributes.dy.value = 0;
-  }
+}
 
-  /** Random integer  */
-  function getRandomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+/** Fix Raphael display:none tspan dy attribute bug */
+function setDy(elem, fontSize, txtYpos) {
+  elem.node.firstChild.attributes.dy.value = 0;
+}
 
-  /**  Cut hex  */
-  function cutHex(str) {return (str.charAt(0)=="#") ? str.substring(1,7):str;}
+/** Random integer  */
+function getRandomInt (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-  /**  Human friendly number suffix */
-// From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator
+/**  Cut hex  */
+function cutHex(str) {
+  return (str.charAt(0)=="#") ? str.substring(1,7):str;
+}
+
+/**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
 function humanFriendlyNumber( n, d ) {
   var p, d2, i, s;
 
