@@ -82,13 +82,14 @@
     // value gauge is showing
     value : (config.value) ? config.value : 0,
 
-    // symbol : string
-    // special symbol to show next to value
-    symbol : (config.symbol) ? config.symbol : "",
 
     // valueFontColor : string
     // color of label showing current value
     valueFontColor : (config.valueFontColor) ? config.valueFontColor : "#010101",
+
+    // symbol : string
+    // special symbol to show next to value
+    symbol : (config.symbol) ? config.symbol : "",
 
     // min : int
     // min value
@@ -118,6 +119,10 @@
     // text to show below value
     label : (config.label) ? config.label : "",
 
+    // labelFontColor : string
+    // color of label showing label under value
+    labelFontColor : (config.labelFontColor) ? config.labelFontColor : "#b3b3b3",
+
     // shadowOpacity : int
     // 0 ~ 1
     shadowOpacity : (config.shadowOpacity) ? config.shadowOpacity : 0.2,
@@ -137,11 +142,6 @@
     "#f9c802",
     "#ff0000"
     ],
-
-
-    // labelFontColor : string
-    // color of label showing label under value
-    labelFontColor : (config.labelFontColor) ? config.labelFontColor : "#b3b3b3",
 
     // startAnimationTime : int
     // length of initial animation
