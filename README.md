@@ -6,6 +6,9 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######March 23, 2013.
+ * counter - option to animate value  in counting fashion
+
 ######March 19, 2013.
  * refresh method - added optional 'max' parameter to use when you need to update max value
 
@@ -15,19 +18,19 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ######December 31, 2012.
 
- * fixed text y-position for hidden divs - workaround for Raphael <tspan> 'dy' bug - https://github.com/DmitryBaranovskiy/raphael/issues/491 
+ * fixed text y-position for hidden divs - workaround for Raphael <tspan> 'dy' bug - https://github.com/DmitryBaranovskiy/raphael/issues/491
  * 'show' parameters, like showMinMax are now 'hide' because I am lame developer - please update these in your setups
- * Min and Max labels are now auto-off when in donut mode 
- * Start angle in donut mode is now 90 
- * donutStartAngle - option to define start angle for donut 
+ * Min and Max labels are now auto-off when in donut mode
+ * Start angle in donut mode is now 90
+ * donutStartAngle - option to define start angle for donut
 
 ######November 25, 2012.
 
- * Option to define custom rendering function for displayed value 
+ * Option to define custom rendering function for displayed value
 
 ######November 19, 2012.
 
- * Fix for human friendly option when refreshing 
+ * Fix for human friendly option when refreshing
  * Config.value is now updated after gauge refresh
 
 ######November 13, 2012.
