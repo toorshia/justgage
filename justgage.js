@@ -9,7 +9,7 @@
 * -----------------------------
  * March 23, 2013.
  * -----------------------------
-     * * counter - option to animate value  in counting fashion
+     * counter - option to animate value  in counting fashion
 
  * -----------------------------
  * March 13, 2013.
