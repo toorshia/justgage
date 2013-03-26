@@ -13,7 +13,7 @@ Checkout http://justgage.com for details, demos, current release and more.
  * **counter** - option to animate value in counting fashion - check demo at http://bit.ly/15Hw5i1
 
 ######March 19, 2013.
- * **refresh()** - added optional 'max' parameter to use when you need to update max value
+ * **refresh()** - added optional 'max' parameter to use when you need to update max value - check demo at http://bit.ly/10cdlSR
 
 ######February 26, 2013.
  * **decimals** - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
