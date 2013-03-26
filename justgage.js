@@ -6,7 +6,12 @@
  *
  * LATEST UPDATES
 
-* -----------------------------
+ * -----------------------------
+ * March 26, 2013.
+ * -----------------------------
+     * customSectors - define specific color for value range (0-10 : red, 10-30 : blue etc.)
+
+ * -----------------------------
  * March 23, 2013.
  * -----------------------------
      * counter - option to animate value  in counting fashion
