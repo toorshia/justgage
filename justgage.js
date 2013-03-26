@@ -215,9 +215,13 @@
     // animate level number change
     counter : (config.counter) ? config.counter : false,
 
-    // counter : bool
-    // animate level number change
-    decimals : (config.decimals) ? config.decimals : 0
+    // decimals : int
+    // number of digits after floating point
+    decimals : (config.decimals) ? config.decimals : 0,
+
+    // customSectors : [] of objects
+    // number of digits after floating point
+    customSectors : (config.customSectors) ? config.customSectors : []
   };
 
   // variables
@@ -481,7 +485,7 @@
   // level
   this.level = this.canvas.path().attr({
     "stroke": "none",
-    "fill": getColorForPercentage((this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient),
+    "fill": getColor(this.config.value, (this.config.value - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient, this.config.customSectors),
     pki: [this.config.min, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut]
   });
   if(this.config.donut) {
@@ -635,7 +639,7 @@ JustGage.prototype.refresh = function(val, max) {
   if (val > this.config.max) {val = this.config.max;}
   if (val < this.config.min) {val = this.config.min;}
 
-  color = getColorForPercentage((val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient);
+  color = getColor(val, (val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient, this.config.customSectors);
 
   if(this.config.textRenderer) {
     displayVal = this.config.textRenderer(displayVal);
@@ -720,10 +724,19 @@ JustGage.prototype.generateShadow = function(svg, defs) {
 
 };
 
-/** Get color for value percentage */
-function getColorForPercentage(pct, col, noGradient) {
+/** Get color for value */
+function getColor(val, pct, col, noGradient, custSec) {
 
   var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
+  var noGradient = noGradient || custSec.length > 0;
+
+  if(custSec.length > 0) {
+    for(var i = 0; i < custSec.length; i++) {
+      if(val > custSec[i].lo && val <= custSec[i].hi) {
+        return custSec[i].color;
+      }
+    }
+  }
 
   no = col.length;
   if (no === 1) return col[0];
