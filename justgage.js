@@ -646,7 +646,7 @@ JustGage.prototype.refresh = function(val, max) {
   // overflow values
   originalVal = val;
   displayVal = val;
-  if ((val * 1) > (this.config.max * 1) {val = (this.config.max * 1);}
+  if ((val * 1) > (this.config.max * 1)) {val = (this.config.max * 1);}
   if ((val * 1) < (this.config.min * 1)) {val = (this.config.min * 1);}
 
   color = getColor(val, (val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient, this.config.customSectors);
