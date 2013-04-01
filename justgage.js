@@ -7,6 +7,11 @@
  * LATEST UPDATES
 
  * -----------------------------
+ * April 01, 2013.
+ * -----------------------------
+     * fix - https://github.com/toorshia/justgage/issues/46
+
+ * -----------------------------
  * March 26, 2013.
  * -----------------------------
      * customSectors - define specific color for value range (0-10 : red, 10-30 : blue etc.)
