@@ -651,7 +651,7 @@ JustGage.prototype.refresh = function(val, max) {
   } else if( this.config.humanFriendly ) {
     displayVal = humanFriendlyNumber( displayVal, this.config.humanFriendlyDecimal ) + this.config.symbol;
   } else {
-    displayVal = displayVal.toFixed(this.config.decimals) + this.config.symbol;
+    displayVal = (displayVal * 1).toFixed(this.config.decimals) + this.config.symbol;
   }
 
   if(!this.config.counter) {
