@@ -646,8 +646,8 @@ JustGage.prototype.refresh = function(val, max) {
   // overflow values
   originalVal = val;
   displayVal = val;
-  if (val > this.config.max) {val = this.config.max;}
-  if (val < this.config.min) {val = this.config.min;}
+  if ((val * 1) > (this.config.max * 1) {val = (this.config.max * 1);}
+  if ((val * 1) < (this.config.min * 1)) {val = (this.config.min * 1);}
 
   color = getColor(val, (val - this.config.min) / (this.config.max - this.config.min), this.config.levelColors, this.config.noGradient, this.config.customSectors);
 
@@ -665,7 +665,7 @@ JustGage.prototype.refresh = function(val, max) {
   }
 
   this.canvas.getById(this.config.id+"-level").animate({pki: [val, this.config.min, this.config.max, this.params.widgetW, this.params.widgetH,  this.params.dx, this.params.dy, this.config.gaugeWidthScale, this.config.donut], "fill":color},  this.config.refreshAnimationTime, this.config.refreshAnimationType);
-  this.config.value = val;
+  this.config.value = val * 1;
 
   // var clear
   originalVal, displayVal, color, max = null;
