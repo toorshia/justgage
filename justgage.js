@@ -69,7 +69,10 @@
  JustGage = function(config) {
 
   if (!config.id) {alert("Missing id parameter for gauge!"); return false;}
-  if (!document.getElementById(config.id)) {alert("No element with id: \""+config.id+"\" found!"); return false;}
+  if (!config.node) {
+    if (!document.getElementById(config.id)) {alert("No element with id: \""+config.id+"\" found!"); return false;}
+    config.node = document.getElementById(config.id);
+  }
 
   var obj = this;
 
@@ -79,6 +82,10 @@
     // id : string
     // this is container element id
     id : config.id,
+
+    // node : string
+    // the node to use instead of the DOM
+    node : config.node,
 
     // title : string
     // gauge title
@@ -275,8 +282,8 @@
     canvasW = 200;
     canvasH = 150;
   } else {
-    canvasW = getStyle(document.getElementById(this.config.id), "width").slice(0, -2) * 1;
-    canvasH = getStyle(document.getElementById(this.config.id), "height").slice(0, -2) * 1;
+    canvasW = getStyle(this.config.node, "width").slice(0, -2) * 1;
+    canvasH = getStyle(this.config.node, "height").slice(0, -2) * 1;
   }
 
   // widget dimensions
