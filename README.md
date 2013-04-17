@@ -6,6 +6,12 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######April 17, 2013.
+ * fix - https://github.com/toorshia/justgage/issues/49
+
+######April 01, 2013.
+ * fix - https://github.com/toorshia/justgage/issues/46
+
 ######March 26, 2013.
  * **customSectors** - define one or many value ranges with custom gauge color - check demo at http://bit.ly/15RBkKe
 
