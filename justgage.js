@@ -7,6 +7,11 @@
  * LATEST UPDATES
 
  * -----------------------------
+ * April 017, 2013.
+ * -----------------------------
+     * fix - https://github.com/toorshia/justgage/issues/49
+
+ * -----------------------------
  * April 01, 2013.
  * -----------------------------
      * fix - https://github.com/toorshia/justgage/issues/46
