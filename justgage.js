@@ -672,7 +672,7 @@ JustGage.prototype.refresh = function(val, max) {
 
     obj.txtMaximum = obj.config.max;
     if( obj.config.humanFriendly ) obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
-    obj.txtMax.attr({"text" : obj.config.max});
+    obj.txtMax.attr({"text" : obj.txtMaximum});
     setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
   }
 
