@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <title>Custom Sectors</title>
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="../lib/style.css">
+
+  <script src="../lib/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="../lib/raphael.2.1.0.min.js"></script>
+  <script type="text/javascript" src="../../justgage.js"></script>
+
+  <style>
+  .container {
+    width: 450px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .gauge {
+    width: 450px;
+    height: 450px;
+  }
+
+  a:link.button,
+  a:active.button,
+  a:visited.button,
+  a:hover.button {
+    margin: 30px 5px 0 2px;
+    padding: 7px 13px;
+  }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <div id="gg1" class="gauge"></div>
+    <p>0-25 is red, 26-50 is green, 51-100 is blue</p>
+    <a href="#" id="gg1_refresh" class="button grey">Random Refresh</a>
+  </div>
+
+  <script>
+  var gg1 = new JustGage({
+    id: "gg1",
+    value : 72,
+    min: 0,
+    max: 100,
+    gaugeWidthScale: 0.6,
+    customSectors: [{
+      color : "#ff0000",
+      lo : 0,
+      hi : 25
+    },{
+      color : "#00ff00",
+      lo : 25,
+      hi : 50
+    }, {
+      color : "#0000ff",
+      lo : 50,
+      hi : 100
+    }],
+    counter: true
+  });
+  $(document).ready(function(){
+    $('#gg1_refresh').bind('click', function() {
+      gg1.refresh(getRandomInt(0, 100));
+      return false;
+    });
+  });
+  </script>
+</body>
+</html>
