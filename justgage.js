@@ -7,6 +7,13 @@
  * LATEST UPDATES
 
  * -----------------------------
+ * April 18, 2013.
+ * -----------------------------
+     * parentNode - use this instead of id, to attach gauge to node which is outside of DOM tree - https://github.com/toorshia/justgage/issues/48
+     * width - force gauge width
+     * height - force gauge height
+
+ * -----------------------------
  * April 17, 2013.
  * -----------------------------
      * fix - https://github.com/toorshia/justgage/issues/49
@@ -73,8 +80,8 @@
 
  JustGage = function(config) {
 
-  if (!config.id) {alert("Missing id parameter for gauge!"); return false;}
-  if (!document.getElementById(config.id)) {alert("No element with id: \""+config.id+"\" found!"); return false;}
+  // if (!config.id) {alert("Missing id parameter for gauge!"); return false;}
+  // if (!document.getElementById(config.id)) {alert("No element with id: \""+config.id+"\" found!"); return false;}
 
   var obj = this;
 
@@ -84,6 +91,18 @@
     // id : string
     // this is container element id
     id : config.id,
+
+    // parentNode : node object
+    // this is container element
+    parentNode : (config.parentNode) ? config.parentNode : null,
+
+    // width : int
+    // gauge width
+    width : (config.width) ? config.width : null,
+
+    // height : int
+    // gauge height
+    height : (config.height) ? config.height : null,
 
     // title : string
     // gauge title
@@ -96,7 +115,6 @@
     // value : int
     // value gauge is showing
     value : (config.value) ? config.value : 0,
-
 
     // valueFontColor : string
     // color of label showing current value
@@ -269,14 +287,26 @@
   if (obj.config.value < obj.config.min) obj.config.value = obj.config.min;
   obj.originalValue = config.value;
 
-  // canvas
-  obj.canvas = Raphael(obj.config.id, "100%", "100%");
+  // create canvas
+  if (obj.config.id !== null && (document.getElementById(obj.config.id)) !== null) {
+    obj.canvas = Raphael(obj.config.id, "100%", "100%");
+  } else if (obj.config.parentNode !== null) {
+    obj.canvas = Raphael(obj.config.parentNode, "100%", "100%");
+  }
+
   if (obj.config.relativeGaugeSize === true) {
     obj.canvas.setViewBox(0, 0, 200, 150, true);
   }
 
   // canvas dimensions
   if (obj.config.relativeGaugeSize === true) {
+    canvasW = 200;
+    canvasH = 150;
+  } else if (obj.config.width !== null && obj.config.height !== null) {
+    canvasW = obj.config.width;
+    canvasH = obj.config.height;
+  } else if (obj.config.parentNode !== null) {
+    obj.canvas.setViewBox(0, 0, 200, 150, true);
     canvasW = 200;
     canvasH = 150;
   } else {
@@ -505,7 +535,6 @@
         obj.config.donut
       ]
   });
-  obj.gauge.id = obj.config.id+"-gauge";
 
   // level
   obj.level = obj.canvas.path().attr({
@@ -526,7 +555,6 @@
   if(obj.config.donut) {
     obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW/2 + obj.params.dx) + ", " + (obj.params.widgetH/1.95 + obj.params.dy));
   }
-  obj.level.id = obj.config.id+"-level";
 
   // title
   obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
@@ -538,7 +566,6 @@
     "fill-opacity":"1"
   });
   setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
-  obj.txtTitle.id = obj.config.id+"-txttitle";
 
   // value
   obj.txtValue = obj.canvas.text(obj.params.valueX, obj.params.valueY, 0);
@@ -550,7 +577,6 @@
     "fill-opacity":"0"
   });
   setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
-  obj.txtValue.id = obj.config.id+"-txtvalue";
 
   // label
   obj.txtLabel = obj.canvas.text(obj.params.labelX, obj.params.labelY, obj.config.label);
@@ -562,7 +588,6 @@
     "fill-opacity":"0"
   });
   setDy(obj.txtLabel, obj.params.labelFontSize, obj.params.labelY);
-  obj.txtLabel.id = obj.config.id+"-txtlabel";
 
   // min
   obj.txtMinimum = obj.config.min;
@@ -576,7 +601,6 @@
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut)? "0" : "1"
   });
   setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
-  obj.txtMin.id = obj.config.id+"-txtmin";
 
   // max
   obj.txtMaximum = obj.config.max;
@@ -590,7 +614,6 @@
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut)? "0" : "1"
   });
   setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
-  obj.txtMax.id = obj.config.id+"-txtmax";
 
   var defs = obj.canvas.canvas.childNodes[1];
   var svg = "http://www.w3.org/2000/svg";
@@ -724,8 +747,8 @@ JustGage.prototype.generateShadow = function(svg, defs) {
   var gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3;
 
   // FILTER
-  gaussFilter=document.createElementNS(svg,"filter");
-  gaussFilter.setAttribute("id", obj.config.id + "-inner-shadow");
+  gaussFilter = document.createElementNS(svg,"filter");
+  gaussFilter.setAttribute("id","inner-shadow");
   defs.appendChild(gaussFilter);
 
   // offset
@@ -772,8 +795,8 @@ JustGage.prototype.generateShadow = function(svg, defs) {
 
   // set shadow
   if (!obj.config.hideInnerShadow) {
-    obj.canvas.canvas.childNodes[2].setAttribute("filter", "url(#" + obj.config.id + "-inner-shadow)");
-    obj.canvas.canvas.childNodes[3].setAttribute("filter", "url(#" + obj.config.id + "-inner-shadow)");
+    obj.canvas.canvas.childNodes[2].setAttribute("filter", "url(#inner-shadow)");
+    obj.canvas.canvas.childNodes[3].setAttribute("filter", "url(#inner-shadow)");
   }
 
   // var clear
