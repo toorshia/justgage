@@ -9,7 +9,7 @@
  * -----------------------------
  * April 25, 2013.
  * -----------------------------
-    * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
+     * use HTML5 data-* attributes of the DOM Element to render the gauge (which overrides the constructor options).
 
  * -----------------------------
  * April 18, 2013.
@@ -120,17 +120,35 @@
   // tableb: DOMStringMap|object
   // defval: string|integer|float|null
   //
-  var kvLookup = function(key, tablea, tableb, defval) {
-      if (key === null || key === undefined) {
-          return defval;
+  var kvLookup = function(key, tablea, tableb, defval, datatype) {
+      var val = defval;
+      var canConvert = false;
+      if (!(key === null || key === undefined)) {
+          if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
+              val = tableb[key];
+              canConvert = true;
+          } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
+              val = tablea[key];
+              canConvert = true;
+          } else {
+              val = defval;
+          }
+          if (canConvert === true) {
+              if (datatype !== null && datatype !== undefined) {
+                  switch(datatype) {
+                      case 'int':
+                        val = parseInt(val, 10);
+                        break;
+                      case 'float':
+                        val = parseFloat(val);
+                        break;
+                      default:
+                        break;
+                  }
+              }
+          }
       }
-      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
-          return tableb[key];
-      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
-          return tablea[key];
-      } else {
-          return defval;
-      }
+      return val;
   };
 
   // configurable parameters
@@ -162,7 +180,7 @@
 
     // value : int
     // value gauge is showing
-    value : kvLookup('value', config, dataset, 0),
+    value : kvLookup('value', config, dataset, 0, 'float'),
 
     // valueFontColor : string
     // color of label showing current value
@@ -172,13 +190,13 @@
     // special symbol to show next to value
     symbol : kvLookup('symbol', config, dataset, ''),
 
-    // min : int
+    // min : float
     // min value
-    min : parseFloat(kvLookup('min', config, dataset, 0)),
+    min : kvLookup('min', config, dataset, 0, 'float'),
 
     // max : int
     // max value
-    max : parseFloat(kvLookup('max', config, dataset, 100)),
+    max : kvLookup('max', config, dataset, 100, 'float'),
 
     // humanFriendlyDecimal : int
     // number of decimal places for our human friendly number to contain
@@ -329,7 +347,7 @@
   // overflow values
   if (obj.config.value > obj.config.max) obj.config.value = obj.config.max;
   if (obj.config.value < obj.config.min) obj.config.value = obj.config.min;
-  obj.originalValue = config.value;
+  obj.originalValue = kvLookup('value', config, dataset, -1, 'int');
 
   // create canvas
   if (obj.config.id !== null && (document.getElementById(obj.config.id)) !== null) {
