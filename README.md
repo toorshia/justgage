@@ -6,6 +6,9 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######April 25, 2013.
+ * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
+
 ######April 18, 2013.
  * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at http://justgage.com/demos/custom-node/
  * **width** - force gauge width
