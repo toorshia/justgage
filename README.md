@@ -6,6 +6,10 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######May 17, 2013.
+ * make kvLookup() of prototype per @toorshia
+ * https://github.com/toorshia/justgage/pull/59
+
 ######April 25, 2013.
  * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
 
