@@ -254,7 +254,11 @@
 
     // customSectors : [] of objects
     // number of digits after floating point
-    customSectors : (config.customSectors) ? config.customSectors : []
+    customSectors : (config.customSectors) ? config.customSectors : [],
+
+    // formatNumber: boolean
+    // formats numbers with commas where appropriate
+    formatNumber : (config.formatNumber) ? config.formatNumber : false
   };
 
   // variables
@@ -591,7 +595,11 @@
 
   // min
   obj.txtMinimum = obj.config.min;
-  if( obj.config.humanFriendly ) obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
+  if( obj.config.humanFriendly ) {
+    obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
+  } else if ( obj.config.formatNumber ) {
+    obj.txtMinimum = formatNumber( obj.config.min );
+  }
   obj.txtMin = obj.canvas.text(obj.params.minX, obj.params.minY, obj.txtMinimum);
   obj.txtMin.attr({
     "font-size":obj.params.minFontSize,
@@ -604,7 +612,11 @@
 
   // max
   obj.txtMaximum = obj.config.max;
-  if( obj.config.humanFriendly ) obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
+  if( obj.config.formatNumber ) {
+    obj.txtMaximum = formatNumber( obj.txtMaximum );
+  } else if( obj.config.humanFriendly ) {
+    obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
+  }
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
     "font-size":obj.params.maxFontSize,
@@ -634,6 +646,8 @@
     obj.originalValue = obj.config.textRenderer(obj.originalValue);
   } else if(obj.config.humanFriendly) {
     obj.originalValue = humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
+  } else if(obj.config.formatNumber) {
+    obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
   } else {
     obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
@@ -646,6 +660,8 @@
         obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
       } else if(obj.config.humanFriendly) {
         obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
+      } else if(obj.config.formatNumber) {
+        obj.txtValue.attr("text", formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
       } else {
         obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
@@ -888,6 +904,13 @@ function humanFriendlyNumber( n, d ) {
    }
  }
  return n;
+}
+
+/** Format numbers with commas - From: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript */
+function formatNumber(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
 }
 
 /**  Get style  */
