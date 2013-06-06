@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <title>Counter</title>
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="../lib/style.css">
+
+  <script src="../lib/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="../lib/raphael.2.1.0.min.js"></script>
+  <script type="text/javascript" src="../../justgage.js"></script>
+
+  <style>
+  .container {
+    width: 450px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .gauge {
+    width: 450px;
+    height: 450px;
+  }
+
+  a:link.button,
+  a:active.button,
+  a:visited.button,
+  a:hover.button {
+    margin: 30px 5px 0 2px;
+    padding: 7px 13px;
+  }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <div id="gg1" class="gauge"></div>
+  </div>
+
+  <script>
+  var gg1 = new JustGage({
+    id: "gg1",
+    value : 4096,
+    min: 1024,
+    max: 10000,
+    gaugeWidthScale: 0.6,
+    counter: true,
+    formatNumber: true
+  });
+  </script>
+</body>
+</html>
