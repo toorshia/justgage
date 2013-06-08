@@ -41,17 +41,24 @@
 
   <div class="container">
     <div id="gg1" class="gauge"></div>
+    <a href="#" id="gg1_refresh" class="button grey">Random Refresh</a>
   </div>
 
   <script>
   var gg1 = new JustGage({
     id: "gg1",
-    value : 4096,
+    value : 40960,
     min: 1024,
-    max: 10000,
+    max: 1000000,
     gaugeWidthScale: 0.6,
     counter: true,
     formatNumber: true
+  });
+  $(document).ready(function(){
+    $('#gg1_refresh').bind('click', function() {
+      gg1.refresh(getRandomInt(1024, 1000000));
+      return false;
+    });
   });
   </script>
 </body>
