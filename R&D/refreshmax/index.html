@@ -42,7 +42,10 @@
   <div class="container">
     <div id="g1" class="gauge"></div>
     <a href="#" id="g1_refresh" class="button grey">Random Refresh</a>
-    <a href="#" id="g1_refreshmax" class="button grey">Refresh Maximum</a>
+    <br />
+    <a href="#" id="g1_setmax100" class="button grey">Set Max 100</a>
+    <a href="#" id="g1_setmax200" class="button grey">Set Max 200</a>
+    <a href="#" id="g1_setmax400" class="button grey">Set Max 400</a>
   </div>
 
   <script>
@@ -60,10 +63,21 @@
       return false;
     });
 
-    $('#g1_refreshmax').bind('click', function() {
-      g1.refresh(50, 200);
+    $('#g1_setmax100').bind('click', function() {
+      g1.refresh(g1.originalValue, 100);
       return false;
     });
+
+    $('#g1_setmax200').bind('click', function() {
+      g1.refresh(g1.originalValue, 200);
+      return false;
+    });
+
+    $('#g1_setmax400').bind('click', function() {
+      g1.refresh(g1.originalValue, 400);
+      return false;
+    });
+
   });
   </script>
 </body>
