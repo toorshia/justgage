@@ -126,11 +126,11 @@
 
     // min : int
     // min value
-    min : (config.min) ? parseFloat(config.min) : 0,
+    min : (config.min !== undefined) ? parseFloat(config.min) : 0,
 
     // max : int
     // max value
-    max : (config.max) ? parseFloat(config.max) : 100,
+    max : (config.max !== undefined) ? parseFloat(config.max) : 100,
 
     // humanFriendlyDecimal : int
     // number of decimal places for our human friendly number to contain
