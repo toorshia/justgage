@@ -114,7 +114,7 @@
 
     // titleFontFamily : string
     // title font family name
-    titleFontFamily: "Arial",
+    titleFontFamily: (config.titleFontFamily) ? config.titleFontFamily : "Arial",
 
     // value : int
     // value gauge is showing
@@ -126,7 +126,7 @@
 
     // valueFontFamily : string
     // value font family name
-    valueFontFamily: "Arial",
+    valueFontFamily: (config.valueFontFamily)? config.valueFontFamily : "Arial",
 
     // symbol : string
     // special symbol to show next to value
@@ -166,7 +166,7 @@
 
     // labelFontFamily : string
     // label font family name
-    labelFontFamily: "Arial",
+    labelFontFamily: (config.labelFontFamily)? config.labelFontFamily : "Arial",
 
     // shadowOpacity : int
     // 0 ~ 1
