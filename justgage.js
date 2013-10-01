@@ -124,6 +124,18 @@
     // special symbol to show next to value
     symbol : (config.symbol) ? config.symbol : "",
 
+    // symbol : string
+    // special symbol to show previous to value
+    symbolBefore : (config.symbolBefore) ? config.symbolBefore : "",
+
+    // symbol : string
+    // special symbol to show previous to Min and Max
+    symbolBeforeScale : (config.symbolBeforeScale) ? config.symbolBeforeScale : "",
+
+    // symbol : string
+    // special symbol to show next to Min and Max
+    symbolAfterScale : (config.symbolAfterScale) ? config.symbolAfterScale : "",
+        
     // min : int
     // min value
     min : (config.min !== undefined) ? parseFloat(config.min) : 0,
@@ -592,6 +604,7 @@
   // min
   obj.txtMinimum = obj.config.min;
   if( obj.config.humanFriendly ) obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
+  obj.txtMinimum = obj.config.symbolBeforeScale + obj.txtMinimum + obj.config.symbolAfterScale;
   obj.txtMin = obj.canvas.text(obj.params.minX, obj.params.minY, obj.txtMinimum);
   obj.txtMin.attr({
     "font-size":obj.params.minFontSize,
@@ -605,6 +618,7 @@
   // max
   obj.txtMaximum = obj.config.max;
   if( obj.config.humanFriendly ) obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
+  obj.txtMaximum = obj.config.symbolBeforeScale + obj.txtMaximum + obj.config.symbolAfterScale;
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
     "font-size":obj.params.maxFontSize,
@@ -633,9 +647,9 @@
   if(obj.config.textRenderer) {
     obj.originalValue = obj.config.textRenderer(obj.originalValue);
   } else if(obj.config.humanFriendly) {
-    obj.originalValue = humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
+    obj.originalValue = obj.config.symbolBefore + humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
   } else {
-    obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+    obj.originalValue = obj.config.symbolBefore + (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
   if(obj.config.counter === true) {
@@ -645,9 +659,9 @@
       if(obj.config.textRenderer) {
         obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
       } else if(obj.config.humanFriendly) {
-        obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
+        obj.txtValue.attr("text", obj.config.symbolBefore + humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
       } else {
-        obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+        obj.txtValue.attr("text", obj.config.symbolBefore + (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
       setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       currentValue = null;
@@ -695,7 +709,7 @@ JustGage.prototype.refresh = function(val, max) {
 
     obj.txtMaximum = obj.config.max;
     if( obj.config.humanFriendly ) obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
-    obj.txtMax.attr({"text" : obj.txtMaximum});
+    obj.txtMax.attr({"text" : obj.config.symbolBeforeMin + obj.txtMaximum});
     setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
   }
 
@@ -709,9 +723,9 @@ JustGage.prototype.refresh = function(val, max) {
   if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if( obj.config.humanFriendly ) {
-    displayVal = humanFriendlyNumber( displayVal, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
+    displayVal = obj.config.symbolBefore + humanFriendlyNumber( displayVal, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
   } else {
-    displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+    displayVal = obj.config.symbolBefore + (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
   obj.originalValue = displayVal;
   obj.config.value = val * 1;
