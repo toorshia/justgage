@@ -194,7 +194,7 @@
 
     // donutStartAngle : int
     // angle to start from when in donut mode
-    donutStartAngle : (config.donutStartAngle) ? config.donutStartAngle : 90,
+    donutStartAngle : (config.donutStartAngle !== undefined) ? config.donutStartAngle : 90,
 
     // valueMinFontSize : int
     // absolute minimum font size for the value
