@@ -473,11 +473,11 @@
       Cy = h / 1.95 + dy;
 
       Xo = w / 2 + dx + Ro * Math.cos(alpha);
-      Yo = h - (h - Cy) + 0 - Ro * Math.sin(alpha);
+      Yo = h - (h - Cy) - Ro * Math.sin(alpha);
       Xi = w / 2 + dx + Ri * Math.cos(alpha);
-      Yi = h - (h - Cy) + 0 - Ri * Math.sin(alpha);
+      Yi = h - (h - Cy) - Ri * Math.sin(alpha);
 
-      path += "M" + (Cx - Ri) + "," + Cy + " ";
+      path = "M" + (Cx - Ri) + "," + Cy + " ";
       path += "L" + (Cx - Ro) + "," + Cy + " ";
       if (value > ((max - min) / 2)) {
         path += "A" + Ro + "," + Ro + " 0 0 1 " + (Cx + Ro) + "," + Cy + " ";
@@ -501,11 +501,11 @@
       Cy = h / 1.25 + dy;
 
       Xo = w / 2 + dx + Ro * Math.cos(alpha);
-      Yo = h - (h - Cy) + 0 - Ro * Math.sin(alpha);
+      Yo = h - (h - Cy) - Ro * Math.sin(alpha);
       Xi = w / 2 + dx + Ri * Math.cos(alpha);
-      Yi = h - (h - Cy) + 0 - Ri * Math.sin(alpha);
+      Yi = h - (h - Cy) - Ri * Math.sin(alpha);
 
-      path += "M" + (Cx - Ri) + "," + Cy + " ";
+      path = "M" + (Cx - Ri) + "," + Cy + " ";
       path += "L" + (Cx - Ro) + "," + Cy + " ";
       path += "A" + Ro + "," + Ro + " 0 0 1 " + Xo + "," + Yo + " ";
       path += "L" + Xi + "," + Yi + " ";
