@@ -5,6 +5,17 @@
  * @author Bojan Djuricic  (@Toorshia)
  *
  * LATEST UPDATES
+ *
+ * -----------------------------
+ * May 17, 2013.
+ * -----------------------------
+     * make kvLookup() part of prototype per @toorshia
+     * https://github.com/toorshia/justgage/pull/59
+
+ * -----------------------------
+ * April 25, 2013.
+ * -----------------------------
+     * use HTML5 data-* attributes of the DOM Element to render the gauge (which overrides the constructor options).
 
  * -----------------------------
  * April 18, 2013.
@@ -85,6 +96,26 @@
 
   var obj = this;
 
+  // Helps in case developer wants to debug it. unobtrusive
+  if (config === null || config ===  undefined) {
+      console.log("Make sure to pass options to the constructor.");
+      return false;
+  }
+
+  // Helps in case developer wants to debug it. unobtrusive
+  if (!config.id) {
+      console.log("Make sure to pass the id attribute to the constructor.");
+      return false;
+  }
+
+  var uel = document.getElementById(config.id);
+  var dataset = uel.dataset ? uel.dataset : {};
+
+  // Helps in case developer wants to debug it. unobtrusive
+  if (!uel) {
+      console.log("No element with id : %s found", config.id);
+      return false;
+  }
   // configurable parameters
   obj.config =
   {
@@ -94,171 +125,167 @@
 
     // parentNode : node object
     // this is container element
-    parentNode : (config.parentNode) ? config.parentNode : null,
+    parentNode : obj.kvLookup('parentNode', config, dataset, null),
 
     // width : int
     // gauge width
-    width : (config.width) ? config.width : null,
+    width : obj.kvLookup('width', config, dataset, null),
 
     // height : int
     // gauge height
-    height : (config.height) ? config.height : null,
+    height : obj.kvLookup('height', config, dataset, null),
 
     // title : string
     // gauge title
-    title : (config.title) ? config.title : "",
+    title : obj.kvLookup('title', config, dataset, ""),
 
     // titleFontColor : string
     // color of gauge title
-    titleFontColor : (config.titleFontColor) ? config.titleFontColor : "#999999",
+    titleFontColor : obj.kvLookup('titleFontColor', config, dataset,  "#999999"),
 
     // value : int
     // value gauge is showing
-    value : (config.value) ? config.value : 0,
+    value : obj.kvLookup('value', config, dataset, 0, 'float'),
 
     // valueFontColor : string
     // color of label showing current value
-    valueFontColor : (config.valueFontColor) ? config.valueFontColor : "#010101",
+    valueFontColor : obj.kvLookup('valueFontColor', config, dataset, "#010101"),
 
     // symbol : string
     // special symbol to show next to value
-    symbol : (config.symbol) ? config.symbol : "",
+    symbol : obj.kvLookup('symbol', config, dataset, ''),
 
-    // min : int
+    // min : float
     // min value
-    min : (config.min !== undefined) ? parseFloat(config.min) : 0,
+    min : obj.kvLookup('min', config, dataset, 0, 'float'),
 
     // max : int
     // max value
-    max : (config.max !== undefined) ? parseFloat(config.max) : 100,
+    max : obj.kvLookup('max', config, dataset, 100, 'float'),
 
     // humanFriendlyDecimal : int
     // number of decimal places for our human friendly number to contain
-    humanFriendlyDecimal : (config.humanFriendlyDecimal) ? config.humanFriendlyDecimal : 0,
+    humanFriendlyDecimal : obj.kvLookup('humanFriendlyDecimal', config, dataset, 0),
 
     // textRenderer: func
     // function applied before rendering text
-    textRenderer  : (config.textRenderer) ? config.textRenderer : null,
+    textRenderer  : obj.kvLookup('textRenderer', config, dataset, null),
 
     // gaugeWidthScale : float
     // width of the gauge element
-    gaugeWidthScale : (config.gaugeWidthScale) ? config.gaugeWidthScale : 1.0,
+    gaugeWidthScale : obj.kvLookup('gaugeWidthScale', config, dataset, 1.0),
 
     // gaugeColor : string
     // background color of gauge element
-    gaugeColor : (config.gaugeColor) ? config.gaugeColor : "#edebeb",
+    gaugeColor : obj.kvLookup('gaugeColor', config, dataset, "#edebeb"),
 
     // label : string
     // text to show below value
-    label : (config.label) ? config.label : "",
+    label : obj.kvLookup('label', config, dataset, ''),
 
     // labelFontColor : string
     // color of label showing label under value
-    labelFontColor : (config.labelFontColor) ? config.labelFontColor : "#b3b3b3",
+    labelFontColor : obj.kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
 
     // shadowOpacity : int
     // 0 ~ 1
-    shadowOpacity : (config.shadowOpacity) ? config.shadowOpacity : 0.2,
+    shadowOpacity : obj.kvLookup('shadowOpacity', config, dataset, 0.2),
 
     // shadowSize: int
     // inner shadow size
-    shadowSize : (config.shadowSize) ? config.shadowSize : 5,
+    shadowSize : obj.kvLookup('shadowSize', config, dataset, 5),
 
     // shadowVerticalOffset : int
     // how much shadow is offset from top
-    shadowVerticalOffset : (config.shadowVerticalOffset) ? config.shadowVerticalOffset : 3,
+    shadowVerticalOffset : obj.kvLookup('shadowVerticalOffset', config, dataset, 3),
 
     // levelColors : string[]
     // colors of indicator, from lower to upper, in RGB format
-    levelColors : (config.levelColors) ? config.levelColors : [
-    "#a9d70b",
-    "#f9c802",
-    "#ff0000"
-    ],
+    levelColors : obj.kvLookup('levelColors', config, dataset, [ "#a9d70b", "#f9c802", "#ff0000" ], 'array', ','),
 
     // startAnimationTime : int
     // length of initial animation
-    startAnimationTime : (config.startAnimationTime) ? config.startAnimationTime : 700,
+    startAnimationTime : obj.kvLookup('startAnimationTime', config, dataset, 700),
 
     // startAnimationType : string
     // type of initial animation (linear, >, <,  <>, bounce)
-    startAnimationType : (config.startAnimationType) ? config.startAnimationType : ">",
+    startAnimationType : obj.kvLookup('startAnimationType', config, dataset, '>'),
 
     // refreshAnimationTime : int
     // length of refresh animation
-    refreshAnimationTime : (config.refreshAnimationTime) ? config.refreshAnimationTime : 700,
+    refreshAnimationTime : obj.kvLookup('refreshAnimationTime', config, dataset, 700),
 
     // refreshAnimationType : string
     // type of refresh animation (linear, >, <,  <>, bounce)
-    refreshAnimationType : (config.refreshAnimationType) ? config.refreshAnimationType : ">",
+    refreshAnimationType : obj.kvLookup('refreshAnimationType', config, dataset, '>'),
 
     // donutStartAngle : int
     // angle to start from when in donut mode
-    donutStartAngle : (config.donutStartAngle) ? config.donutStartAngle : 90,
+    donutStartAngle : obj.kvLookup('donutStartAngle', config, dataset, 90),
 
     // valueMinFontSize : int
     // absolute minimum font size for the value
-    valueMinFontSize : config.valueMinFontSize || 16,
+    valueMinFontSize : obj.kvLookup('valueMinFontSize', config, dataset, 16),
 
     // titleMinFontSize
     // absolute minimum font size for the title
-    titleMinFontSize : config.titleMinFontSize || 10,
+    titleMinFontSize : obj.kvLookup('titleMinFontSize', config, dataset, 10),
 
     // labelMinFontSize
     // absolute minimum font size for the label
-    labelMinFontSize : config.labelMinFontSize || 10,
+    labelMinFontSize : obj.kvLookup('labelMinFontSize', config, dataset, 10),
 
     // minLabelMinFontSize
     // absolute minimum font size for the minimum label
-    minLabelMinFontSize : config.minLabelMinFontSize || 10,
+    minLabelMinFontSize : obj.kvLookup('minLabelMinFontSize', config, dataset, 10),
 
     // maxLabelMinFontSize
     // absolute minimum font size for the maximum label
-    maxLabelMinFontSize : config.maxLabelMinFontSize || 10,
+    maxLabelMinFontSize : obj.kvLookup('maxLabelMinFontSize', config, dataset, 10),
 
     // hideValue : bool
     // hide value text
-    hideValue : (config.hideValue) ? config.hideValue : false,
+    hideValue : obj.kvLookup('hideValue', config, dataset, false),
 
     // hideMinMax : bool
     // hide min and max values
-    hideMinMax : (config.hideMinMax) ? config.hideMinMax : false,
+    hideMinMax : obj.kvLookup('hideMinMax', config, dataset, false),
 
     // hideInnerShadow : bool
     // hide inner shadow
-    hideInnerShadow : (config.hideInnerShadow) ? config.hideInnerShadow : false,
+    hideInnerShadow : obj.kvLookup('hideInnerShadow', config, dataset, false),
 
     // humanFriendly : bool
     // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
-    humanFriendly : (config.humanFriendly) ? config.humanFriendly : false,
+    humanFriendly : obj.kvLookup('humanFriendly', config, dataset, false),
 
     // noGradient : bool
     // whether to use gradual color change for value, or sector-based
-    noGradient : (config.noGradient) ? config.noGradient : false,
+    noGradient : obj.kvLookup('noGradient', config, dataset, false),
 
     // donut : bool
     // show full donut gauge
-    donut : (config.donut) ? config.donut : false,
+    donut : obj.kvLookup('donut', config, dataset, false),
 
     // relativeGaugeSize : bool
     // whether gauge size should follow changes in container element size
-    relativeGaugeSize : (config.relativeGaugeSize) ? config.relativeGaugeSize : false,
+    relativeGaugeSize : obj.kvLookup('relativeGaugeSize', config, dataset, false),
 
     // counter : bool
     // animate level number change
-    counter : (config.counter) ? config.counter : false,
+    counter : obj.kvLookup('counter', config, dataset, false),
 
     // decimals : int
     // number of digits after floating point
-    decimals : (config.decimals) ? config.decimals : 0,
+    decimals : obj.kvLookup('decimals', config, dataset, 0),
 
     // customSectors : [] of objects
     // number of digits after floating point
-    customSectors : (config.customSectors) ? config.customSectors : [],
+    customSectors : obj.kvLookup('customSectors', config, dataset, [])
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber : (config.formatNumber) ? config.formatNumber : false
+    formatNumber : obj.kvLookup('formatNumber', config, dataset, false)
   };
 
   // variables
@@ -289,7 +316,7 @@
   // overflow values
   if (obj.config.value > obj.config.max) obj.config.value = obj.config.max;
   if (obj.config.value < obj.config.min) obj.config.value = obj.config.min;
-  obj.originalValue = config.value;
+  obj.originalValue = obj.kvLookup('value', config, dataset, -1, 'int');
 
   // create canvas
   if (obj.config.id !== null && (document.getElementById(obj.config.id)) !== null) {
@@ -699,6 +726,52 @@
   obj.txtLabel.animate({"fill-opacity":"1"}, obj.config.startAnimationTime, obj.config.startAnimationType);
 };
 
+//
+// tiny helper function to lookup value of a key from two hash tables
+// if none found, return defaultvalue
+//
+// key: string
+// tablea: object
+// tableb: DOMStringMap|object
+// defval: string|integer|float|null
+// datatype: return datatype
+// delimiter: delimiter to be used in conjunction with datatype formatting
+//
+JustGage.prototype.kvLookup = function(key, tablea, tableb, defval, datatype, delimiter) {
+  var val = defval;
+  var canConvert = false;
+  if (!(key === null || key === undefined)) {
+      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
+          val = tableb[key];
+          canConvert = true;
+      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
+          val = tablea[key];
+          canConvert = true;
+      } else {
+          val = defval;
+      }
+      if (canConvert === true) {
+          if (datatype !== null && datatype !== undefined) {
+              switch(datatype) {
+                  case 'int':
+                    val = parseInt(val, 10);
+                    break;
+                  case 'float':
+                    val = parseFloat(val);
+                    break;
+                  case 'array':
+                    delimiter = delimiter ? delimiter : ',';
+                    val = val.split(delimiter);
+                    break;
+                  default:
+                    break;
+              }
+          }
+      }
+  }
+  return val;
+};
+
 /** Refresh gauge level */
 JustGage.prototype.refresh = function(val, max) {
 
@@ -844,7 +917,7 @@ function getColor(val, pct, col, noGradient, custSec) {
   if (no === 1) return col[0];
   inc = (noGradient) ? (1 / no) : (1 / (no - 1));
   colors = [];
-  for (var i = 0; i < col.length; i++) {
+  for (i = 0; i < col.length; i++) {
     percentage = (noGradient) ? (inc * (i + 1)) : (inc * i);
     rval = parseInt((cutHex(col[i])).substring(0,2),16);
     gval = parseInt((cutHex(col[i])).substring(2,4),16);
