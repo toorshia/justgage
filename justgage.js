@@ -281,7 +281,7 @@
 
     // customSectors : [] of objects
     // number of digits after floating point
-    customSectors : obj.kvLookup('customSectors', config, dataset, [])
+    customSectors : obj.kvLookup('customSectors', config, dataset, []),
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
