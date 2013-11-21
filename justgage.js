@@ -759,10 +759,6 @@ JustGage.prototype.kvLookup = function(key, tablea, tableb, defval, datatype, de
                   case 'float':
                     val = parseFloat(val);
                     break;
-                  case 'array':
-                    delimiter = delimiter ? delimiter : ',';
-                    val = val.split(delimiter);
-                    break;
                   default:
                     break;
               }
