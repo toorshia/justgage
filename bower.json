@@ -1,0 +1,9 @@
+{
+  "name": "justgage",
+  "version": "1.0.0",
+  "main": "justgage.js",
+  "ignore": [
+    "R&D",
+    "README.md"
+  ]
+}
