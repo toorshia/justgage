@@ -187,6 +187,10 @@
     // color of label showing label under value
     labelFontColor : obj.kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
 
+    // numberPostfix : string
+    // text to show after value
+    numberPostfix : obj.kvLookup('numberPostfix', config, dataset, ''),
+
     // shadowOpacity : int
     // 0 ~ 1
     shadowOpacity : obj.kvLookup('shadowOpacity', config, dataset, 0.2),
@@ -679,6 +683,10 @@
     obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
+  if(obj.config.numberPostfix){
+    obj.originalValue += obj.config.numberPostfix;
+  }
+
   if(obj.config.counter === true) {
     //on each animation frame
     eve.on("raphael.anim.frame." + (obj.level.id), function() {
@@ -692,6 +700,7 @@
       } else {
         obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
+
       setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       currentValue = null;
     });
@@ -804,7 +813,13 @@ JustGage.prototype.refresh = function(val, max) {
   } else {
     displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
-  obj.originalValue = displayVal;
+
+  if(obj.config.numberPostfix){
+    obj.originalValue = displayVal + obj.config.numberPostfix;
+  } else {
+    obj.originalValue = displayVal;
+  }
+  
   obj.config.value = val * 1;
 
   if(!obj.config.counter) {
