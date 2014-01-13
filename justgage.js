@@ -187,9 +187,9 @@
     // color of label showing label under value
     labelFontColor : obj.kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
 
-    // numberPostfix : string
+    // valuePostfix : string
     // text to show after value
-    numberPostfix : obj.kvLookup('numberPostfix', config, dataset, ''),
+    valuePostfix : obj.kvLookup('valuePostfix', config, dataset, ''),
 
     // minPostfix : string
     // text to show after min number
@@ -701,8 +701,8 @@
     obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
-  if(obj.config.numberPostfix){
-    obj.originalValue += obj.config.numberPostfix;
+  if(obj.config.valuePostfix){
+    obj.originalValue += obj.config.valuePostfix;
   }
 
   if(obj.config.counter === true) {
@@ -838,8 +838,8 @@ JustGage.prototype.refresh = function(val, max) {
     displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
-  if(obj.config.numberPostfix){
-    obj.originalValue = displayVal + obj.config.numberPostfix;
+  if(obj.config.valuePostfix){
+    obj.originalValue = displayVal + obj.config.valuePostfix;
   } else {
     obj.originalValue = displayVal;
   }
