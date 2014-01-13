@@ -191,6 +191,14 @@
     // text to show after value
     numberPostfix : obj.kvLookup('numberPostfix', config, dataset, ''),
 
+    // minPostfix : string
+    // text to show after min number
+    minPostfix : obj.kvLookup('minPostfix', config, dataset, ''),
+
+    // maxPostfix : string
+    // text to show after max number
+    maxPostfix : obj.kvLookup('maxPostfix', config, dataset, ''),
+
     // shadowOpacity : int
     // 0 ~ 1
     shadowOpacity : obj.kvLookup('shadowOpacity', config, dataset, 0.2),
@@ -631,6 +639,11 @@
   } else if ( obj.config.formatNumber ) {
     obj.txtMinimum = formatNumber( obj.config.min );
   }
+
+  if(obj.config.minPostfix){
+    obj.txtMinimum += obj.config.minPostfix;
+  }
+
   obj.txtMin = obj.canvas.text(obj.params.minX, obj.params.minY, obj.txtMinimum);
   obj.txtMin.attr({
     "font-size":obj.params.minFontSize,
@@ -648,6 +661,11 @@
   } else if( obj.config.humanFriendly ) {
     obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
   }
+
+  if(obj.config.maxPostfix){
+    obj.txtMaximum += obj.config.maxPostfix;
+  }
+
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
     "font-size":obj.params.maxFontSize,
@@ -793,7 +811,13 @@ JustGage.prototype.refresh = function(val, max) {
     } else if( obj.config.formatNumber ) {
       obj.txtMaximum = formatNumber( obj.config.max );
     }
-    obj.txtMax.attr({"text" : obj.txtMaximum});
+    
+    if(obj.config.maxPostfix){
+      obj.txtMax.attr({"text" : obj.txtMaximum + obj.config.minPostfix});
+    } else {
+      obj.txtMax.attr({"text" : obj.txtMaximum});
+    }
+    
     setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
   }
 
