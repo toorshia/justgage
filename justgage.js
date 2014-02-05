@@ -143,6 +143,10 @@
     // color of gauge title
     titleFontColor : obj.kvLookup('titleFontColor', config, dataset,  "#999999"),
 
+    // titleFontFamily : string
+    // title font family name
+    titleFontFamily: (config.titleFontFamily) ? config.titleFontFamily : "Arial",
+
     // value : int
     // value gauge is showing
     value : obj.kvLookup('value', config, dataset, 0, 'float'),
@@ -150,6 +154,10 @@
     // valueFontColor : string
     // color of label showing current value
     valueFontColor : obj.kvLookup('valueFontColor', config, dataset, "#010101"),
+
+    // valueFontFamily : string
+    // value font family name
+    valueFontFamily: (config.valueFontFamily)? config.valueFontFamily : "Arial",
 
     // symbol : string
     // special symbol to show next to value
@@ -186,6 +194,10 @@
     // labelFontColor : string
     // color of label showing label under value
     labelFontColor : obj.kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
+
+    // labelFontFamily : string
+    // label font family name
+    labelFontFamily: (config.labelFontFamily)? config.labelFontFamily : "Arial",
 
     // shadowOpacity : int
     // 0 ~ 1
@@ -470,12 +482,15 @@
     widgetH : widgetH,
     dx : dx,
     dy : dy,
+    titleFontFamily : obj.config.titleFontFamily,
     titleFontSize : titleFontSize,
     titleX : titleX,
     titleY : titleY,
+    valueFontFamily : obj.config.valueFontFamily,
     valueFontSize : valueFontSize,
     valueX : valueX,
     valueY : valueY,
+    labelFontFamily : obj.config.labelFontFamily,
     labelFontSize : labelFontSize,
     labelX : labelX,
     labelY : labelY,
@@ -592,7 +607,7 @@
   obj.txtTitle.attr({
     "font-size":obj.params.titleFontSize,
     "font-weight":"bold",
-    "font-family":"Arial",
+    "font-family":obj.params.titleFontFamily,
     "fill":obj.config.titleFontColor,
     "fill-opacity":"1"
   });
@@ -603,7 +618,7 @@
   obj.txtValue.attr({
     "font-size":obj.params.valueFontSize,
     "font-weight":"bold",
-    "font-family":"Arial",
+    "font-family":obj.params.valueFontFamily,
     "fill":obj.config.valueFontColor,
     "fill-opacity":"0"
   });
@@ -614,7 +629,7 @@
   obj.txtLabel.attr({
     "font-size":obj.params.labelFontSize,
     "font-weight":"normal",
-    "font-family":"Arial",
+    "font-family":obj.params.labelFontFamily,
     "fill":obj.config.labelFontColor,
     "fill-opacity":"0"
   });
@@ -631,7 +646,7 @@
   obj.txtMin.attr({
     "font-size":obj.params.minFontSize,
     "font-weight":"normal",
-    "font-family":"Arial",
+    "font-family":obj.params.labelFontFamily,
     "fill":obj.config.labelFontColor,
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut)? "0" : "1"
   });
@@ -648,7 +663,7 @@
   obj.txtMax.attr({
     "font-size":obj.params.maxFontSize,
     "font-weight":"normal",
-    "font-family":"Arial",
+    "font-family":obj.params.labelFontFamily,
     "fill":obj.config.labelFontColor,
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut)? "0" : "1"
   });
