@@ -315,7 +315,7 @@
   // overflow values
   if (obj.config.value > obj.config.max) obj.config.value = obj.config.max;
   if (obj.config.value < obj.config.min) obj.config.value = obj.config.min;
-  obj.originalValue = obj.kvLookup('value', config, dataset, -1, 'int');
+  obj.originalValue = obj.kvLookup('value', config, dataset, -1, 'float');
 
   // create canvas
   if (obj.config.id !== null && (document.getElementById(obj.config.id)) !== null) {
