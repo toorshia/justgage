@@ -142,7 +142,7 @@
     // color of gauge title
     titleFontColor : obj.kvLookup('titleFontColor', config, dataset,  "#999999"),
 
-    // value : int
+    // value : float
     // value gauge is showing
     value : obj.kvLookup('value', config, dataset, 0, 'float'),
 
@@ -158,7 +158,7 @@
     // min value
     min : obj.kvLookup('min', config, dataset, 0, 'float'),
 
-    // max : int
+    // max : float
     // max value
     max : obj.kvLookup('max', config, dataset, 100, 'float'),
 
