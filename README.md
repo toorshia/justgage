@@ -6,6 +6,9 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######February 16, 2014.
+ * fix - https://github.com/toorshia/justgage/issues/102
+
 ######October 28, 2013.
  * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
 

@@ -2,15 +2,14 @@
  * JustGage - this is work-in-progress, unreleased, unofficial code, so it might not work top-notch :)
  * Check http://www.justgage.com for official releases
  * Licensed under MIT.
- * @author Bojan Djuricic  (@Toorshia)
+ * @author Bojan Djuricic (@Toorshia)
  *
  * LATEST UPDATES
  *
  * -----------------------------
- * May 17, 2013.
+ * February 16, 2014.
  * -----------------------------
-     * make kvLookup() part of prototype per @toorshia
-     * https://github.com/toorshia/justgage/pull/59
+     * fix - https://github.com/toorshia/justgage/issues/102
 
  * -----------------------------
  * April 25, 2013.
@@ -91,31 +90,31 @@
 
  JustGage = function(config) {
 
-  // if (!config.id) {alert("Missing id parameter for gauge!"); return false;}
-  // if (!document.getElementById(config.id)) {alert("No element with id: \""+config.id+"\" found!"); return false;}
-
   var obj = this;
 
   // Helps in case developer wants to debug it. unobtrusive
   if (config === null || config ===  undefined) {
-      console.log("Make sure to pass options to the constructor.");
+      console.log('* justgage: Make sure to pass options to the constructor!');
       return false;
   }
 
-  // Helps in case developer wants to debug it. unobtrusive
-  if (!config.id) {
-      console.log("Make sure to pass the id attribute to the constructor.");
+  var node;
+
+  if (config.id !== null && config.id !== undefined) {
+    node= document.getElementById(config.id);
+      if (!node) {
+        console.log('* justgage: No element with id : %s found', config.id);
+        return false;
+    }
+  } else if (config.parentNode !== null && config.parentNode !== undefined) {
+    node = config.parentNode;
+  } else {
+      console.log('* justgage: Make sure to pass the existing element id or parentNode to the constructor.');
       return false;
   }
 
-  var uel = document.getElementById(config.id);
-  var dataset = uel.dataset ? uel.dataset : {};
+  var dataset = node.dataset ? node.dataset : {};
 
-  // Helps in case developer wants to debug it. unobtrusive
-  if (!uel) {
-      console.log("No element with id : %s found", config.id);
-      return false;
-  }
   // configurable parameters
   obj.config =
   {
@@ -488,7 +487,7 @@
   };
 
   // var clear
-  canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, titleFontSize, titleX, titleY, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null
+  canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, titleFontSize, titleX, titleY, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null;
 
   // pki - custom attribute for generating gauge paths
   obj.canvas.customAttributes.pki = function (value, min, max, w, h, dx, dy, gws, donut) {

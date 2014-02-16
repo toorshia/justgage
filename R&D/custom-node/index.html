@@ -5,17 +5,18 @@
   <title>Custom Node</title>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width">
-
-  <link rel="stylesheet" href="../lib/style.css">
-
   <script src="../lib/jquery-1.7.2.min.js"></script>
   <script type="text/javascript" src="../lib/raphael.2.1.0.min.js"></script>
   <script type="text/javascript" src="../../justgage.js"></script>
 
   <style>
+    button {
+      padding: 8px 14px;
+    }
+
     .container {
-      width: 450px;
-      margin: 50px auto 0 auto;
+      width: 850px;
+      margin: 20px auto 0 auto;
       text-align: center;
     }
 
@@ -27,18 +28,11 @@
       margin: 5px;
     }
 
-    .clear {
-      clear: both;
-      font-size: 0;
-      line-height: 0;
-      height: 0;
-    }
-
     a:link.button,
     a:active.button,
     a:visited.button,
     a:hover.button {
-      margin: 30px 5px 0 2px;
+      margin: 20px 5px 0 2px;
       padding: 7px 13px;
     }
   </style>
@@ -46,56 +40,100 @@
 </head>
 
 <body>
-
   <div id="cont" class="container">
-    <div id="g2" class="gauge"></div>
-    <div class="clear"></div>
-    <a href="#" id="g1_refresh" class="button grey">Refresh G1</a>
-    <a href="#" id="g1_show" class="button grey">Show G1</a>
+    <div id="gauge2" class="gauge"></div>
+    <div id="gauge3" class="gauge" data-title="#3" data-value="75" data-counter="true"></div>
+  </div>
+  <div class="container">
+    <button type="button" id="g1_show">Show G1</button>
+    <button type="button" id="g4_show">Show G4</button>
+  </div>
+  <div class="container">
+    <button type="button" id="g1_refresh">Refresh G1</button>
+    <button type="button" id="g2_refresh">Refresh G2</button>
+    <button type="button" id="g3_refresh">Refresh G3</button>
+    <button type="button" id="g4_refresh">Refresh G4</button>
   </div>
 
   <script>
+    $(document).ready(function() {
 
-    var div = document.createElement('div');
-    div.setAttribute("class","gauge");
+      var gNode1 = document.createElement('div');
+      gNode1.setAttribute("class","gauge");
 
-    $(document).ready(function(){
-      var g1 = new JustGage({
-        parentNode: div,
+      var gNode4 = document.createElement('div');
+      gNode4.setAttribute("class","gauge");
+      gNode4.setAttribute("data-title","#4");
+      gNode4.setAttribute("data-value","100");
+      gNode4.setAttribute("data-counter","true");
+
+      console.log(gNode1);
+      console.log(gNode4);
+
+      var gauge1 = new JustGage({
+        parentNode: gNode1,
         width: 150,
         height: 150,
-        title: "gauge #1",
-        value: 52,
-        label: "label",
+        title: "#1",
+        value: 25,
         min: 0,
         max: 100,
         decimals: 0,
-        gaugeWidthScale: 0.8,
         counter: true
       });
 
-      var g2 = new JustGage({
-        id: "g2",
-        title: "gauge #2",
-        value: 75,
-        label: "label",
+      var gauge2 = new JustGage({
+        id: "gauge2",
+        title: "#2",
+        value: 50,
         min: 0,
         max: 100,
         humanFriendly: false,
         decimals: 0,
-        gaugeWidthScale: 0.8,
         counter: true
       });
 
-      $('#g1_refresh').bind('click', function() {
-        g1.refresh(getRandomInt(0, 100));
-        return false;
+      var gauge3 = new JustGage({
+        id: "gauge3"
+      });
+
+      var gauge4 = new JustGage({
+        parentNode: gNode4,
+        width: 150,
+        height: 150
       });
 
       $('#g1_show').bind('click', function() {
         var container = document.getElementById("cont");
-        container.insertBefore(div, container.childNodes[0]);
+        container.insertBefore(gNode1, container.childNodes[0]);
         container = null;
+        return false;
+      });
+
+      $('#g1_refresh').bind('click', function() {
+        gauge1.refresh(getRandomInt(0, 100));
+        return false;
+      });
+
+      $('#g2_refresh').bind('click', function() {
+        gauge2.refresh(getRandomInt(0, 100));
+        return false;
+      });
+
+      $('#g3_refresh').bind('click', function() {
+        gauge3.refresh(getRandomInt(0, 100));
+        return false;
+      });
+
+      $('#g4_show').bind('click', function() {
+        var container = document.getElementById("cont");
+        container.appendChild(gNode4, container.childNodes[0]);
+        container = null;
+        return false;
+      });
+
+      $('#g4_refresh').bind('click', function() {
+        gauge4.refresh(getRandomInt(0, 100));
         return false;
       });
 
