@@ -656,7 +656,10 @@
   var defs = obj.canvas.canvas.childNodes[1];
   var svg = "http://www.w3.org/2000/svg";
 
-  if (ie < 9) {
+  if (ie !== 'undefined' && ie < 9 ) {
+    // VML mode - no SVG & SVG filter support
+  }
+  else if (ie !== 'undefined') {
     onCreateElementNsReady(function() {
       obj.generateShadow(svg, defs);
     });
