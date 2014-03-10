@@ -289,7 +289,11 @@
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber : obj.kvLookup('formatNumber', config, dataset, false)
+    formatNumber : obj.kvLookup('formatNumber', config, dataset, false),
+    
+    // countdown : boolean
+    // from max to min
+    countdown : obj.kvLookup('countdown', config, dataset, false)
   };
 
   // variables
@@ -574,7 +578,7 @@
   // level
   obj.level = obj.canvas.path().attr({
     "stroke": "none",
-    "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
+    "fill": getColor(obj.config.value, (obj.config.countdown === true) ? 1 - (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min) : (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
     pki: [
       obj.config.min,
       obj.config.min,
@@ -625,7 +629,7 @@
   setDy(obj.txtLabel, obj.params.labelFontSize, obj.params.labelY);
 
   // min
-  obj.txtMinimum = obj.config.min;
+  obj.txtMinimum = (obj.config.countdown === true) ? obj.config.max : obj.config.min;
   if( obj.config.humanFriendly ) {
     obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
   } else if ( obj.config.formatNumber ) {
@@ -642,7 +646,7 @@
   setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
 
   // max
-  obj.txtMaximum = obj.config.max;
+  obj.txtMaximum = (obj.config.countdown === true) ? obj.config.min : obj.config.max;
   if( obj.config.formatNumber ) {
     obj.txtMaximum = formatNumber( obj.txtMaximum );
   } else if( obj.config.humanFriendly ) {
@@ -691,13 +695,13 @@
     eve.on("raphael.anim.frame." + (obj.level.id), function() {
       var currentValue = obj.level.attr("pki");
       if(obj.config.textRenderer) {
-        obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
+        obj.txtValue.attr("text", (obj.config.countdown === true) ? obj.config.textRenderer(Math.floor(obj.config.max - currentValue[0])) : obj.config.textRenderer(Math.floor(currentValue[0])));
       } else if(obj.config.humanFriendly) {
-        obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
+        obj.txtValue.attr("text", (obj.config.countdown === true) ? humanFriendlyNumber( Math.floor(obj.config.max - currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol : humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
       } else if(obj.config.formatNumber) {
-        obj.txtValue.attr("text", formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
+        obj.txtValue.attr("text", (obj.config.countdown === true) ? formatNumber(Math.floor(obj.config.max - currentValue[0])) + obj.config.symbol : formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
       } else {
-        obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+        obj.txtValue.attr("text", (obj.config.countdown === true) ? (obj.config.max - currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol : (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
       setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       currentValue = null;
@@ -718,7 +722,7 @@
   // animate gauge level, value & label
   obj.level.animate({
     pki: [
-      obj.config.value,
+      (obj.config.countdown === true) ? obj.config.max - obj.config.value : obj.config.value,
       obj.config.min,
       obj.config.max,
       obj.params.widgetW,
@@ -800,7 +804,7 @@ JustGage.prototype.refresh = function(val, max) {
   if ((val * 1) > (obj.config.max * 1)) {val = (obj.config.max * 1);}
   if ((val * 1) < (obj.config.min * 1)) {val = (obj.config.min * 1);}
 
-  color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
+  color = getColor(val, (obj.config.countdown === true) ? 1 - (val - obj.config.min) / (obj.config.max - obj.config.min) : (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
   if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
@@ -821,7 +825,7 @@ JustGage.prototype.refresh = function(val, max) {
 
   obj.level.animate({
     pki: [
-      obj.config.value,
+      (obj.config.countdown === true) ? obj.config.max - obj.config.value : obj.config.value,
       obj.config.min,
       obj.config.max,
       obj.params.widgetW,
