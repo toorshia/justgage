@@ -171,6 +171,10 @@
     // number of decimal places for our human friendly number to contain
     humanFriendlyDecimal : obj.kvLookup('humanFriendlyDecimal', config, dataset, 0),
 
+	// humanFriendlyFunction : function
+	// function that will be called to format de values
+	humanFriendlyFunction: obj.kvLookup('humanFriendlyFunction', config, dataset, humanFriendlyNumber),
+
     // textRenderer: func
     // function applied before rendering text
     textRenderer  : obj.kvLookup('textRenderer', config, dataset, null),
@@ -631,7 +635,7 @@
   // min
   obj.txtMinimum = obj.config.min;
   if( obj.config.humanFriendly ) {
-    obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits );
+    obj.txtMinimum = obj.config.humanFriendlyFunction(obj.config.min, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
   } else if ( obj.config.formatNumber ) {
     obj.txtMinimum = formatNumber( obj.config.min );
   }
@@ -650,7 +654,7 @@
   if( obj.config.formatNumber ) {
     obj.txtMaximum = formatNumber( obj.txtMaximum );
   } else if( obj.config.humanFriendly ) {
-    obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits );
+    obj.txtMaximum = obj.config.humanFriendlyFunction(obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
   }
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
@@ -683,7 +687,7 @@
   if(obj.config.textRenderer) {
     obj.originalValue = obj.config.textRenderer(obj.originalValue);
   } else if(obj.config.humanFriendly) {
-    obj.originalValue = humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits ) + obj.config.symbol;
+    obj.originalValue = obj.config.humanFriendlyFunction(obj.originalValue, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol;
   } else if(obj.config.formatNumber) {
     obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
   } else {
@@ -697,7 +701,7 @@
       if(obj.config.textRenderer) {
         obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
       } else if(obj.config.humanFriendly) {
-        obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits ) + obj.config.symbol);
+		  obj.txtValue.attr("text", obj.config.humanFriendlyFunction(Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol);
       } else if(obj.config.formatNumber) {
         obj.txtValue.attr("text", formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
       } else {
@@ -791,7 +795,7 @@ JustGage.prototype.refresh = function(val, max) {
 
     obj.txtMaximum = obj.config.max;
     if( obj.config.humanFriendly ) {
-      obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits );
+	  obj.txtMaximum = obj.config.humanFriendlyFunction(obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
     } else if( obj.config.formatNumber ) {
       obj.txtMaximum = formatNumber( obj.config.max );
     }
@@ -809,7 +813,7 @@ JustGage.prototype.refresh = function(val, max) {
   if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if( obj.config.humanFriendly ) {
-    displayVal = humanFriendlyNumber( displayVal, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits ) + obj.config.symbol;
+	  displayVal = obj.config.humanFriendlyFunction(displayVal, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol;
   } else if( obj.config.formatNumber ) {
     displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
   } else {
