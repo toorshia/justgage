@@ -297,7 +297,15 @@
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber : obj.kvLookup('formatNumber', config, dataset, false)
+	formatNumber: obj.kvLookup('formatNumber', config, dataset, false),
+
+	// canvasViewBoxY: int
+	// y position of canvas view box
+	canvasViewBoxY: obj.kvLookup('canvasViewBoxY', config, dataset, 0),
+
+	// canvasViewBoxX: int
+	// x position of canvas view box
+	canvasViewBoxX: obj.kvLookup('canvasViewBoxX', config, dataset, 0)
   };
 
   // variables
@@ -338,7 +346,7 @@
   }
 
   if (obj.config.relativeGaugeSize === true) {
-    obj.canvas.setViewBox(0, 0, 200, 150, true);
+	obj.canvas.setViewBox(obj.config.canvasViewBoxX, obj.config.canvasViewBoxY, obj.config.width, obj.config.height, true);
   }
 
   // canvas dimensions
@@ -349,7 +357,7 @@
     canvasW = obj.config.width;
     canvasH = obj.config.height;
   } else if (obj.config.parentNode !== null) {
-    obj.canvas.setViewBox(0, 0, 200, 150, true);
+	obj.canvas.setViewBox(obj.config.canvasViewBoxX, obj.config.canvasViewBoxY, obj.config.width, obj.config.height, true);
     canvasW = 200;
     canvasH = 150;
   } else {
@@ -595,20 +603,25 @@
       obj.config.donut
     ]
   });
+
+obj.txtTitle = obj.config.title;
+
   if(obj.config.donut) {
     obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW/2 + obj.params.dx) + ", " + (obj.params.widgetH/1.95 + obj.params.dy));
   }
 
   // title
-  obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
-  obj.txtTitle.attr({
-    "font-size":obj.params.titleFontSize,
-    "font-weight":"bold",
-    "font-family":"Arial",
-    "fill":obj.config.titleFontColor,
-    "fill-opacity":"1"
-  });
-  setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
+  if (obj.txtTitle) {
+  	obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
+  	obj.txtTitle.attr({
+    	"font-size":obj.params.titleFontSize,
+    	"font-weight":"bold",
+    	"font-family":"Arial",
+    	"fill":obj.config.titleFontColor,
+    	"fill-opacity":"1"
+  	});
+  	setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
+  }
 
   // value
   obj.txtValue = obj.canvas.text(obj.params.valueX, obj.params.valueY, 0);
