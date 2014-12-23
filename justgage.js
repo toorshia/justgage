@@ -287,7 +287,7 @@
     // number of digits after floating point
     customSectors : obj.kvLookup('customSectors', config, dataset, []),
 	
-	// usePercentRange : boolean
+    // usePercentRange : boolean
     // use percent-based ranges for customSectors
     usePercentRange : obj.kvLookup('usePercentRange', config, dataset, false),
 
@@ -913,7 +913,7 @@ function getColor(val, pct, col, noGradient, custSec, usePctRange) {
   var noGradient = noGradient || custSec.length > 0;
 
   if(custSec.length > 0 && usePctRange){
-	val = val * 100;
+    val = val * 100;
   }
   
   if(custSec.length > 0) {
