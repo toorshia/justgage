@@ -51,6 +51,7 @@
   <script>
   var g1 = new JustGage({
     id: "g1",
+    title : "Max is 100.",
     value : 50,
     min: 0,
     max: 100,
@@ -65,16 +66,19 @@
 
     $('#g1_setmax100').bind('click', function() {
       g1.refresh(g1.originalValue, 100);
+      g1.txtTitle.attr({"text" : "Max is 100."});
       return false;
     });
 
     $('#g1_setmax200').bind('click', function() {
       g1.refresh(g1.originalValue, 200);
+      g1.txtTitle.attr({"text" : "Whoops, max jumped to 200."});
       return false;
     });
 
     $('#g1_setmax400').bind('click', function() {
       g1.refresh(g1.originalValue, 400);
+      g1.txtTitle.attr({"text" : "Blimey, max blasted to 400!"});
       return false;
     });
 
