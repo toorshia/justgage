@@ -14,6 +14,9 @@
   "dependencies": {
     "raphael": "~2.1.2"
   },
+   "moduleType": [
+    "node",
+  ],
   "homepage": "https://github.com/toorshia/justgage",
   "authors": [
     "Bojan Djuricic <pindjur@gmail.com>"

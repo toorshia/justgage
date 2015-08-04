@@ -1,0 +1,34 @@
+{
+  "name": "justgage",
+  "version": "1.1.0",
+  "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.",
+  "main": "justgage.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toorshia/justgage.git"
+  },
+  "keywords": [
+    "gauge",
+    "meter",
+    "clean",
+    "simple",
+    "minimal",
+    "svg",
+    "vector",
+    "performance",
+    "indicator",
+    "measure",
+    "dashboard",
+    "javascript",
+    "plugin"
+  ],
+  "author": "Bojan Djuricic <pindjur@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toorshia/justgage/issues"
+  },
+  "homepage": "https://github.com/toorshia/justgage"
+}
