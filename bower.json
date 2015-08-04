@@ -15,7 +15,7 @@
     "raphael": "~2.1.2"
   },
    "moduleType": [
-    "node",
+    "node"
   ],
   "homepage": "https://github.com/toorshia/justgage",
   "authors": [
