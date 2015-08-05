@@ -7,6 +7,11 @@
  * LATEST UPDATES
  *
  * -----------------------------
+ * February 28, 2015.
+ * -----------------------------
+     * customValueText, customMinValue, customMaxValue - set custom text for min, max and value texts.
+ * 
+ * -----------------------------
  * March 16, 2014.
  * -----------------------------
      * fix - https://github.com/toorshia/justgage/issues/112
@@ -246,6 +251,18 @@
     // maxLabelMinFontSize
     // absolute minimum font size for the maximum label
     maxLabelMinFontSize : obj.kvLookup('maxLabelMinFontSize', config, dataset, 10),
+
+    // customMinText : string
+    // show other custom string instead of min value
+    customMinText : obj.kvLookup('customMinText', config, dataset, ""),
+
+    // customMaxText : string
+    // show other custom string instead of max value
+    customMaxText : obj.kvLookup('customMaxText', config, dataset, ""),
+
+    // customValueText : string
+    // show other custom string instead of value text
+    customValueText : obj.kvLookup('customValueText', config, dataset, ""),
 
     // hideValue : bool
     // hide value text
@@ -626,7 +643,9 @@
 
   // min
   obj.txtMinimum = obj.config.min;
-  if( obj.config.humanFriendly ) {
+  if (obj.config.customMinText != '') {
+    obj.txtMinimum = obj.config.customMinText;
+  } else if( obj.config.humanFriendly ) {
     obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
   } else if ( obj.config.formatNumber ) {
     obj.txtMinimum = formatNumber( obj.config.min );
@@ -643,7 +662,9 @@
 
   // max
   obj.txtMaximum = obj.config.max;
-  if( obj.config.formatNumber ) {
+  if (obj.config.customMaxText != '') {
+    obj.txtMaximum = obj.config.customMaxText;
+  } else if( obj.config.formatNumber ) {
     obj.txtMaximum = formatNumber( obj.txtMaximum );
   } else if( obj.config.humanFriendly ) {
     obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
@@ -676,7 +697,9 @@
   defs, svg = null;
 
   // set value to display
-  if(obj.config.textRenderer) {
+  if(obj.config.customValueText!='') {
+    obj.originalValue = obj.config.customValueText;
+  } else if(obj.config.textRenderer) {
     obj.originalValue = obj.config.textRenderer(obj.originalValue);
   } else if(obj.config.humanFriendly) {
     obj.originalValue = humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
@@ -802,7 +825,9 @@ JustGage.prototype.refresh = function(val, max) {
 
   color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
-  if(obj.config.textRenderer) {
+  if(obj.config.customValueText!="") {
+    displayVal = obj.config.customValueText;
+  } else if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if( obj.config.humanFriendly ) {
     displayVal = humanFriendlyNumber( displayVal, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
