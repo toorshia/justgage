@@ -10,7 +10,7 @@
  * March 16, 2014.
  * -----------------------------
      * fix - https://github.com/toorshia/justgage/issues/112
- * 
+ *
  * -----------------------------
  * February 16, 2014.
  * -----------------------------
@@ -171,6 +171,10 @@
     // number of decimal places for our human friendly number to contain
     humanFriendlyDecimal : obj.kvLookup('humanFriendlyDecimal', config, dataset, 0),
 
+	// humanFriendlyFunction : function
+	// function that will be called to format de values
+	humanFriendlyFunction: obj.kvLookup('humanFriendlyFunction', config, dataset, humanFriendlyNumber),
+
     // textRenderer: func
     // function applied before rendering text
     textRenderer  : obj.kvLookup('textRenderer', config, dataset, null),
@@ -263,6 +267,10 @@
     // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
     humanFriendly : obj.kvLookup('humanFriendly', config, dataset, false),
 
+	  // humanFriendlyUnits : Array or String
+	  // units to convert value to human friendly, defaults to "KMGTPE" (e.g. 123456 -> 1.23K, 1234567 -> 1.23M)
+	  humanFriendlyUnits: obj.kvLookup('humanFriendlyUnits', config, dataset, "KMGTPE"),
+
     // noGradient : bool
     // whether to use gradual color change for value, or sector-based
     noGradient : obj.kvLookup('noGradient', config, dataset, false),
@@ -289,7 +297,15 @@
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber : obj.kvLookup('formatNumber', config, dataset, false)
+	formatNumber: obj.kvLookup('formatNumber', config, dataset, false),
+
+	// canvasViewBoxY: int
+	// y position of canvas view box
+	canvasViewBoxY: obj.kvLookup('canvasViewBoxY', config, dataset, 0),
+
+	// canvasViewBoxX: int
+	// x position of canvas view box
+	canvasViewBoxX: obj.kvLookup('canvasViewBoxX', config, dataset, 0)
   };
 
   // variables
@@ -330,7 +346,7 @@
   }
 
   if (obj.config.relativeGaugeSize === true) {
-    obj.canvas.setViewBox(0, 0, 200, 150, true);
+	obj.canvas.setViewBox(obj.config.canvasViewBoxX, obj.config.canvasViewBoxY, obj.config.width, obj.config.height, true);
   }
 
   // canvas dimensions
@@ -341,7 +357,7 @@
     canvasW = obj.config.width;
     canvasH = obj.config.height;
   } else if (obj.config.parentNode !== null) {
-    obj.canvas.setViewBox(0, 0, 200, 150, true);
+	obj.canvas.setViewBox(obj.config.canvasViewBoxX, obj.config.canvasViewBoxY, obj.config.width, obj.config.height, true);
     canvasW = 200;
     canvasH = 150;
   } else {
@@ -587,20 +603,25 @@
       obj.config.donut
     ]
   });
+
+obj.txtTitle = obj.config.title;
+
   if(obj.config.donut) {
     obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW/2 + obj.params.dx) + ", " + (obj.params.widgetH/1.95 + obj.params.dy));
   }
 
   // title
-  obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
-  obj.txtTitle.attr({
-    "font-size":obj.params.titleFontSize,
-    "font-weight":"bold",
-    "font-family":"Arial",
-    "fill":obj.config.titleFontColor,
-    "fill-opacity":"1"
-  });
-  setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
+  if (obj.txtTitle) {
+  	obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
+  	obj.txtTitle.attr({
+    	"font-size":obj.params.titleFontSize,
+    	"font-weight":"bold",
+    	"font-family":"Arial",
+    	"fill":obj.config.titleFontColor,
+    	"fill-opacity":"1"
+  	});
+  	setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
+  }
 
   // value
   obj.txtValue = obj.canvas.text(obj.params.valueX, obj.params.valueY, 0);
@@ -627,7 +648,7 @@
   // min
   obj.txtMinimum = obj.config.min;
   if( obj.config.humanFriendly ) {
-    obj.txtMinimum = humanFriendlyNumber( obj.config.min, obj.config.humanFriendlyDecimal );
+    obj.txtMinimum = obj.config.humanFriendlyFunction(obj.config.min, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
   } else if ( obj.config.formatNumber ) {
     obj.txtMinimum = formatNumber( obj.config.min );
   }
@@ -646,7 +667,7 @@
   if( obj.config.formatNumber ) {
     obj.txtMaximum = formatNumber( obj.txtMaximum );
   } else if( obj.config.humanFriendly ) {
-    obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
+    obj.txtMaximum = obj.config.humanFriendlyFunction(obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
   }
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
@@ -679,7 +700,7 @@
   if(obj.config.textRenderer) {
     obj.originalValue = obj.config.textRenderer(obj.originalValue);
   } else if(obj.config.humanFriendly) {
-    obj.originalValue = humanFriendlyNumber( obj.originalValue, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
+    obj.originalValue = obj.config.humanFriendlyFunction(obj.originalValue, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol;
   } else if(obj.config.formatNumber) {
     obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
   } else {
@@ -693,7 +714,7 @@
       if(obj.config.textRenderer) {
         obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
       } else if(obj.config.humanFriendly) {
-        obj.txtValue.attr("text", humanFriendlyNumber( Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal ) + obj.config.symbol);
+		  obj.txtValue.attr("text", obj.config.humanFriendlyFunction(Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol);
       } else if(obj.config.formatNumber) {
         obj.txtValue.attr("text", formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
       } else {
@@ -787,7 +808,7 @@ JustGage.prototype.refresh = function(val, max) {
 
     obj.txtMaximum = obj.config.max;
     if( obj.config.humanFriendly ) {
-      obj.txtMaximum = humanFriendlyNumber( obj.config.max, obj.config.humanFriendlyDecimal );
+	  obj.txtMaximum = obj.config.humanFriendlyFunction(obj.config.max, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits);
     } else if( obj.config.formatNumber ) {
       obj.txtMaximum = formatNumber( obj.config.max );
     }
@@ -805,7 +826,7 @@ JustGage.prototype.refresh = function(val, max) {
   if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if( obj.config.humanFriendly ) {
-    displayVal = humanFriendlyNumber( displayVal, obj.config.humanFriendlyDecimal ) + obj.config.symbol;
+	  displayVal = obj.config.humanFriendlyFunction(displayVal, obj.config.humanFriendlyDecimal, obj.config.humanFriendlyUnits) + obj.config.symbol;
   } else if( obj.config.formatNumber ) {
     displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
   } else {
@@ -973,7 +994,7 @@ function cutHex(str) {
 }
 
 /**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
-function humanFriendlyNumber( n, d ) {
+function humanFriendlyNumber( n, d, units ) {
   var p, d2, i, s;
 
   p = Math.pow;
@@ -982,7 +1003,7 @@ function humanFriendlyNumber( n, d ) {
   while( i ) {
     s = p(10,i--*3);
     if( s <= n ) {
-     n = Math.round(n*d2/s)/d2+"KMGTPE"[i];
+     n = Math.round(n*d2/s)/d2+units[i];
    }
  }
  return n;
