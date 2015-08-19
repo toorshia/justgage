@@ -4,6 +4,9 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######August 19, 2015.
+ * fixed shadow id issue (same ids were being generated)
+
 ######February 16, 2014.
  * fix - https://github.com/toorshia/justgage/issues/102
 

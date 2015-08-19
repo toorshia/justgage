@@ -7,6 +7,11 @@
  * LATEST UPDATES
  *
  * -----------------------------
+ * Aug 19, 2015.
+ * -----------------------------
+     * fixed shadow id issue (same ids were being generated)
+ *
+ * -----------------------------
  * March 16, 2014.
  * -----------------------------
      * fix - https://github.com/toorshia/justgage/issues/112
@@ -129,167 +134,167 @@
 
     // parentNode : node object
     // this is container element
-    parentNode : obj.kvLookup('parentNode', config, dataset, null),
+    parentNode : kvLookup('parentNode', config, dataset, null),
 
     // width : int
     // gauge width
-    width : obj.kvLookup('width', config, dataset, null),
+    width : kvLookup('width', config, dataset, null),
 
     // height : int
     // gauge height
-    height : obj.kvLookup('height', config, dataset, null),
+    height : kvLookup('height', config, dataset, null),
 
     // title : string
     // gauge title
-    title : obj.kvLookup('title', config, dataset, ""),
+    title : kvLookup('title', config, dataset, ""),
 
     // titleFontColor : string
     // color of gauge title
-    titleFontColor : obj.kvLookup('titleFontColor', config, dataset,  "#999999"),
+    titleFontColor : kvLookup('titleFontColor', config, dataset,  "#999999"),
 
     // value : float
     // value gauge is showing
-    value : obj.kvLookup('value', config, dataset, 0, 'float'),
+    value : kvLookup('value', config, dataset, 0, 'float'),
 
     // valueFontColor : string
     // color of label showing current value
-    valueFontColor : obj.kvLookup('valueFontColor', config, dataset, "#010101"),
+    valueFontColor : kvLookup('valueFontColor', config, dataset, "#010101"),
 
     // symbol : string
     // special symbol to show next to value
-    symbol : obj.kvLookup('symbol', config, dataset, ''),
+    symbol : kvLookup('symbol', config, dataset, ''),
 
     // min : float
     // min value
-    min : obj.kvLookup('min', config, dataset, 0, 'float'),
+    min : kvLookup('min', config, dataset, 0, 'float'),
 
     // max : float
     // max value
-    max : obj.kvLookup('max', config, dataset, 100, 'float'),
+    max : kvLookup('max', config, dataset, 100, 'float'),
 
     // humanFriendlyDecimal : int
     // number of decimal places for our human friendly number to contain
-    humanFriendlyDecimal : obj.kvLookup('humanFriendlyDecimal', config, dataset, 0),
+    humanFriendlyDecimal : kvLookup('humanFriendlyDecimal', config, dataset, 0),
 
     // textRenderer: func
     // function applied before rendering text
-    textRenderer  : obj.kvLookup('textRenderer', config, dataset, null),
+    textRenderer  : kvLookup('textRenderer', config, dataset, null),
 
     // gaugeWidthScale : float
     // width of the gauge element
-    gaugeWidthScale : obj.kvLookup('gaugeWidthScale', config, dataset, 1.0),
+    gaugeWidthScale : kvLookup('gaugeWidthScale', config, dataset, 1.0),
 
     // gaugeColor : string
     // background color of gauge element
-    gaugeColor : obj.kvLookup('gaugeColor', config, dataset, "#edebeb"),
+    gaugeColor : kvLookup('gaugeColor', config, dataset, "#edebeb"),
 
     // label : string
     // text to show below value
-    label : obj.kvLookup('label', config, dataset, ''),
+    label : kvLookup('label', config, dataset, ''),
 
     // labelFontColor : string
     // color of label showing label under value
-    labelFontColor : obj.kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
+    labelFontColor : kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
 
     // shadowOpacity : int
     // 0 ~ 1
-    shadowOpacity : obj.kvLookup('shadowOpacity', config, dataset, 0.2),
+    shadowOpacity : kvLookup('shadowOpacity', config, dataset, 0.2),
 
     // shadowSize: int
     // inner shadow size
-    shadowSize : obj.kvLookup('shadowSize', config, dataset, 5),
+    shadowSize : kvLookup('shadowSize', config, dataset, 5),
 
     // shadowVerticalOffset : int
     // how much shadow is offset from top
-    shadowVerticalOffset : obj.kvLookup('shadowVerticalOffset', config, dataset, 3),
+    shadowVerticalOffset : kvLookup('shadowVerticalOffset', config, dataset, 3),
 
     // levelColors : string[]
     // colors of indicator, from lower to upper, in RGB format
-    levelColors : obj.kvLookup('levelColors', config, dataset, [ "#a9d70b", "#f9c802", "#ff0000" ], 'array', ','),
+    levelColors : kvLookup('levelColors', config, dataset, [ "#a9d70b", "#f9c802", "#ff0000" ], 'array', ','),
 
     // startAnimationTime : int
     // length of initial animation
-    startAnimationTime : obj.kvLookup('startAnimationTime', config, dataset, 700),
+    startAnimationTime : kvLookup('startAnimationTime', config, dataset, 700),
 
     // startAnimationType : string
     // type of initial animation (linear, >, <,  <>, bounce)
-    startAnimationType : obj.kvLookup('startAnimationType', config, dataset, '>'),
+    startAnimationType : kvLookup('startAnimationType', config, dataset, '>'),
 
     // refreshAnimationTime : int
     // length of refresh animation
-    refreshAnimationTime : obj.kvLookup('refreshAnimationTime', config, dataset, 700),
+    refreshAnimationTime : kvLookup('refreshAnimationTime', config, dataset, 700),
 
     // refreshAnimationType : string
     // type of refresh animation (linear, >, <,  <>, bounce)
-    refreshAnimationType : obj.kvLookup('refreshAnimationType', config, dataset, '>'),
+    refreshAnimationType : kvLookup('refreshAnimationType', config, dataset, '>'),
 
     // donutStartAngle : int
     // angle to start from when in donut mode
-    donutStartAngle : obj.kvLookup('donutStartAngle', config, dataset, 90),
+    donutStartAngle : kvLookup('donutStartAngle', config, dataset, 90),
 
     // valueMinFontSize : int
     // absolute minimum font size for the value
-    valueMinFontSize : obj.kvLookup('valueMinFontSize', config, dataset, 16),
+    valueMinFontSize : kvLookup('valueMinFontSize', config, dataset, 16),
 
     // titleMinFontSize
     // absolute minimum font size for the title
-    titleMinFontSize : obj.kvLookup('titleMinFontSize', config, dataset, 10),
+    titleMinFontSize : kvLookup('titleMinFontSize', config, dataset, 10),
 
     // labelMinFontSize
     // absolute minimum font size for the label
-    labelMinFontSize : obj.kvLookup('labelMinFontSize', config, dataset, 10),
+    labelMinFontSize : kvLookup('labelMinFontSize', config, dataset, 10),
 
     // minLabelMinFontSize
     // absolute minimum font size for the minimum label
-    minLabelMinFontSize : obj.kvLookup('minLabelMinFontSize', config, dataset, 10),
+    minLabelMinFontSize : kvLookup('minLabelMinFontSize', config, dataset, 10),
 
     // maxLabelMinFontSize
     // absolute minimum font size for the maximum label
-    maxLabelMinFontSize : obj.kvLookup('maxLabelMinFontSize', config, dataset, 10),
+    maxLabelMinFontSize : kvLookup('maxLabelMinFontSize', config, dataset, 10),
 
     // hideValue : bool
     // hide value text
-    hideValue : obj.kvLookup('hideValue', config, dataset, false),
+    hideValue : kvLookup('hideValue', config, dataset, false),
 
     // hideMinMax : bool
     // hide min and max values
-    hideMinMax : obj.kvLookup('hideMinMax', config, dataset, false),
+    hideMinMax : kvLookup('hideMinMax', config, dataset, false),
 
     // hideInnerShadow : bool
     // hide inner shadow
-    hideInnerShadow : obj.kvLookup('hideInnerShadow', config, dataset, false),
+    hideInnerShadow : kvLookup('hideInnerShadow', config, dataset, false),
 
     // humanFriendly : bool
     // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
-    humanFriendly : obj.kvLookup('humanFriendly', config, dataset, false),
+    humanFriendly : kvLookup('humanFriendly', config, dataset, false),
 
     // noGradient : bool
     // whether to use gradual color change for value, or sector-based
-    noGradient : obj.kvLookup('noGradient', config, dataset, false),
+    noGradient : kvLookup('noGradient', config, dataset, false),
 
     // donut : bool
     // show full donut gauge
-    donut : obj.kvLookup('donut', config, dataset, false),
+    donut : kvLookup('donut', config, dataset, false),
 
     // relativeGaugeSize : bool
     // whether gauge size should follow changes in container element size
-    relativeGaugeSize : obj.kvLookup('relativeGaugeSize', config, dataset, false),
+    relativeGaugeSize : kvLookup('relativeGaugeSize', config, dataset, false),
 
     // counter : bool
     // animate level number change
-    counter : obj.kvLookup('counter', config, dataset, false),
+    counter : kvLookup('counter', config, dataset, false),
 
     // decimals : int
     // number of digits after floating point
-    decimals : obj.kvLookup('decimals', config, dataset, 0),
+    decimals : kvLookup('decimals', config, dataset, 0),
 
     // customSectors : [] of objects
     // number of digits after floating point
-    customSectors : obj.kvLookup('customSectors', config, dataset, []),
+    customSectors : kvLookup('customSectors', config, dataset, []),
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber : obj.kvLookup('formatNumber', config, dataset, false)
+    formatNumber : kvLookup('formatNumber', config, dataset, false)
   };
 
   // variables
@@ -320,7 +325,7 @@
   // overflow values
   if (obj.config.value > obj.config.max) obj.config.value = obj.config.max;
   if (obj.config.value < obj.config.min) obj.config.value = obj.config.min;
-  obj.originalValue = obj.kvLookup('value', config, dataset, -1, 'float');
+  obj.originalValue = kvLookup('value', config, dataset, -1, 'float');
 
   // create canvas
   if (obj.config.id !== null && (document.getElementById(obj.config.id)) !== null) {
@@ -733,48 +738,6 @@
   obj.txtLabel.animate({"fill-opacity":"1"}, obj.config.startAnimationTime, obj.config.startAnimationType);
 };
 
-//
-// tiny helper function to lookup value of a key from two hash tables
-// if none found, return defaultvalue
-//
-// key: string
-// tablea: object
-// tableb: DOMStringMap|object
-// defval: string|integer|float|null
-// datatype: return datatype
-// delimiter: delimiter to be used in conjunction with datatype formatting
-//
-JustGage.prototype.kvLookup = function(key, tablea, tableb, defval, datatype, delimiter) {
-  var val = defval;
-  var canConvert = false;
-  if (!(key === null || key === undefined)) {
-      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
-          val = tableb[key];
-          canConvert = true;
-      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
-          val = tablea[key];
-          canConvert = true;
-      } else {
-          val = defval;
-      }
-      if (canConvert === true) {
-          if (datatype !== null && datatype !== undefined) {
-              switch(datatype) {
-                  case 'int':
-                    val = parseInt(val, 10);
-                    break;
-                  case 'float':
-                    val = parseFloat(val);
-                    break;
-                  default:
-                    break;
-              }
-          }
-      }
-  }
-  return val;
-};
-
 /** Refresh gauge level */
 JustGage.prototype.refresh = function(val, max) {
 
@@ -842,11 +805,12 @@ JustGage.prototype.refresh = function(val, max) {
 JustGage.prototype.generateShadow = function(svg, defs) {
 
   var obj = this;
+  var sid = "inner-shadow-" + obj.config.id;
   var gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3;
 
   // FILTER
   gaussFilter = document.createElementNS(svg,"filter");
-  gaussFilter.setAttribute("id","inner-shadow");
+  gaussFilter.setAttribute("id", sid);
   defs.appendChild(gaussFilter);
 
   // offset
@@ -893,13 +857,54 @@ JustGage.prototype.generateShadow = function(svg, defs) {
 
   // set shadow
   if (!obj.config.hideInnerShadow) {
-    obj.canvas.canvas.childNodes[2].setAttribute("filter", "url(#inner-shadow)");
-    obj.canvas.canvas.childNodes[3].setAttribute("filter", "url(#inner-shadow)");
+    obj.canvas.canvas.childNodes[2].setAttribute("filter", "url(#"+ sid +")");
+    obj.canvas.canvas.childNodes[3].setAttribute("filter", "url(#"+ sid +")");
   }
 
   // var clear
   gaussFilter, feOffset, feGaussianBlur, feComposite1, feFlood, feComposite2, feComposite3 = null;
+};
 
+//
+// tiny helper function to lookup value of a key from two hash tables
+// if none found, return defaultvalue
+//
+// key: string
+// tablea: object
+// tableb: DOMStringMap|object
+// defval: string|integer|float|null
+// datatype: return datatype
+// delimiter: delimiter to be used in conjunction with datatype formatting
+//
+function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
+  var val = defval;
+  var canConvert = false;
+  if (!(key === null || key === undefined)) {
+      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
+          val = tableb[key];
+          canConvert = true;
+      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
+          val = tablea[key];
+          canConvert = true;
+      } else {
+          val = defval;
+      }
+      if (canConvert === true) {
+          if (datatype !== null && datatype !== undefined) {
+              switch(datatype) {
+                  case 'int':
+                    val = parseInt(val, 10);
+                    break;
+                  case 'float':
+                    val = parseFloat(val);
+                    break;
+                  default:
+                    break;
+              }
+          }
+      }
+  }
+  return val;
 };
 
 /** Get color for value */
