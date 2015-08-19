@@ -286,6 +286,10 @@
     // customSectors : [] of objects
     // number of digits after floating point
     customSectors : obj.kvLookup('customSectors', config, dataset, []),
+	
+    // usePercentRange : boolean
+    // use percent-based ranges for customSectors
+    usePercentRange : obj.kvLookup('usePercentRange', config, dataset, false),
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
@@ -574,7 +578,7 @@
   // level
   obj.level = obj.canvas.path().attr({
     "stroke": "none",
-    "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
+    "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors, obj.config.usePercentRange),
     pki: [
       obj.config.min,
       obj.config.min,
@@ -800,7 +804,7 @@ JustGage.prototype.refresh = function(val, max) {
   if ((val * 1) > (obj.config.max * 1)) {val = (obj.config.max * 1);}
   if ((val * 1) < (obj.config.min * 1)) {val = (obj.config.min * 1);}
 
-  color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
+  color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors, obj.config.usePercentRange);
 
   if(obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
@@ -903,11 +907,15 @@ JustGage.prototype.generateShadow = function(svg, defs) {
 };
 
 /** Get color for value */
-function getColor(val, pct, col, noGradient, custSec) {
+function getColor(val, pct, col, noGradient, custSec, usePctRange) {
 
   var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
   var noGradient = noGradient || custSec.length > 0;
 
+  if(custSec.length > 0 && usePctRange){
+    val = val * 100;
+  }
+  
   if(custSec.length > 0) {
     for(var i = 0; i < custSec.length; i++) {
       if(val > custSec[i].lo && val <= custSec[i].hi) {
