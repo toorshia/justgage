@@ -31,7 +31,7 @@ Checkout http://justgage.com for details, demos, current release and more.
  * **counter** - option to animate value in counting fashion - check demo at http://justgage.com/examples/counter.html
 
 ######March 19, 2013.
- * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/examples/refreshmax.html
+ * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/examples/refresh-maximum.html
 
 ######February 26, 2013.
  * **decimals** - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
