@@ -14,7 +14,7 @@ Checkout http://justgage.com for details, demos, current release and more.
  * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
 
 ######April 18, 2013.
- * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at http://justgage.com/demos/custom-node/
+ * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at http://justgage.com/examples/custom-node.html
  * **width** - force gauge width
  * **height** - force gauge height
 
@@ -25,13 +25,13 @@ Checkout http://justgage.com for details, demos, current release and more.
  * fix - https://github.com/toorshia/justgage/issues/46
 
 ######March 26, 2013.
- * **customSectors** - define one or many value ranges with custom gauge color - demo at http://justgage.com/demos/custom-sectors/
+ * **customSectors** - define one or many value ranges with custom gauge color - demo at http://justgage.com/examples/custom-sectors.html
 
 ######March 23, 2013.
- * **counter** - option to animate value in counting fashion - check demo at http://justgage.com/demos/counter/
+ * **counter** - option to animate value in counting fashion - check demo at http://justgage.com/examples/counter.html
 
 ######March 19, 2013.
- * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/demos/refreshmax/
+ * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/examples/refreshmax.html
 
 ######February 26, 2013.
  * **decimals** - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
