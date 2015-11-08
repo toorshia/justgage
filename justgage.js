@@ -978,7 +978,7 @@ function cutHex(str) {
 }
 
 /**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
-function humanFriendlyNumber( n, d ) {
+function humanFriendlyNumber(n, d) {
   var p, d2, i, s;
 
   p = Math.pow;
