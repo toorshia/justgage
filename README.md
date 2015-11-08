@@ -4,6 +4,9 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######November 08, 2015.
+ * **defaults** - option to define common config object when you're creating multiple gauges - demo at http://justgage.com/examples/defaults.html
+
 ######August 19, 2015.
  * fixed shadow id issue (same ids were being generated)
 

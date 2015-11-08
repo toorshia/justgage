@@ -1,102 +1,9 @@
 /**
- * JustGage - this is work-in-progress, unreleased, unofficial code, so it might not work top-notch :)
+ * JustGage - animated gauges using RaphaelJS
  * Check http://www.justgage.com for official releases
  * Licensed under MIT.
  * @author Bojan Djuricic (@Toorshia)
- *
- * LATEST UPDATES
- *
- * -----------------------------
- * Aug 19, 2015.
- * -----------------------------
-     * fixed shadow id issue (same ids were being generated)
- *
- * -----------------------------
- * March 16, 2014.
- * -----------------------------
-     * fix - https://github.com/toorshia/justgage/issues/112
- *
- * -----------------------------
- * February 16, 2014.
- * -----------------------------
-     * fix - https://github.com/toorshia/justgage/issues/102
-
- * -----------------------------
- * April 25, 2013.
- * -----------------------------
-     * use HTML5 data-* attributes of the DOM Element to render the gauge (which overrides the constructor options).
-
- * -----------------------------
- * April 18, 2013.
- * -----------------------------
-     * parentNode - use this instead of id, to attach gauge to node which is outside of DOM tree - https://github.com/toorshia/justgage/issues/48
-     * width - force gauge width
-     * height - force gauge height
-
- * -----------------------------
- * April 17, 2013.
- * -----------------------------
-     * fix - https://github.com/toorshia/justgage/issues/49
-
- * -----------------------------
- * April 01, 2013.
- * -----------------------------
-     * fix - https://github.com/toorshia/justgage/issues/46
-
- * -----------------------------
- * March 26, 2013.
- * -----------------------------
-     * customSectors - define specific color for value range (0-10 : red, 10-30 : blue etc.)
-
- * -----------------------------
- * March 23, 2013.
- * -----------------------------
-     * counter - option to animate value  in counting fashion
-     * fix - https://github.com/toorshia/justgage/issues/45
-
- * -----------------------------
- * March 13, 2013.
- * -----------------------------
-     * refresh method - added optional 'max' parameter to use when you need to update max value
-
- * -----------------------------
- * February 26, 2013.
- * -----------------------------
-     * decimals - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
-     * fixed a missing parameters bug when calling generateShadow()  for IE < 9
-
- * -----------------------------
- * December 31, 2012.
- * -----------------------------
-     * fixed text y-position for hidden divs - workaround for Raphael <tspan> 'dy' bug - https://github.com/DmitryBaranovskiy/raphael/issues/491
-     * 'show' parameters, like showMinMax are now 'hide' because I am lame developer - please update these in your setups
-     * Min and Max labels are now auto-off when in donut mode
-     * Start angle in donut mode is now 90
-     * donutStartAngle - option to define start angle for donut
-
- * -----------------------------
- * November 25, 2012.
- * -----------------------------
-     * Option to define custom rendering function for displayed value
-
- * -----------------------------
- * November 19, 2012.
- * -----------------------------
-     * Config.value is now updated after gauge refresh
-
- * -----------------------------
- * November 13, 2012.
- * -----------------------------
-     * Donut display mode added
-     * Option to hide value label
-     * Option to enable responsive gauge size
-     * Removed default title attribute
-     * Option to accept min and max defined as string values
-     * Option to configure value symbol
-     * Fixed bad aspect ratio calculations
-     * Option to configure minimum font size for all texts
-     * Option to show shorthand big numbers (human friendly)
-     */
+ **/
 
  JustGage = function(config) {
 
@@ -125,12 +32,27 @@
 
   var dataset = node.dataset ? node.dataset : {};
 
+  // check for defaults
+  var defaults = (config.defaults !== null && config.defaults !== undefined) ? config.defaults : false;
+  if(defaults !== false) {
+    config = extend({}, config, defaults);
+    delete config.defaults;
+  }
+
   // configurable parameters
   obj.config =
   {
     // id : string
     // this is container element id
     id : config.id,
+
+    // value : float
+    // value gauge is showing
+    value : kvLookup('value', config, dataset, 0, 'float'),
+
+    // defaults : bool
+    // defaults parameter to use
+    defaults : kvLookup('defaults', config, dataset, 0, false),
 
     // parentNode : node object
     // this is container element
@@ -152,9 +74,6 @@
     // color of gauge title
     titleFontColor : kvLookup('titleFontColor', config, dataset,  "#999999"),
 
-    // value : float
-    // value gauge is showing
-    value : kvLookup('value', config, dataset, 0, 'float'),
 
     // valueFontColor : string
     // color of label showing current value
@@ -978,7 +897,7 @@ function cutHex(str) {
 }
 
 /**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
-function humanFriendlyNumber( n, d ) {
+function humanFriendlyNumber(n, d) {
   var p, d2, i, s;
 
   p = Math.pow;
@@ -1054,3 +973,20 @@ var ie = (function(){
     );
     return v > 4 ? v : undef;
 }());
+
+// extend target object with second object
+function extend(out) {
+  out = out || {};
+
+  for (var i = 1; i < arguments.length; i++) {
+    if (!arguments[i])
+      continue;
+
+    for (var key in arguments[i]) {
+      if (arguments[i].hasOwnProperty(key))
+        out[key] = arguments[i][key];
+    }
+  }
+
+  return out;
+};

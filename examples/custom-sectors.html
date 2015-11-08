@@ -35,8 +35,9 @@
 
   <div class="container">
     <div id="gg1" class="gauge"></div>
-    <p>0-25 is red, 26-50 is green, 51-100 is blue</p>
+    <p id="gg1_text">0-50 is green, 51-100 is red</p>
     <a href="#" id="gg1_refresh" class="button grey">Random Refresh</a>
+    <a href="#" id="gg1_update" class="button grey">Update Sectors</a>
   </div>
 
   <script src="../raphael-2.1.4.min.js"></script>
@@ -51,15 +52,11 @@
       decimals: 2,
       gaugeWidthScale: 0.6,
       customSectors: [{
-        color : "#ff0000",
-        lo : 0,
-        hi : 25
-      },{
         color : "#00ff00",
-        lo : 25,
+        lo : 0,
         hi : 50
-      }, {
-        color : "#0000ff",
+      },{
+        color : "#ff0000",
         lo : 50,
         hi : 100
       }],
@@ -68,6 +65,22 @@
 
     document.getElementById('gg1_refresh').addEventListener('click', function() {
       gg1.refresh(getRandomInt(0, 100));
+    });
+
+    document.getElementById('gg1_update').addEventListener('click', function() {
+      gg1.update({
+        value: getRandomInt(0, 100),
+        customSectors: [{
+          color : "#00ff00",
+          lo : 0,
+          hi : 25
+        },{
+          color : "#ff0000",
+          lo : 25,
+          hi : 100
+        }]
+      });
+      document.getElementById('gg1_text').innerHTML = "<b>UPDATE</b>: 0-25 is green, 26-100 is red"
     });
   });
   </script>
