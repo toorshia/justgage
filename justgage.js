@@ -90,9 +90,14 @@ JustGage = function(config) {
     // max value
     max: kvLookup('max', config, dataset, 100, 'float'),
 
+    // reverse : bool
+    // reverse min and max
+    reverse: kvLookup('reverse', config, dataset, false),
+
     // humanFriendlyDecimal : int
     // number of decimal places for our human friendly number to contain
     humanFriendlyDecimal: kvLookup('humanFriendlyDecimal', config, dataset, 0),
+
 
     // textRenderer: func
     // function applied before rendering text
@@ -212,7 +217,15 @@ JustGage = function(config) {
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
-    formatNumber: kvLookup('formatNumber', config, dataset, false)
+    formatNumber: kvLookup('formatNumber', config, dataset, false),
+
+    // pointer : bool
+    // show value pointer
+    pointer: kvLookup('pointer', config, dataset, false),
+
+    // pointerOptions : object
+    // define pointer look
+    pointerOptions: kvLookup('pointerOptions', config, dataset, [])
   };
 
   // variables
@@ -418,7 +431,7 @@ JustGage = function(config) {
   canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, titleFontSize, titleX, titleY, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null;
 
   // pki - custom attribute for generating gauge paths
-  obj.canvas.customAttributes.pki = function(value, min, max, w, h, dx, dy, gws, donut) {
+  obj.canvas.customAttributes.pki = function(value, min, max, w, h, dx, dy, gws, donut, reverse) {
 
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
 
@@ -481,6 +494,60 @@ JustGage = function(config) {
     alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path = null;
   };
 
+  // ndl - custom attribute for generating needle path
+  obj.canvas.customAttributes.ndl = function(value, min, max, w, h, dx, dy, gws, donut) {
+
+    var dlt = w * 3.5 / 100;
+    var dlb = w / 15;
+    var dw = w / 100;
+
+    if (obj.config.pointerOptions.toplength != null && obj.config.pointerOptions.toplength != undefined) dlt = obj.config.pointerOptions.toplength;
+    if (obj.config.pointerOptions.bottomlength != null && obj.config.pointerOptions.bottomlength != undefined) dlb = obj.config.pointerOptions.bottomlength;
+    if (obj.config.pointerOptions.bottomwidth != null && obj.config.pointerOptions.bottomwidth != undefined) dw = obj.config.pointerOptions.bottomwidth;
+
+    var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, Xc, Yc, Xz, Yz, Xa, Ya, Xb, Yb, path;
+
+    if (donut) {
+      return {
+        path: null
+      };
+    } else {
+      alpha = (1 - (value - min) / (max - min)) * Math.PI;
+      Ro = w / 2 - w / 10;
+      Ri = Ro - w / 6.666666666666667 * gws;
+
+      Cx = w / 2 + dx;
+      Cy = h / 1.25 + dy;
+
+      Xo = w / 2 + dx + Ro * Math.cos(alpha);
+      Yo = h - (h - Cy) - Ro * Math.sin(alpha);
+      Xi = w / 2 + dx + Ri * Math.cos(alpha);
+      Yi = h - (h - Cy) - Ri * Math.sin(alpha);
+
+      Xc = Xo + dlt * Math.cos(alpha);
+      Yc = Yo - dlt * Math.sin(alpha);
+      Xz = Xi - dlb * Math.cos(alpha);
+      Yz = Yi + dlb * Math.sin(alpha);
+
+      Xa = Xz + dw * Math.sin(alpha);
+      Ya = Yz + dw * Math.cos(alpha);
+      Xb = Xz - dw * Math.sin(alpha);
+      Yb = Yz - dw * Math.cos(alpha);
+
+      path = 'M' + Xa + ',' + Ya + ' ';
+      path += 'L' + Xb + ',' + Yb + ' ';
+      path += 'L' + Xc + ',' + Yc + ' ';
+      path += 'Z ';
+
+      return {
+        path: path
+      };
+    }
+
+    // var clear
+    alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, Xc, Yc, Xz, Yz, Xa, Ya, Xb, Yb, path = null;
+  };
+
   // gauge
   obj.gauge = obj.canvas.path().attr({
     "stroke": "none",
@@ -494,7 +561,8 @@ JustGage = function(config) {
       obj.params.dx,
       obj.params.dy,
       obj.config.gaugeWidthScale,
-      obj.config.donut
+      obj.config.donut,
+      obj.config.reverse
     ]
   });
 
@@ -511,11 +579,33 @@ JustGage = function(config) {
       obj.params.dx,
       obj.params.dy,
       obj.config.gaugeWidthScale,
-      obj.config.donut
+      obj.config.donut,
+      obj.config.reverse
     ]
   });
   if (obj.config.donut) {
     obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
+  }
+
+  if (obj.config.pointer) {
+    // needle
+    obj.needle = obj.canvas.path().attr({
+      "stroke": (obj.config.pointerOptions.stroke !== null && obj.config.pointerOptions.stroke !== undefined) ? obj.config.pointerOptions.stroke : "none",
+      "stroke-width": (obj.config.pointerOptions.stroke_width !== null && obj.config.pointerOptions.stroke_width !== undefined) ? obj.config.pointerOptions.stroke_width : 0,
+      "stroke-linecap": (obj.config.pointerOptions.stroke_linecap !== null && obj.config.pointerOptions.stroke_linecap !== undefined) ? obj.config.pointerOptions.stroke_linecap : "square",
+      "fill": (obj.config.pointerOptions.color !== null && obj.config.pointerOptions.color !== undefined) ? obj.config.pointerOptions.color : "#000000",
+      ndl: [
+        obj.config.min,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut
+      ]
+    });
   }
 
   // title
@@ -552,11 +642,16 @@ JustGage = function(config) {
   setDy(obj.txtLabel, obj.params.labelFontSize, obj.params.labelY);
 
   // min
-  obj.txtMinimum = obj.config.min;
+  var min = obj.config.min;
+  if (obj.config.reverse) {
+    min = obj.config.max;
+  }
+
+  obj.txtMinimum = min;
   if (obj.config.humanFriendly) {
-    obj.txtMinimum = humanFriendlyNumber(obj.config.min, obj.config.humanFriendlyDecimal);
+    obj.txtMinimum = humanFriendlyNumber(min, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
-    obj.txtMinimum = formatNumber(obj.config.min);
+    obj.txtMinimum = formatNumber(min);
   }
   obj.txtMin = obj.canvas.text(obj.params.minX, obj.params.minY, obj.txtMinimum);
   obj.txtMin.attr({
@@ -569,11 +664,15 @@ JustGage = function(config) {
   setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
 
   // max
-  obj.txtMaximum = obj.config.max;
-  if (obj.config.formatNumber) {
-    obj.txtMaximum = formatNumber(obj.txtMaximum);
-  } else if (obj.config.humanFriendly) {
-    obj.txtMaximum = humanFriendlyNumber(obj.config.max, obj.config.humanFriendlyDecimal);
+  var max = obj.config.max;
+  if (obj.config.reverse) {
+    max = obj.config.min;
+  }
+  obj.txtMaximum = max;
+  if (obj.config.humanFriendly) {
+    obj.txtMaximum = humanFriendlyNumber(max, obj.config.humanFriendlyDecimal);
+  } else if (obj.config.formatNumber) {
+    obj.txtMaximum = formatNumber(max);
   }
   obj.txtMax = obj.canvas.text(obj.params.maxX, obj.params.maxY, obj.txtMaximum);
   obj.txtMax.attr({
@@ -615,15 +714,18 @@ JustGage = function(config) {
   if (obj.config.counter === true) {
     //on each animation frame
     eve.on("raphael.anim.frame." + (obj.level.id), function() {
-      var currentValue = obj.level.attr("pki");
+      var currentValue = obj.level.attr("pki")[0];
+      if (obj.config.reverse) {
+        currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
+      }
       if (obj.config.textRenderer) {
-        obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue[0])));
+        obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue)));
       } else if (obj.config.humanFriendly) {
-        obj.txtValue.attr("text", humanFriendlyNumber(Math.floor(currentValue[0]), obj.config.humanFriendlyDecimal) + obj.config.symbol);
+        obj.txtValue.attr("text", humanFriendlyNumber(Math.floor(currentValue), obj.config.humanFriendlyDecimal) + obj.config.symbol);
       } else if (obj.config.formatNumber) {
-        obj.txtValue.attr("text", formatNumber(Math.floor(currentValue[0])) + obj.config.symbol);
+        obj.txtValue.attr("text", formatNumber(Math.floor(currentValue)) + obj.config.symbol);
       } else {
-        obj.txtValue.attr("text", (currentValue[0] * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+        obj.txtValue.attr("text", (currentValue * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
       setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       currentValue = null;
@@ -646,9 +748,13 @@ JustGage = function(config) {
   }
 
   // animate gauge level, value & label
+  var rvl = obj.config.value;
+  if (obj.config.reverse) {
+    rvl = (obj.config.max * 1) + (obj.config.min * 1) - (obj.config.value * 1);
+  }
   obj.level.animate({
     pki: [
-      obj.config.value,
+      rvl,
       obj.config.min,
       obj.config.max,
       obj.params.widgetW,
@@ -656,9 +762,27 @@ JustGage = function(config) {
       obj.params.dx,
       obj.params.dy,
       obj.config.gaugeWidthScale,
-      obj.config.donut
+      obj.config.donut,
+      obj.config.reverse
     ]
   }, obj.config.startAnimationTime, obj.config.startAnimationType);
+
+  if (obj.config.pointer) {
+    obj.needle.animate({
+      ndl: [
+        rvl,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut
+      ]
+    }, obj.config.startAnimationTime, obj.config.startAnimationType);
+  }
+
   obj.txtValue.animate({
     "fill-opacity": (obj.config.hideValue) ? "0" : "1"
   }, obj.config.startAnimationTime, obj.config.startAnimationType);
@@ -676,6 +800,7 @@ JustGage.prototype.refresh = function(val, max) {
   // set new max
   if (max !== null) {
     obj.config.max = max;
+    // TODO: update customSectors
 
     obj.txtMaximum = obj.config.max;
     if (obj.config.humanFriendly) {
@@ -683,10 +808,17 @@ JustGage.prototype.refresh = function(val, max) {
     } else if (obj.config.formatNumber) {
       obj.txtMaximum = formatNumber(obj.config.max);
     }
-    obj.txtMax.attr({
-      "text": obj.txtMaximum
-    });
-    setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
+    if (!obj.config.reverse) {
+      obj.txtMax.attr({
+        "text": obj.txtMaximum
+      });
+      setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
+    } else {
+      obj.txtMin.attr({
+        "text": obj.txtMaximum
+      });
+      setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
+    }
   }
 
   // overflow values
@@ -719,9 +851,13 @@ JustGage.prototype.refresh = function(val, max) {
     setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
   }
 
+  var rvl = obj.config.value;
+  if (obj.config.reverse) {
+    rvl = (obj.config.max * 1) + (obj.config.min * 1) - (obj.config.value * 1);
+  }
   obj.level.animate({
     pki: [
-      obj.config.value,
+      rvl,
       obj.config.min,
       obj.config.max,
       obj.params.widgetW,
@@ -729,10 +865,27 @@ JustGage.prototype.refresh = function(val, max) {
       obj.params.dx,
       obj.params.dy,
       obj.config.gaugeWidthScale,
-      obj.config.donut
+      obj.config.donut,
+      obj.config.reverse
     ],
     "fill": color
   }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
+
+  if (obj.config.pointer) {
+    obj.needle.animate({
+      ndl: [
+        rvl,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut
+      ]
+    }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
+  }
 
   // var clear
   obj, displayVal, color, max = null;
