@@ -4,6 +4,11 @@ Checkout http://justgage.com for details, demos, current release and more.
 
 ###Update log
 
+######November 10, 2015.
+ * **reverse** - reverse the gauge direction - demo at http://justgage.com/examples/reverse.html
+ * **pointer** - render triangular value pointer - demo at http://justgage.com/examples/pointer.html
+
+
 ######November 08, 2015.
  * **defaults** - option to define common config object when you're creating multiple gauges - demo at http://justgage.com/examples/defaults.html
 
