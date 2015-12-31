@@ -43,7 +43,7 @@
     var g1, g2, g3;
 
     document.addEventListener("DOMContentLoaded", function(event) {
-        var g1 = new JustGage({
+        g1 = new JustGage({
             id: "g1",
             value: getRandomInt(350, 980),
             min: 350,
@@ -52,7 +52,7 @@
             label: "miles traveled"
         });
 
-        var g2 = new JustGage({
+        g2 = new JustGage({
             id: "g2",
             value: 32,
             min: 50,
@@ -61,7 +61,7 @@
             label: ""
         });
 
-        var g3 = new JustGage({
+        g3 = new JustGage({
             id: "g3",
             value: 120,
             min: 50,
