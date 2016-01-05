@@ -508,9 +508,38 @@ JustGage = function(config) {
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, Xc, Yc, Xz, Yz, Xa, Ya, Xb, Yb, path;
 
     if (donut) {
+
+      alpha = (1 - 2 * (value - min) / (max - min)) * Math.PI;
+      Ro = w / 2 - w / 7;
+      Ri = Ro - w / 6.666666666666667 * gws;
+
+      Cx = w / 2 + dx;
+      Cy = h / 1.95 + dy;
+
+      Xo = w / 2 + dx + Ro * Math.cos(alpha);
+      Yo = h - (h - Cy) - Ro * Math.sin(alpha);
+      Xi = w / 2 + dx + Ri * Math.cos(alpha);
+      Yi = h - (h - Cy) - Ri * Math.sin(alpha);
+
+      Xc = Xo + dlt * Math.cos(alpha);
+      Yc = Yo - dlt * Math.sin(alpha);
+      Xz = Xi - dlb * Math.cos(alpha);
+      Yz = Yi + dlb * Math.sin(alpha);
+
+      Xa = Xz + dw * Math.sin(alpha);
+      Ya = Yz + dw * Math.cos(alpha);
+      Xb = Xz - dw * Math.sin(alpha);
+      Yb = Yz - dw * Math.cos(alpha);
+
+      path = 'M' + Xa + ',' + Ya + ' ';
+      path += 'L' + Xb + ',' + Yb + ' ';
+      path += 'L' + Xc + ',' + Yc + ' ';
+      path += 'Z ';
+
       return {
-        path: null
+        path: path
       };
+
     } else {
       alpha = (1 - (value - min) / (max - min)) * Math.PI;
       Ro = w / 2 - w / 10;
@@ -606,6 +635,11 @@ JustGage = function(config) {
         obj.config.donut
       ]
     });
+
+    if (obj.config.donut) {
+      obj.needle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
+    }
+
   }
 
   // title
