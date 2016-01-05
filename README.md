@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######January 5, 2016.
+ * **donut pointer** - render configurable triangle pointer in donut mode - demo at http://justgage.com/examples/pointer.html
+
 ######November 10, 2015.
  * **reverse** - reverse the gauge direction - demo at http://justgage.com/examples/reverse.html
  * **pointer** - render triangular value pointer - demo at http://justgage.com/examples/pointer.html

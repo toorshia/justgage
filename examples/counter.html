@@ -29,15 +29,15 @@
 
 <body>
     <div class="container">
-        <div id="gg1" class="gauge"></div>
-        <a href="#" id="gg1_refresh">Random Refresh</a>
+        <div id="g1" class="gauge"></div>
+        <a href="#" id="g1_refresh">Random Refresh</a>
     </div>
     <script src="../raphael-2.1.4.min.js"></script>
     <script src="../justgage.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function(event) {
-        var gg1 = new JustGage({
-            id: "gg1",
+        var g1 = new JustGage({
+            id: "g1",
             value: 72,
             min: 0,
             max: 100,
@@ -47,8 +47,8 @@
             hideInnerShadow: true
         });
 
-        document.getElementById('gg1_refresh').addEventListener('click', function() {
-            gg1.refresh(getRandomInt(0, 100));
+        document.getElementById('g1_refresh').addEventListener('click', function() {
+            g1.refresh(getRandomInt(0, 100));
         });
     });
     </script>
