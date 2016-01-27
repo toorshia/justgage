@@ -73,7 +73,6 @@ JustGage = function(config) {
     // color of gauge title
     titleFontColor: kvLookup('titleFontColor', config, dataset, "#999999"),
 
-
     // valueFontColor : string
     // color of label showing current value
     valueFontColor: kvLookup('valueFontColor', config, dataset, "#010101"),
