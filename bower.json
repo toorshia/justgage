@@ -1,6 +1,6 @@
 {
   "name": "justgage-toorshia",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "main": "justgage.js",
   "ignore": [
     "R&D",
@@ -12,7 +12,7 @@
     "tests"
   ],
   "dependencies": {
-    "raphael": "~2.1.2"
+    "raphael": "~2.1.4"
   },
    "moduleType": [
     "node"
