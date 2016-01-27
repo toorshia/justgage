@@ -73,9 +73,21 @@ JustGage = function(config) {
     // color of gauge title
     titleFontColor: kvLookup('titleFontColor', config, dataset, "#999999"),
 
+    // titleFontFamily : string
+    // color of gauge title
+    titleFontFamily: kvLookup('titleFontFamily', config, dataset, "sans-serif"),
+
+    // titlePosition : string
+    // 'above' or 'below'
+    titlePosition: kvLookup('titlePosition', config, dataset, "above"),
+
     // valueFontColor : string
     // color of label showing current value
     valueFontColor: kvLookup('valueFontColor', config, dataset, "#010101"),
+
+    // valueFontFamily : string
+    // color of label showing current value
+    valueFontFamily: kvLookup('valueFontFamily', config, dataset, "Arial"),
 
     // symbol : string
     // special symbol to show next to value
@@ -374,11 +386,15 @@ JustGage = function(config) {
     // delta
     dx = (canvasW - widgetW) / 2;
     dy = (canvasH - widgetH) / 2;
+    if (obj.config.titlePosition === 'below') {
+      // shift whole thing down
+      dy -= (widgetH / 6.4);
+    }
 
     // title
     titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 10) : obj.config.titleMinFontSize;
     titleX = dx + widgetW / 2;
-    titleY = dy + widgetH / 6.4;
+    titleY = dy + (obj.config.titlePosition === 'below' ? (widgetH * 1.07) : (widgetH / 6.4));
 
     // value
     valueFontSize = ((widgetH / 6.5) > obj.config.valueMinFontSize) ? (widgetH / 6.5) : obj.config.valueMinFontSize;
@@ -646,7 +662,7 @@ JustGage = function(config) {
   obj.txtTitle.attr({
     "font-size": obj.params.titleFontSize,
     "font-weight": "bold",
-    "font-family": "Arial",
+    "font-family": obj.config.titleFontFamily,
     "fill": obj.config.titleFontColor,
     "fill-opacity": "1"
   });
@@ -657,7 +673,7 @@ JustGage = function(config) {
   obj.txtValue.attr({
     "font-size": obj.params.valueFontSize,
     "font-weight": "bold",
-    "font-family": "Arial",
+    "font-family": obj.config.valueFontFamily,
     "fill": obj.config.valueFontColor,
     "fill-opacity": "0"
   });

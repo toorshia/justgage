@@ -2,6 +2,12 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######January 27, 2016.
+ * **titlePosition** - 'above' or 'below'
+ * **titleFontFamily** - customize font-family for the title
+ * **valueFontFamily** - customize font-family for the value
+
+
 ######January 5, 2016.
  * **donut pointer** - render configurable triangle pointer in donut mode - demo at http://justgage.com/examples/pointer.html
 
