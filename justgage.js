@@ -1054,7 +1054,7 @@ function getColor(val, pct, col, noGradient, custSec) {
 
   if (custSec.length > 0) {
     for (var i = 0; i < custSec.length; i++) {
-      if (val > custSec[i].lo && val <= custSec[i].hi) {
+      if (val >= custSec[i].lo && val <= custSec[i].hi) {
         return custSec[i].color;
       }
     }
