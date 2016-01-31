@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######January 31, 2016.
+ * fix - https://github.com/toorshia/justgage/issues/194
+
 ######January 27, 2016.
  * **titlePosition** - 'above' or 'below'
  * **titleFontFamily** - customize font-family for the title
