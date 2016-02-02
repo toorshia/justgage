@@ -705,8 +705,8 @@ JustGage = function(config) {
   }
 
   obj.txtMinimum = min;
-  if (obj.config.txtMin) {
-    obj.txtMinimum = obj.config.txtMin;
+  if (obj.config.minTxt) {
+    obj.txtMinimum = obj.config.minTxt;
   } else if (obj.config.humanFriendly) {
     obj.txtMinimum = humanFriendlyNumber(min, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
@@ -728,8 +728,8 @@ JustGage = function(config) {
     max = obj.config.min;
   }
   obj.txtMaximum = max;
-  if (obj.config.txtMax) {
-    obj.txtMaximum = obj.config.txtMax;
+  if (obj.config.maxTxt) {
+    obj.txtMaximum = obj.config.maxTxt;
   } else if (obj.config.humanFriendly) {
     obj.txtMaximum = humanFriendlyNumber(max, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
@@ -864,8 +864,8 @@ JustGage.prototype.refresh = function(val, max) {
     // TODO: update customSectors
 
     obj.txtMaximum = obj.config.max;
-    if (obj.config.txtMax) {
-      obj.txtMaximum = obj.config.txtMax;
+    if (obj.config.maxTxt) {
+      obj.txtMaximum = obj.config.maxTxt;
     } else if (obj.config.humanFriendly) {
       obj.txtMaximum = humanFriendlyNumber(obj.config.max, obj.config.humanFriendlyDecimal);
     } else if (obj.config.formatNumber) {
