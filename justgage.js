@@ -49,6 +49,10 @@ JustGage = function(config) {
     // value gauge is showing
     value: kvLookup('value', config, dataset, 0, 'float'),
 
+    // value: string
+    // customized value to show
+    valueTxt: kvLookup('valueTxt', config, dataset, false),
+
     // defaults : bool
     // defaults parameter to use
     defaults: kvLookup('defaults', config, dataset, 0, false),
@@ -97,9 +101,17 @@ JustGage = function(config) {
     // min value
     min: kvLookup('min', config, dataset, 0, 'float'),
 
+    // minTxt : string
+    // min value text
+    minTxt: kvLookup('minTxt', config, dataset, false),
+
     // max : float
     // max value
     max: kvLookup('max', config, dataset, 100, 'float'),
+
+    // maxTxt : string
+    // max value text
+    maxTxt: kvLookup('maxTxt', config, dataset, false),
 
     // reverse : bool
     // reverse min and max
@@ -697,7 +709,9 @@ JustGage = function(config) {
   }
 
   obj.txtMinimum = min;
-  if (obj.config.humanFriendly) {
+  if (obj.config.minTxt) {
+    obj.txtMinimum = obj.config.minTxt;
+  } else if (obj.config.humanFriendly) {
     obj.txtMinimum = humanFriendlyNumber(min, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
     obj.txtMinimum = formatNumber(min);
@@ -718,7 +732,9 @@ JustGage = function(config) {
     max = obj.config.min;
   }
   obj.txtMaximum = max;
-  if (obj.config.humanFriendly) {
+  if (obj.config.maxTxt) {
+    obj.txtMaximum = obj.config.maxTxt;
+  } else if (obj.config.humanFriendly) {
     obj.txtMaximum = humanFriendlyNumber(max, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
     obj.txtMaximum = formatNumber(max);
@@ -852,7 +868,9 @@ JustGage.prototype.refresh = function(val, max) {
     // TODO: update customSectors
 
     obj.txtMaximum = obj.config.max;
-    if (obj.config.humanFriendly) {
+    if (obj.config.maxTxt) {
+      obj.txtMaximum = obj.config.maxTxt;
+    } else if (obj.config.humanFriendly) {
       obj.txtMaximum = humanFriendlyNumber(obj.config.max, obj.config.humanFriendlyDecimal);
     } else if (obj.config.formatNumber) {
       obj.txtMaximum = formatNumber(obj.config.max);
@@ -881,7 +899,9 @@ JustGage.prototype.refresh = function(val, max) {
 
   color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
-  if (obj.config.textRenderer) {
+  if (obj.config.valueTxt) {
+    displayVal = obj.config.valueTxt;
+  } else if (obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if (obj.config.humanFriendly) {
     displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
