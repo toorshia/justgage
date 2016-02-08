@@ -234,6 +234,10 @@ JustGage = function(config) {
     // show value pointer
     pointer: kvLookup('pointer', config, dataset, false),
 
+    // pointerText : bool
+    // show the jauge value for the pointer
+    pointerText: kvLookup('pointerText', config, dataset, false),
+
     // pointerOptions : object
     // define pointer look
     pointerOptions: kvLookup('pointerOptions', config, dataset, [])
@@ -582,6 +586,27 @@ JustGage = function(config) {
       path += 'L' + Xb + ',' + Yb + ' ';
       path += 'L' + Xc + ',' + Yc + ' ';
       path += 'Z ';
+      console.log(obj.config);
+      if(obj.config.pointerText) {
+	       if(obj.pointerText) {
+	  	      obj.pointerText.remove();
+	       }
+	       var val = value;
+	       if (obj.config.humanFriendly) {
+		        val = humanFriendlyNumber(value, obj.config.humanFriendlyDecimal);
+		     } else if (obj.config.formatNumber) {
+		        val = formatNumber(value);
+  	     }
+         val = Math.round(val);
+	       obj.pointerText = obj.canvas.text(Xo, Yo, val).attr({'text-anchor': 'middle'});
+           obj.pointerText.attr({
+            "font-size": '25px',
+            "font-weight": "bold",
+            "font-family": "Arial",
+            "fill": 'black',
+        });
+
+      }
 
       return {
         path: path
@@ -650,7 +675,6 @@ JustGage = function(config) {
         obj.config.donut
       ]
     });
-
     if (obj.config.donut) {
       obj.needle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
     }
@@ -1054,7 +1078,7 @@ function getColor(val, pct, col, noGradient, custSec) {
 
   if (custSec.length > 0) {
     for (var i = 0; i < custSec.length; i++) {
-      if (val >= custSec[i].lo && val <= custSec[i].hi) {
+      if (val > custSec[i].lo && val <= custSec[i].hi) {
         return custSec[i].color;
       }
     }
