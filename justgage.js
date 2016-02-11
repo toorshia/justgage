@@ -49,10 +49,6 @@ JustGage = function(config) {
     // value gauge is showing
     value: kvLookup('value', config, dataset, 0, 'float'),
 
-    // value: string
-    // customized value to show
-    valueTxt: kvLookup('valueTxt', config, dataset, false),
-
     // defaults : bool
     // defaults parameter to use
     defaults: kvLookup('defaults', config, dataset, 0, false),
@@ -899,9 +895,7 @@ JustGage.prototype.refresh = function(val, max) {
 
   color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
-  if (obj.config.valueTxt) {
-    displayVal = obj.config.valueTxt;
-  } else if (obj.config.textRenderer) {
+  if (obj.config.textRenderer) {
     displayVal = obj.config.textRenderer(displayVal);
   } else if (obj.config.humanFriendly) {
     displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
