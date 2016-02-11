@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######February 3, 2016.
+ * **minTxt & maxTxt** - Show custom min and max text - https://github.com/toorshia/justgage/issues/193
+
 ######January 31, 2016.
  * fix - https://github.com/toorshia/justgage/issues/194
 
