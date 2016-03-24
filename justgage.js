@@ -880,7 +880,11 @@ JustGage.prototype.refresh = function(val, max) {
       obj.txtMin.attr({
         "text": obj.txtMaximum
       });
+      obj.txtMax.attr({
+        "text": obj.txtMinimum
+      });
       setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
+      setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
     }
   }
 
