@@ -2,6 +2,10 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######March 25, 2016.
+ * **onAnimationEnd** - callback function after gauge animation ends
+ - demo at http://justgage.com/examples/animation-events-hooks.html
+
 ######February 3, 2016.
  * **minTxt & maxTxt** - Show custom min and max text - https://github.com/toorshia/justgage/issues/193
 

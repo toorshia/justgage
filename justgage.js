@@ -122,6 +122,10 @@ JustGage = function(config) {
     // function applied before rendering text
     textRenderer: kvLookup('textRenderer', config, dataset, null),
 
+    // onAnimationEnd: func
+    // function applied after animation is done
+    onAnimationEnd: kvLookup('onAnimationEnd', config, dataset, null),
+
     // gaugeWidthScale : float
     // width of the gauge element
     gaugeWidthScale: kvLookup('gaugeWidthScale', config, dataset, 1.0),
@@ -826,7 +830,7 @@ JustGage = function(config) {
       obj.config.donut,
       obj.config.reverse
     ]
-  }, obj.config.startAnimationTime, obj.config.startAnimationType);
+  }, obj.config.startAnimationTime, obj.config.startAnimationType, obj.config.onAnimationEnd);
 
   if (obj.config.pointer) {
     obj.needle.animate({
@@ -936,7 +940,7 @@ JustGage.prototype.refresh = function(val, max) {
       obj.config.reverse
     ],
     "fill": color
-  }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
+  }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType, obj.config.onAnimationEnd);
 
   if (obj.config.pointer) {
     obj.needle.animate({

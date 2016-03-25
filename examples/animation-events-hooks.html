@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Animation events hooks</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    .wrapper {
+      position: relative;
+      width: 320px;
+      height: 240px;
+      margin: 50px auto 0 auto;
+      padding-bottom: 30px;
+      clear: both;
+    }
+
+    .box {
+      float: left;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 320px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .gauge {
+      width: 320;
+      height: 240px;
+    }
+
+    button {
+      margin: 30px 5px 0 2px;
+      padding: 16px 40px;
+      border-radius: 5px;
+      font-size: 18px;
+      border: none;
+      background: #34aadc;
+      color: white;
+      cursor: pointer;
+    }
+
+    p {
+      padding: 10px;
+      font-family: 'Arial';
+    }
+
+    #log {
+      color: #ccc;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="box">
+        <div id="g1" class="gauge"></div>
+      </div>
+    </div>
+    <div class="container">
+      <button type="button" id="gauge_refresh">Refresh Gauge</button>
+      <p>After every animation end, function will log it below.</p>
+      <p id="log"></p>
+    </div>
+    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../justgage.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+      var g1 = new JustGage({
+        id: 'g1',
+        value: 45,
+        min: 0,
+        max: 100,
+        symbol: '%',
+        pointer: true,
+        pointerOptions: {
+          toplength: -15,
+          bottomlength: 10,
+          bottomwidth: 12,
+          color: '#8e8e93',
+          stroke: '#ffffff',
+          stroke_width: 3,
+          stroke_linecap: 'round'
+        },
+        gaugeWidthScale: 0.6,
+        counter: true,
+        onAnimationEnd: function() {
+          console.log('animation ended');
+          var log = document.getElementById('log');
+          log.innerHTML = log.innerHTML + 'Animation just ended.<br/>';
+        }
+      });
+
+      document.getElementById('gauge_refresh').addEventListener('click', function() {
+        g1.refresh(getRandomInt(0, 100));
+      });
+    });
+    </script>
+  </body>
+
+</html>
