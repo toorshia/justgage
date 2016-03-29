@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######March 29, 2016.
+ * **refresh(val, max, config)** - now you can include config object when calling refresh function to update any existing justGage parameter   
+
 ######March 25, 2016.
  * **onAnimationEnd** - callback function after gauge animation ends
  - demo at http://justgage.com/examples/animation-events-hooks.html
