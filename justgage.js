@@ -857,10 +857,19 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max) {
+JustGage.prototype.refresh = function(val, max, config) {
 
   var obj = this;
   var displayVal, color, max = max || null;
+
+  if(config && (typeof config  === "object")) {
+    for(var key in config) {
+      if(!config.hasOwnProperty(key)) {
+        continue;
+      }
+      obj.config[key] = config[key];
+    }
+  }
 
   // set new max
   if (max !== null) {
