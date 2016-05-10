@@ -120,7 +120,7 @@ JustGage = function(config) {
 
     // textRenderer: func
     // function applied before rendering text
-    textRenderer: kvLookup('textRenderer', config, dataset, null),
+    textRenderer: kvLookup('textRenderer', config, dataset, function(val) { return val; }),
 
     // onAnimationEnd: func
     // function applied after animation is done
@@ -708,9 +708,9 @@ JustGage = function(config) {
     min = obj.config.max;
   }
 
-  obj.txtMinimum = min;
+  obj.txtMinimum = obj.config.textRenderer(min);
   if (obj.config.minTxt) {
-    obj.txtMinimum = obj.config.minTxt;
+    obj.txtMinimum = obj.config.textRenderer(obj.config.minTxt);
   } else if (obj.config.humanFriendly) {
     obj.txtMinimum = humanFriendlyNumber(min, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
@@ -731,9 +731,9 @@ JustGage = function(config) {
   if (obj.config.reverse) {
     max = obj.config.min;
   }
-  obj.txtMaximum = max;
+  obj.txtMaximum = obj.config.textRenderer(max);
   if (obj.config.maxTxt) {
-    obj.txtMaximum = obj.config.maxTxt;
+    obj.txtMaximum = obj.config.textRenderer(obj.config.maxTxt);
   } else if (obj.config.humanFriendly) {
     obj.txtMaximum = humanFriendlyNumber(max, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
@@ -876,9 +876,9 @@ JustGage.prototype.refresh = function(val, max, config) {
     obj.config.max = max;
     // TODO: update customSectors
 
-    obj.txtMaximum = obj.config.max;
+    obj.txtMaximum = obj.config.textRenderer(obj.config.max);
     if (obj.config.maxTxt) {
-      obj.txtMaximum = obj.config.maxTxt;
+      obj.txtMaximum = obj.config.textRenderer(obj.config.maxTxt);
     } else if (obj.config.humanFriendly) {
       obj.txtMaximum = humanFriendlyNumber(obj.config.max, obj.config.humanFriendlyDecimal);
     } else if (obj.config.formatNumber) {
