@@ -30,5 +30,10 @@
   "bugs": {
     "url": "https://github.com/toorshia/justgage/issues"
   },
-  "homepage": "https://github.com/toorshia/justgage"
+  "homepage": "https://github.com/toorshia/justgage",
+  "jspm": {
+    "dependencies": {
+      "raphael": "github:DmitryBaranovskiy/raphael@^2.2.0"
+    }
+  }
 }
