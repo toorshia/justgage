@@ -4,13 +4,17 @@
  * Licensed under MIT.
  * @author Bojan Djuricic (@Toorshia)
  **/
-(function (root, factory) {  
-  if (typeof define === "function" && define.amd) {    
+(function (root, factory) {
+  if (typeof define === "function" && define.amd) {
     define(["raphael"], factory);
-  } else if (typeof module === "object" && module.exports) {    
+  } else if (typeof module === "object" && module.exports) {
     module.exports = factory(require("raphael"));
-  } else {    
-    root.JustGage = factory.JustGage(root.postal);
+  } else {
+    var justGageModule = factory(root.Raphael);
+    for (var propertyName in justGageModule) {
+      if (justGageModule.hasOwnProperty(propertyName))
+        root[propertyName] = justGageModule[propertyName];
+    }
   }
 } (this, function (Raphael) {
   var JustGage = function (config) {
@@ -1257,5 +1261,8 @@
     return out;
   };
 
-  return {JustGage: JustGage};
+  return {
+    JustGage: JustGage,
+    getRandomInt: getRandomInt
+  };
 }));
