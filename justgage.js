@@ -248,7 +248,19 @@ JustGage = function(config) {
 
     // pointerOptions : object
     // define pointer look
-    pointerOptions: kvLookup('pointerOptions', config, dataset, [])
+    pointerOptions: kvLookup('pointerOptions', config, dataset, []),
+    
+    // target : float
+    // location for target pointer
+    target: kvLookup('target', config, dataset, 0, 'float'),   
+    
+    // targetPointer : bool
+    // show target pointer
+    targetPointer: kvLookup('targetPointer', config, dataset, false),
+    
+    // targetPointerOptions : object
+    // define target pointer look
+    targetPointerOptions: kvLookup('targetPointerOptions', config, dataset, [])
   };
 
   // variables
@@ -522,16 +534,22 @@ JustGage = function(config) {
   };
 
   // ndl - custom attribute for generating needle path
-  obj.canvas.customAttributes.ndl = function(value, min, max, w, h, dx, dy, gws, donut) {
+  obj.canvas.customAttributes.ndl = function(value, min, max, w, h, dx, dy, gws, donut, needle) {
 
     var dlt = w * 3.5 / 100;
     var dlb = w / 15;
     var dw = w / 100;
 
-    if (obj.config.pointerOptions.toplength != null && obj.config.pointerOptions.toplength != undefined) dlt = obj.config.pointerOptions.toplength;
-    if (obj.config.pointerOptions.bottomlength != null && obj.config.pointerOptions.bottomlength != undefined) dlb = obj.config.pointerOptions.bottomlength;
-    if (obj.config.pointerOptions.bottomwidth != null && obj.config.pointerOptions.bottomwidth != undefined) dw = obj.config.pointerOptions.bottomwidth;
-
+    if (needle) {
+      if (obj.config.obj.config.pointerOptionsinterOptions.toplength != null && obj.config.pointerOptions.toplength != undefined) dlt = obj.config.pointerOptions.toplength;
+      if (obj.config.pointerOptions.bottomlength != null && obj.config.pointerOptions.bottomlength != undefined) dlb = obj.config.pointerOptions.bottomlength;
+      if (obj.config.pointerOptions.bottomwidth != null && obj.config.pointerOptions.bottomwidth != undefined) dw = obj.config.pointerOptions.bottomwidth;
+    } else {
+      if (obj.config.targetPointerOptions.toplength != null && obj.config.targetPointerOptions.toplength != undefined) dlt = obj.config.targetPointerOptions.toplength;
+      if (obj.config.targetPointerOptions.bottomlength != null && obj.config.targetPointerOptions.bottomlength != undefined) dlb = obj.config.targetPointerOptions.bottomlength;
+      if (obj.config.targetPointerOptions.bottomwidth != null && obj.config.targetPointerOptions.bottomwidth != undefined) dw = obj.config.targetPointerOptions.bottomwidth;
+    }
+    
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, Xc, Yc, Xz, Yz, Xa, Ya, Xb, Yb, path;
 
     if (donut) {
@@ -659,7 +677,8 @@ JustGage = function(config) {
         obj.params.dx,
         obj.params.dy,
         obj.config.gaugeWidthScale,
-        obj.config.donut
+        obj.config.donut,
+        true
       ]
     });
 
@@ -667,6 +686,32 @@ JustGage = function(config) {
       obj.needle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
     }
 
+  }
+  
+  if (obj.config.targetPointer) {
+    // target pointer
+    obj.targetneedle = obj.canvas.path().attr({
+      "stroke": (obj.config.targetPointerOptions.stroke !== null && obj.config.targetPointerOptions.stroke !== undefined) ? obj.config.targetPointerOptions.stroke : "none",
+      "stroke-width": (obj.config.targetPointerOptions.stroke_width !== null && obj.config.targetPointerOptions.stroke_width !== undefined) ? obj.config.targetPointerOptions.stroke_width : 0,
+      "stroke-linecap": (obj.config.targetPointerOptions.stroke_linecap !== null && obj.config.targetPointerOptions.stroke_linecap !== undefined) ? obj.config.targetPointerOptions.stroke_linecap : "square",
+      "fill": (obj.config.targetPointerOptions.color !== null && obj.config.targetPointerOptions.color !== undefined) ? obj.config.targetPointerOptions.color : "#000000",
+      ndl: [
+        obj.config.max,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut,
+        false
+      ]
+    });
+
+    if (obj.config.donut) {
+      obj.targetneedle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
+    }
   }
 
   // title
@@ -843,7 +888,25 @@ JustGage = function(config) {
         obj.params.dx,
         obj.params.dy,
         obj.config.gaugeWidthScale,
-        obj.config.donut
+        obj.config.donut,
+        true
+      ]
+    }, obj.config.startAnimationTime, obj.config.startAnimationType);
+  }
+  
+  if (obj.config.targetPointer) {
+    obj.targetneedle.animate({
+      ndl: [
+        obj.config.target,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut,
+        false
       ]
     }, obj.config.startAnimationTime, obj.config.startAnimationType);
   }
@@ -962,7 +1025,25 @@ JustGage.prototype.refresh = function(val, max, config) {
         obj.params.dx,
         obj.params.dy,
         obj.config.gaugeWidthScale,
-        obj.config.donut
+        obj.config.donut,
+        true
+      ]
+    }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
+  }
+     
+  if (obj.config.targetPointer) {
+    obj.targetneedle.animate({
+      ndl: [
+        obj.config.target,
+        obj.config.min,
+        obj.config.max,
+        obj.params.widgetW,
+        obj.params.widgetH,
+        obj.params.dx,
+        obj.params.dy,
+        obj.config.gaugeWidthScale,
+        obj.config.donut,
+        false
       ]
     }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
   }
