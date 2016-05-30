@@ -27,6 +27,14 @@
 </head>
 
 <body>
+    <form>
+        toplength: <br>
+        <input type="range" id="toplength" min=-100 max=100 value=0><input type="text" id="toplengthn" value="0" size=5><br>
+        bottomlength: <br>
+        <input type="range" id="bottomlength" min=-100 max=100 value=-90><input type="text" id="bottomlengthn" value="-90" size=5><br>
+        bottomwidth: <br>
+        <input type="range" id="bottomwidth" min=0 max=100 value=12><input type="text" id="bottomwidthn" value="12" size=5>
+    </form>
     <div class="container">
         <div id="g1" class="gauge"></div>
         <a href="#" id="g1_refresh">Random Refresh</a>
@@ -51,7 +59,27 @@
                 },
                 hideInnerShadow: true
             });
+            
+            changePointer = function () {
+                var tl = document.getElementById('toplength').value;
+                var bl = document.getElementById('bottomlength').value;
+                var bw = document.getElementById('bottomwidth').value;
+                g1.refresh(72, 100, {
+                    targetPointerOptions: { 
+                        toplength: tl,
+                        bottomlength: bl,
+                        bottomwidth: bw
+                     }
+                });
+                document.getElementById('toplengthn').value = tl;
+                document.getElementById('bottomlengthn').value = bl;
+                document.getElementById('bottomwidthn').value = bw;
+            }
 
+            document.getElementById('toplength').addEventListener('input', changePointer);
+            document.getElementById('bottomlength').addEventListener('input', changePointer);
+            document.getElementById('bottomwidth').addEventListener('input', changePointer);
+            
             document.getElementById('g1_refresh').addEventListener('click', function () {
                 g1.refresh(getRandomInt(0, 100));
             });
