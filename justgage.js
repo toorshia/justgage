@@ -625,7 +625,7 @@ JustGage = function(config) {
   // level
   obj.level = obj.canvas.path().attr({
     "stroke": "none",
-    "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
+    "fill": getColor(obj.originalValue, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
     pki: [
       obj.config.min,
       obj.config.min,
@@ -1085,7 +1085,8 @@ function getColor(val, pct, col, noGradient, custSec) {
 
   if (custSec.length > 0) {
     for (var i = 0; i < custSec.length; i++) {
-      if (val >= custSec[i].lo && val <= custSec[i].hi) {
+      if ((val >= custSec[i].lo && val <= custSec[i].hi) ||
+		 (typeof custSec[i].hi === "undefined")) {
         return custSec[i].color;
       }
     }

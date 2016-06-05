@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+#####June 06, 2016.
+ * **customSectors with only lower bound** - now you can specify only a lower bound of a customSectors
+
 ######March 29, 2016.
  * **refresh(val, max, config)** - now you can include config object when calling refresh function to update any existing justGage parameter   
 
