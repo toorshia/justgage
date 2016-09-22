@@ -857,19 +857,10 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max, config) {
+JustGage.prototype.refresh = function(val, max) {
 
   var obj = this;
   var displayVal, color, max = max || null;
-
-  if(config && (typeof config  === "object")) {
-    for(var key in config) {
-      if(!config.hasOwnProperty(key)) {
-        continue;
-      }
-      obj.config[key] = config[key];
-    }
-  }
 
   // set new max
   if (max !== null) {
@@ -935,6 +926,7 @@ JustGage.prototype.refresh = function(val, max, config) {
   if (obj.config.reverse) {
     rvl = (obj.config.max * 1) + (obj.config.min * 1) - (obj.config.value * 1);
   }
+
   obj.level.animate({
     pki: [
       rvl,
@@ -969,6 +961,11 @@ JustGage.prototype.refresh = function(val, max, config) {
 
   // var clear
   obj, displayVal, color, max = null;
+};
+
+/** Update gauge object */
+JustGage.prototype.destroy = function() {
+  document.getElementById(this.config.id).innerHTML = '';
 };
 
 /** Generate shadow */
