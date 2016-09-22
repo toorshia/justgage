@@ -3,7 +3,7 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 ###Update log
 
 ######September 22, 2016.
- * ** JustGage.prototype.destroy() ** - added method to remove gauge node from DOM
+ * **JustGage.prototype.destroy()** - added method to remove gauge node from DOM
 
 ######September 20, 2016.
 Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/justgage/issues/245
