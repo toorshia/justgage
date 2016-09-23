@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>No title</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+        .whole {
+            width: 600px;
+            margin: 0 auto;
+            clear: both;
+        }
+
+        .half {
+            width: 50%;
+            float: left;
+        }
+
+        .container-1 {
+            width: 150px;
+            height: 100px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+        }
+
+        .container-2 {
+            width: 100px;
+            height: 150px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+        }
+
+        .container-3 {
+            width: 150px;
+            height: 150px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+        }
+
+        .gauge {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="whole">
+        <div class="half">
+            <div class="container-1">
+                <div id="jg1" class="gauge"></div>
+            </div>
+            <div class="container-2">
+                <div id="jg2" class="gauge"></div>
+            </div>
+            <div class="container-3">
+                <div id="jg3" class="gauge"></div>
+            </div>
+        </div>
+        <div class="half">
+            <div class="container-1">
+                <div id="jg4" class="gauge"></div>
+            </div>
+            <div class="container-2">
+                <div id="jg5" class="gauge"></div>
+            </div>
+            <div class="container-3">
+                <div id="jg6" class="gauge"></div>
+            </div>
+        </div>
+    </div>
+    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../justgage.js"></script>
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        var defs1 = {
+            label: "label",
+            value: 65,
+            min: 0,
+            max: 100,
+            decimals: 0,
+            gaugeWidthScale: 0.6,
+            pointer: true,
+            pointerOptions: {
+                toplength: 10,
+                bottomlength: 10,
+                bottomwidth: 2
+            },
+            counter: true
+        }
+
+        var defs2 = {
+            label: "label",
+            value: 35,
+            min: 0,
+            max: 100,
+            decimals: 0,
+            gaugeWidthScale: 0.6,
+            pointer: true,
+            pointerOptions: {
+                toplength: 5,
+                bottomlength: 15,
+                bottomwidth: 2
+            },
+            counter: true,
+            donut: true
+        }
+
+        var jg1 = new JustGage({
+            id: "jg1",
+            defaults: defs1
+        });
+
+        var jg2 = new JustGage({
+            id: "jg2",
+            defaults: defs1
+        });
+
+        var jg3 = new JustGage({
+            id: "jg3",
+            defaults: defs1
+        });
+
+        var jg4 = new JustGage({
+            id: "jg4",
+            defaults: defs2
+        });
+
+        var jg5 = new JustGage({
+            id: "jg5",
+            defaults: defs2
+        });
+
+        var jg6 = new JustGage({
+            id: "jg6",
+            defaults: defs2
+        });
+
+    });
+    </script>
+</body>
+
+</html>
