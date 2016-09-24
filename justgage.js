@@ -186,9 +186,9 @@ JustGage = function(config) {
     // hide min and max values
     hideMinMax: kvLookup('hideMinMax', config, dataset, false),
 
-    // hideInnerShadow : bool
-    // hide inner shadow
-    hideInnerShadow: kvLookup('hideInnerShadow', config, dataset, false),
+    // showInnerShadow : bool
+    // show inner shadow
+    showInnerShadow: kvLookup('showInnerShadow', config, dataset, false),
 
     // humanFriendly : bool
     // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
@@ -954,7 +954,7 @@ JustGage.prototype.generateShadow = function(svg, defs) {
   gaussFilter.appendChild(feComposite3);
 
   // set shadow
-  if (!obj.config.hideInnerShadow) {
+  if (obj.config.showInnerShadow) {
     obj.canvas.canvas.childNodes[2].setAttribute("filter", "url(" + window.location.pathname + "#" + sid + ")");
     obj.canvas.canvas.childNodes[3].setAttribute("filter", "url(" + window.location.pathname + "#" + sid + ")");
   }
