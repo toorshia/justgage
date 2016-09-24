@@ -267,8 +267,15 @@ JustGage = function(config) {
 
   // canvas dimensions
   if (obj.config.relativeGaugeSize === true) {
-    canvasW = 200;
-    canvasH = 100;
+    if (obj.config.donut === true) {
+      obj.canvas.setViewBox(0, 0, 200, 200, true);
+      canvasW = 200;
+      canvasH = 200;
+    } else {
+      obj.canvas.setViewBox(0, 0, 200, 100, true);
+      canvasW = 200;
+      canvasH = 100;
+    }
   } else if (obj.config.width !== null && obj.config.height !== null) {
     canvasW = obj.config.width;
     canvasH = obj.config.height;
@@ -477,7 +484,7 @@ JustGage = function(config) {
       Ri = Ro - w / 6.666666666666667 * gws;
 
       Cx = w / 2 + dx;
-      Cy = h / 1.95 + dy;
+      Cy = h / 2 + dy;
 
       Xo = w / 2 + dx + Ro * Math.cos(alpha);
       Yo = h - (h - Cy) - Ro * Math.sin(alpha);
@@ -600,7 +607,7 @@ JustGage = function(config) {
     });
 
     if (obj.config.donut) {
-      obj.needle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 1.95 + obj.params.dy));
+      obj.needle.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 2 + obj.params.dy));
     }
   }
 
