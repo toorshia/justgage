@@ -2,7 +2,7 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
-######September 23, 2016.
+######September 24, 2016.
  * **hideInnerShadow** replaced with **showInnerShadow** due to performance issues with shadows turned on by default
  * relative sizing fixed (it was not working due to wrong canvas size calculations)
 
