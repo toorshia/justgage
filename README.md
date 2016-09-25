@@ -2,7 +2,25 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
-######September 24, 2016.
+######September 26, 2016. - release 1.2.8
+* **customSectors** receives structural update + additional "percents" feature (define ranges in %).
+'''javascript
+customSectors: {
+  percents: true,
+  ranges: [{
+    color : "#43bf58",
+    lo : 0,
+    hi : 50
+  },{
+    color : "#ff3b30",
+    lo : 51,
+    hi : 100
+  }]
+}
+'''
+Example: http://justgage.com/examples/custom-sectors.html
+
+######September 24, 2016. - release 1.2.7
  * **hideInnerShadow** replaced with **showInnerShadow** due to performance issues with shadows turned on by default
  * relative sizing fixed (it was not working due to wrong canvas size calculations)
 

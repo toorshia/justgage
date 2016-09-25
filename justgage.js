@@ -1009,12 +1009,13 @@ function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
 function getColor(val, pct, col, noGradient, custSec) {
 
   var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
-  var noGradient = noGradient || custSec.length > 0;
+  var noGradient = noGradient || custSec.ranges.length > 0;
 
-  if (custSec.length > 0) {
-    for (var i = 0; i < custSec.length; i++) {
-      if (val >= custSec[i].lo && val <= custSec[i].hi) {
-        return custSec[i].color;
+  if (custSec.ranges.length > 0) {
+    if (custSec.percents === true) val = pct * 100;
+    for (var i = 0; i < custSec.ranges.length; i++) {
+      if (val >= custSec.ranges[i].lo && val <= custSec.ranges[i].hi) {
+        return custSec.ranges[i].color;
       }
     }
   }
