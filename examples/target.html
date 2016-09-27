@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Counter</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+        .container {
+            width: 450px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .gauge {
+            width: 450px;
+            height: 450px;
+        }
+        
+        a:link.button,
+        a:active.button,
+        a:visited.button,
+        a:hover.button {
+            margin: 30px 5px 0 2px;
+            padding: 7px 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        toplength: <br>
+        <input type="range" id="toplength" min=-100 max=100 value=0><input type="text" id="toplengthn" value="0" size=5><br>
+        bottomlength: <br>
+        <input type="range" id="bottomlength" min=-100 max=100 value=-90><input type="text" id="bottomlengthn" value="-90" size=5><br>
+        bottomwidth: <br>
+        <input type="range" id="bottomwidth" min=0 max=100 value=12><input type="text" id="bottomwidthn" value="12" size=5>
+    </form>
+    <div class="container">
+        <div id="g1" class="gauge"></div>
+        <a href="#" id="g1_refresh">Random Refresh</a>
+    </div>
+    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../justgage.js"></script>
+    <script>
+        var g1;
+        document.addEventListener("DOMContentLoaded", function (event) {
+            g1 = new JustGage({
+                id: "g1",
+                value: 72,
+                min: 0,
+                max: 100,
+                target: 90,
+                targetPointer: true,
+                targetPointerOptions: {
+                    toplength: 0,
+                    bottomlength: -90,
+                    bottomwidth: 12,
+                    color: '#8e8e93'
+                },
+                hideInnerShadow: true
+            });
+            
+            changePointer = function () {
+                var tl = document.getElementById('toplength').value;
+                var bl = document.getElementById('bottomlength').value;
+                var bw = document.getElementById('bottomwidth').value;
+                g1.refresh(72, 100, {
+                    targetPointerOptions: { 
+                        toplength: tl,
+                        bottomlength: bl,
+                        bottomwidth: bw
+                     }
+                });
+                document.getElementById('toplengthn').value = tl;
+                document.getElementById('bottomlengthn').value = bl;
+                document.getElementById('bottomwidthn').value = bw;
+            }
+
+            document.getElementById('toplength').addEventListener('input', changePointer);
+            document.getElementById('bottomlength').addEventListener('input', changePointer);
+            document.getElementById('bottomwidth').addEventListener('input', changePointer);
+            
+            document.getElementById('g1_refresh').addEventListener('click', function () {
+                g1.refresh(getRandomInt(0, 100));
+            });
+        });
+    </script>
+</body>
+
+</html>
