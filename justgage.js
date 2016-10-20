@@ -5,12 +5,6 @@
  * @author Bojan Djuricic (@Toorshia)
  **/
 
-  // am I in a commonJS environment?
-  if(typeof exports === "object" && exports) {
-    // yep, i will import raphael then
-    var Raphael = require('raphael');
-  }
-
 
 JustGage = function(config) {
 
@@ -1186,4 +1180,11 @@ function extend(out) {
   return out;
 };
 
+-// am I in a commonJS environment?		 +
+ -if(typeof exports === "object" && exports) {	
+    // let's import raphael then
+    var Raphael = require('raphael');
+ -  // and i will export myself as a module.		
+ -   module.exports = JustGage;		
+ -}
 
