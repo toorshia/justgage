@@ -1186,8 +1186,4 @@ function extend(out) {
   return out;
 };
 
-// am I in a commonJS environment?
-if(typeof exports === "object" && exports) {
-  // yep, i will export myself as a module.
-   module.exports = JustGage;
-}
+
