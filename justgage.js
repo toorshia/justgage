@@ -1180,11 +1180,11 @@ function extend(out) {
   return out;
 };
 
--// am I in a commonJS environment?		 +
- -if(typeof exports === "object" && exports) {	
-    // let's import raphael then
-    var Raphael = require('raphael');
- -  // and i will export myself as a module.		
- -   module.exports = JustGage;		
- -}
+// am I in a commonJS environment?		 +
+if(typeof exports === "object" && exports) {	
+   // let's import raphael then
+   var Raphael = require('raphael');
+   // and i will export myself as a module.		
+   module.exports = JustGage;		
+ }
 
