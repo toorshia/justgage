@@ -788,10 +788,10 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max) {
+JustGage.prototype.refresh = function(val, max, label) {
 
   var obj = this;
-  var displayVal, color, max = max || null;
+  var displayVal, color, max = max || null, label = label || null;
 
   // set new max
   if (max !== null) {
@@ -821,6 +821,16 @@ JustGage.prototype.refresh = function(val, max) {
       setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
       setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
     }
+  }
+
+  // set new label
+  if (label !== null) {
+    obj.config.label = label;
+
+    obj.txtLabel.attr({
+      "text": obj.config.label
+    });
+    setDy(obj.txtLabel, obj.params.labelFontSize, obj.params.labelY);
   }
 
   // overflow values
