@@ -87,7 +87,8 @@ JustGage = function(config) {
 
     // max : float
     // max value
-    max: kvLookup('max', config, dataset, 100, 'float'),
+    //      `|| 100` make us sure it's impossible to init `max` with a 0 vaule
+    max: kvLookup('max', config, dataset, 100, 'float') || 100,
 
     // maxTxt : string
     // max value text
