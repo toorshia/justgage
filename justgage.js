@@ -788,15 +788,40 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max) {
+JustGage.prototype.refresh = function(val, min, max) {
 
   var obj = this;
-  var displayVal, color, max = max || null;
+  var displayVal, color, max = max || null, min = min || null;
+
+  // set new min
+  if (min !== null) {
+    obj.config.min = min;
+    // TODO: update customSectors
+
+    obj.txtMinimum = obj.config.min;
+    if (obj.config.minTxt) {
+      obj.txtMinimum = obj.config.minTxt;
+    } else if (obj.config.humanFriendly) {
+      obj.txtMinimum = humanFriendlyNumber(obj.config.min, obj.config.humanFriendlyDecimal);
+    } else if (obj.config.formatNumber) {
+      obj.txtMinimum = formatNumber(obj.config.min);
+    }
+    if (!obj.config.reverse) {
+      obj.txtMin.attr({
+        "text": obj.txtMinimum
+      });
+      setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
+    } else {
+      obj.txtMax.attr({
+        "text": obj.txtMinimum
+      });
+      setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
+    }
+  }
 
   // set new max
   if (max !== null) {
     obj.config.max = max;
-    // TODO: update customSectors
 
     obj.txtMaximum = obj.config.max;
     if (obj.config.maxTxt) {
@@ -815,11 +840,7 @@ JustGage.prototype.refresh = function(val, max) {
       obj.txtMin.attr({
         "text": obj.txtMaximum
       });
-      obj.txtMax.attr({
-        "text": obj.txtMinimum
-      });
-      setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
-      setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
+      setDy(obj.txtMin, obj.params.maxFontSize, obj.params.maxY);
     }
   }
 
@@ -891,7 +912,7 @@ JustGage.prototype.refresh = function(val, max) {
   }
 
   // var clear
-  obj, displayVal, color, max = null;
+  obj, displayVal, color, max, min = null;
 };
 
 /** Destroy gauge object */
