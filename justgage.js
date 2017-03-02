@@ -228,7 +228,11 @@ JustGage = function(config) {
 
     // pointerOptions : object
     // define pointer look
-    pointerOptions: kvLookup('pointerOptions', config, dataset, [])
+    pointerOptions: kvLookup('pointerOptions', config, dataset, []),
+
+    // displayRemaining: boolean
+    // replace display number with the number remaining to reach max
+    displayRemaining: kvLookup('displayRemaining', config, dataset, false)
   };
 
   // variables
@@ -703,7 +707,9 @@ JustGage = function(config) {
     obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
   } else if (obj.config.formatNumber) {
     obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
-  } else {
+  } else if(obj.config.displayRemaining) {
+    obj.originalValue = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+  }  else {
     obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
