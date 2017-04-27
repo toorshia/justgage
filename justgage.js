@@ -1013,9 +1013,9 @@ function getColor(val, pct, col, noGradient, custSec) {
 
   if (custSec.length > 0) {
     if (custSec.percents === true) val = pct * 100;
-    for (var i = 0; i < custSec.ranges.length; i++) {
-      if (val >= custSec.ranges[i].lo && val <= custSec.ranges[i].hi) {
-        return custSec.ranges[i].color;
+    for (var i = 0; i < custSec.length; i++) {
+      if (val >= custSec.lo && val <= custSec.hi) {
+        return custSec.color;
       }
     }
   }
