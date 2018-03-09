@@ -9,6 +9,11 @@ JustGage = function(config) {
 
   var obj = this;
 
+  var min = -config.min;
+  config.min += min;
+  config.max += min;
+  config.value += min;
+
   // Helps in case developer wants to debug it. unobtrusive
   if (config === null || config === undefined) {
     console.log('* justgage: Make sure to pass options to the constructor!');
