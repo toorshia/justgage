@@ -9,11 +9,6 @@ JustGage = function(config) {
 
   var obj = this;
 
-  var min = -config.min;
-  config.min += min;
-  config.max += min;
-  config.value += min;
-
   // Helps in case developer wants to debug it. unobtrusive
   if (config === null || config === undefined) {
     console.log('* justgage: Make sure to pass options to the constructor!');
@@ -405,6 +400,12 @@ JustGage = function(config) {
   obj.canvas.customAttributes.pki = function(value, min, max, w, h, dx, dy, gws, donut, reverse) {
 
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
+
+    if (min < 0) {
+      max -= min;
+      value -= min;
+      min = 0;
+    }
 
     if (donut) {
       alpha = (1 - 2 * (value - min) / (max - min)) * Math.PI;
