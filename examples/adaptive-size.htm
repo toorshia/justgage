@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Adaptive size</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            padding: 10px;
+            margin: 0px;
+        }
+
+        .clear:before,
+        .clear:after {
+            content: "";
+            display: table;
+        }
+
+        .clear:after {
+            clear: both;
+        }
+
+        .clear {
+            *zoom: 1;
+        }
+
+        .gauge {
+            display: block;
+            float: left;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            margin: 0 0 1% 0;
+        }
+
+        .size-1 {
+            width: 20%;
+        }
+
+        .size-2 {
+            width: 30%;
+        }
+
+        .size-3 {
+            width: 48%;
+        }
+
+        .h-split {
+            display: block;
+            float: left;
+            width: 1%;
+            min-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="jg1" class="gauge size-1"></div>
+    <div class="h-split"></div>
+    <div id="jg2" class="gauge size-2"></div>
+    <div class="h-split"></div>
+    <div id="jg3" class="gauge size-3"></div>
+    <div class="clear"></div>
+    <div id="jg4" class="gauge size-1"></div>
+    <div class="h-split"></div>
+    <div id="jg5" class="gauge size-2"></div>
+    <div class="h-split"></div>
+    <div id="jg6" class="gauge size-3"></div>
+    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../justgage.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var jg1, jg2, jg3, jg4, jg5, jg6;
+
+        var defs1 = {
+            label: "label",
+            value: 65,
+            min: 0,
+            max: 100,
+            decimals: 0,
+            gaugeWidthScale: 0.6,
+            pointer: true,
+            pointerOptions: {
+                toplength: 10,
+                bottomlength: 10,
+                bottomwidth: 2
+            },
+            counter: true,
+            relativeGaugeSize: true
+        }
+
+        var defs2 = {
+            label: "label",
+            value: 35,
+            min: 0,
+            max: 100,
+            decimals: 0,
+            gaugeWidthScale: 0.6,
+            pointer: true,
+            pointerOptions: {
+                toplength: 5,
+                bottomlength: 15,
+                bottomwidth: 2
+            },
+            counter: true,
+            donut: true,
+            relativeGaugeSize: true
+        }
+
+        jg1 = new JustGage({
+            id: "jg1",
+            defaults: defs1
+        });
+
+        jg2 = new JustGage({
+            id: "jg2",
+            defaults: defs1
+        });
+
+        jg3 = new JustGage({
+            id: "jg3",
+            defaults: defs1
+        });
+
+        jg4 = new JustGage({
+            id: "jg4",
+            defaults: defs2
+        });
+
+        jg5 = new JustGage({
+            id: "jg5",
+            defaults: defs2
+        });
+
+        jg6 = new JustGage({
+            id: "jg6",
+            defaults: defs2
+        });
+    });
+    </script>
+</body>
+
+</html>

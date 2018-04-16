@@ -7,23 +7,47 @@
   <meta name="viewport" content="width=device-width">
 
   <style>
+  body {
+    font-family: Arial;
+  }
+
   .container {
-    width: 450px;
-    margin: 0 auto;
+    width: 600px;
+    margin: 30px auto;
     text-align: center;
   }
 
   .gauge {
-    width: 450px;
-    height: 450px;
+    width: 50%;
+    height: 200px;
+    float: left;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    margin: 30px 0 20px 0;
+  }
+
+  .conf {
+    display: block;
+    width: 50%;
+    float: left;
+    margin: 30px 0 20px 0;
+    text-align: left;
+  }
+
+  .clear {
+    clear: both;
+  }
+
+  h3 {
+    margin: 50px 0 10px 0;
   }
 
   a:link.button,
   a:active.button,
   a:visited.button,
   a:hover.button {
-    margin: 30px 5px 0 2px;
-    padding: 7px 13px;
+    margin: 0 5px 0 2px;
+    padding: 10px 13px;
   }
 
   </style>
@@ -34,54 +58,97 @@
 <body>
 
   <div class="container">
-    <div id="gg1" class="gauge"></div>
-    <p id="gg1_text">0-50 is green, 51-100 is red</p>
-    <a href="#" id="gg1_refresh" class="button grey">Random Refresh</a>
-    <a href="#" id="gg1_update" class="button grey">Update Sectors</a>
+    <h3>Percent-based sectors</h3>
+    <div id="jg1" class="gauge"></div>
+    <pre class="conf">
+      customSectors: {
+        percents: true,
+        ranges: [{
+          color : "#43bf58",
+          lo : 0,
+          hi : 50
+        },{
+          color : "#ff3b30",
+          lo : 51,
+          hi : 100
+        }]
+      }
+    </pre>
+    <div class="clear"></div>
+    <a href="#" id="jg1_refresh" class="button grey">Random update</a>
+
+    <h3>Value-based sectors</h3>
+    <div id="jg2" class="gauge"></div>
+    <pre class="conf">
+      customSectors: {
+        ranges: [{
+          color : "#43bf58",
+          lo : 0,
+          hi : 50
+        },{
+          color : "#ff3b30",
+          lo : 51,
+          hi : 100
+        }]
+      }
+    </pre>
+    <div class="clear"></div>
+    <a href="#" id="jg2_refresh" class="button grey">Random update</a>
   </div>
 
   <script src="../raphael-2.1.4.min.js"></script>
   <script src="../justgage.js"></script>
   <script>
   document.addEventListener("DOMContentLoaded", function(event) {
-    var gg1 = new JustGage({
-      id: "gg1",
-      value : 72.15,
-      min: 0,
-      max: 100,
-      decimals: 2,
+    var jg1 = new JustGage({
+      id: "jg1",
+      value : 200,
+      min: 100,
+      max: 300,
       gaugeWidthScale: 0.6,
-      customSectors: [{
-        color : "#00ff00",
-        lo : 0,
-        hi : 50
-      },{
-        color : "#ff0000",
-        lo : 50,
-        hi : 100
-      }],
+      customSectors: {
+        percents: true,
+        ranges: [{
+          color : "#43bf58",
+          lo : 0,
+          hi : 50
+        },{
+          color : "#ff3b30",
+          lo : 51,
+          hi : 100
+        }]
+      },
       counter: true
     });
 
-    document.getElementById('gg1_refresh').addEventListener('click', function() {
-      gg1.refresh(getRandomInt(0, 100));
-    });
-
-    document.getElementById('gg1_update').addEventListener('click', function() {
-      gg1.update({
-        value: getRandomInt(0, 100),
-        customSectors: [{
-          color : "#00ff00",
+    var jg2 = new JustGage({
+      id: "jg2",
+      value : 75,
+      min: 0,
+      max: 100,
+      gaugeWidthScale: 0.6,
+      customSectors: {
+        ranges: [{
+          color : "#43bf58",
           lo : 0,
-          hi : 25
+          hi : 50
         },{
-          color : "#ff0000",
-          lo : 25,
+          color : "#ff3b30",
+          lo : 51,
           hi : 100
         }]
-      });
-      document.getElementById('gg1_text').innerHTML = "<b>UPDATE</b>: 0-25 is green, 26-100 is red"
+      },
+      counter: true
     });
+
+    document.getElementById('jg1_refresh').addEventListener('click', function() {
+      jg1.refresh(getRandomInt(100, 300));
+    });
+
+    document.getElementById('jg2_refresh').addEventListener('click', function() {
+      jg2.refresh(getRandomInt(0, 100));
+    });
+
   });
   </script>
 </body>

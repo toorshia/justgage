@@ -2,11 +2,37 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
-#####June 06, 2016.
- * **customSectors with only lower bound** - now you can specify only a lower bound of a customSectors
+######September 26, 2016. - release 1.2.9
+* **customSectors** receives structural update + additional "percents" feature (define ranges in %).
+```javascript
+customSectors: {
+  percents: true,
+  ranges: [{
+    color : "#43bf58",
+    lo : 0,
+    hi : 50
+  },{
+    color : "#ff3b30",
+    lo : 51,
+    hi : 100
+  }]
+}
+```
+Example: http://justgage.com/examples/custom-sectors.html
 
-######March 29, 2016.
- * **refresh(val, max, config)** - now you can include config object when calling refresh function to update any existing justGage parameter   
+######September 24, 2016. - release 1.2.7
+ * **hideInnerShadow** replaced with **showInnerShadow** due to performance issues with shadows turned on by default
+ * relative sizing fixed (it was not working due to wrong canvas size calculations)
+
+######September 23, 2016.
+ * **Title feature removed** - after many years, it's finally here :)
+
+######September 22, 2016.
+ * **JustGage.prototype.destroy()** - added method to remove gauge node from DOM
+ * fixed https://github.com/toorshia/justgage/issues/146
+
+######September 20, 2016.
+Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/justgage/issues/245
 
 ######March 25, 2016.
  * **onAnimationEnd** - callback function after gauge animation ends

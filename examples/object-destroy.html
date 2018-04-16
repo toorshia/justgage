@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Object destroy</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    .container {
+        width: 450px;
+        height: 350px;
+        margin: 50px auto 0 auto;
+        text-align: center;
+    }
+
+    .gauge {
+        width: 100%;
+        height: 100%;
+        border: 1px solid grey;
+    }
+
+    a:link.button,
+    a:active.button,
+    a:visited.button,
+    a:hover.button {
+        margin: 30px auto 0 auto;
+        padding: 10px 13px;
+        display: block;
+        font-family: 'Arial';
+        width: 200px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div id="jg1" class="gauge"></div>
+        <a href="#" id="jg1_create" class="button grey">Create object</a>
+        <a href="#" id="jg1_destroy" class="button grey" style="display:none">Destroy object</a>
+    </div>
+    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../justgage.js"></script>
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        var jg1;
+
+        document.getElementById('jg1_create').addEventListener('click', function() {
+            jg1 = new JustGage({
+                id: "jg1",
+                title: "",
+                value: 50,
+                min: 0,
+                max: 100,
+                decimals: 0,
+                gaugeWidthScale: 0.6
+            });
+            document.getElementById('jg1_create').style.display = 'none';
+            document.getElementById('jg1_destroy').style.display = 'block';
+
+        });
+
+        document.getElementById('jg1_destroy').addEventListener('click', function() {
+            jg1.destroy();
+            document.getElementById('jg1_create').style.display = 'block';
+            document.getElementById('jg1_destroy').style.display = 'none';
+        });
+
+    });
+    </script>
+</body>
+
+</html>
