@@ -2,6 +2,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ###Update log
 
+######November 26, 2018. - release 1.2.10
+* Fixed error with **customSectors** now represent de custom colors
+
 ######September 26, 2016. - release 1.2.9
 * **customSectors** receives structural update + additional "percents" feature (define ranges in %).
 ```javascript
