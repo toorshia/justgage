@@ -1083,20 +1083,19 @@ function cutHex(str) {
   return (str.charAt(0) == "#") ? str.substring(1, 7) : str;
 }
 
-/**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
+/**  Human friendly number suffix - @robertsLando */
 function humanFriendlyNumber(n, d) {
-  var p, d2, i, s;
+  var d2, i, s;
+  
+  d2 =  Math.pow(10, d);
+  s = " KMGTPE";
+  i = 0;
+  
+  while(n >= 1000 && ++i < s.length) n = n / 1000;
 
-  p = Math.pow;
-  d2 = p(10, d);
-  i = 7;
-  while (i) {
-    s = p(10, i-- * 3);
-    if (s <= n) {
-      n = Math.round(n * d2 / s) / d2 + "KMGTPE" [i];
-    }
-  }
-  return n;
+  i = i >= s.length ? s.length - 1 : i;
+  
+  return Math.round(n * d2) / d2 +  s[i];
 }
 
 /** Format numbers with commas - From: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript */
