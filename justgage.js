@@ -1085,13 +1085,14 @@ function cutHex(str) {
 
 /**  Human friendly number suffix - @robertsLando */
 function humanFriendlyNumber(n, d) {
-  var d2, i, s;
+  var d2, i, s, c;
   
   d2 =  Math.pow(10, d);
   s = " KMGTPE";
   i = 0;
+  c = 1000;
   
-  while(n >= 1000 && ++i < s.length) n = n / 1000;
+  while((n >= c || n <= -c) && ++i < s.length) n = n / c;
 
   i = i >= s.length ? s.length - 1 : i;
   
