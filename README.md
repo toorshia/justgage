@@ -1,6 +1,6 @@
 # JustGage
 
-![Justgage](docs/img/logo.png)
+<p align="center"><img src="docs/img/logo.png"/></p>
 
 [![Downloads](https://img.shields.io/npm/dm/justgage.svg)](https://www.npmjs.com/package/justgage)
 
@@ -10,6 +10,8 @@
 [![NPM](https://nodei.co/npm/justgage.png?downloads=true)](https://nodei.co/npm/justgage/)
 
 JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. It is based on Raphaël library for vector drawing.
+
+<p align="center"><img src="docs/img/screenshot.gif"/></p>
 
 ## Getting Started
 
@@ -22,7 +24,7 @@ bower install justgage-official
 or maybe you wish to use NPM...
 
 ```bash
-npm install justgage
+npm install justgage --save
 ```
 
 or you can always download the CSS and JS files...
@@ -73,9 +75,14 @@ setInterval(() => {
 
 Click [here](https://justgage.com/) to see a demo
 
+## Examples
+
+Click [here](http://justgage.com/examples/) for a list of examples
+
 ## Changelog
 
 ###### September 26, 2016. - release 1.2.9
+
 * **customSectors** receives structural update + additional "percents" feature (define ranges in %).
 ```javascript
 customSectors: {
@@ -91,6 +98,7 @@ customSectors: {
   }]
 }
 ```
+
 Example: http://justgage.com/examples/custom-sectors.html
 
 ###### September 24, 2016. - release 1.2.7
