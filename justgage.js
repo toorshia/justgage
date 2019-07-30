@@ -214,9 +214,11 @@ JustGage = function(config) {
     // number of digits after floating point
     decimals: kvLookup('decimals', config, dataset, 0),
 
-    // customSectors : [] of objects
-    // number of digits after floating point
-    customSectors: kvLookup('customSectors', config, dataset, []),
+    // customSectors : object
+    // custom sectors colors. Expects an object with props
+    // percents : bool hi/lo are percents values
+    // ranges : array of objects : {hi, lo, color}
+    customSectors: kvLookup('customSectors', config, dataset, {}),
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
@@ -1009,9 +1011,10 @@ function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
 function getColor(val, pct, col, noGradient, custSec) {
 
   var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
-  var noGradient = noGradient || custSec.length > 0;
+  var cust = custSec && custSec.ranges && custSec.ranges.length > 0;
+  var noGradient = noGradient || cust;
 
-  if (custSec.length > 0) {
+  if (cust) {
     if (custSec.percents === true) val = pct * 100;
     for (var i = 0; i < custSec.ranges.length; i++) {
       if (val >= custSec.ranges[i].lo && val <= custSec.ranges[i].hi) {
@@ -1083,20 +1086,20 @@ function cutHex(str) {
   return (str.charAt(0) == "#") ? str.substring(1, 7) : str;
 }
 
-/**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
+/**  Human friendly number suffix - @robertsLando */
 function humanFriendlyNumber(n, d) {
-  var p, d2, i, s;
+  var d2, i, s, c;
+  
+  d2 =  Math.pow(10, d);
+  s = " KMGTPE";
+  i = 0;
+  c = 1000;
+  
+  while((n >= c || n <= -c) && ++i < s.length) n = n / c;
 
-  p = Math.pow;
-  d2 = p(10, d);
-  i = 7;
-  while (i) {
-    s = p(10, i-- * 3);
-    if (s <= n) {
-      n = Math.round(n * d2 / s) / d2 + "KMGTPE" [i];
-    }
-  }
-  return n;
+  i = i >= s.length ? s.length - 1 : i;
+  
+  return Math.round(n * d2) / d2 +  s[i];
 }
 
 /** Format numbers with commas - From: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript */
