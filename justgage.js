@@ -404,6 +404,12 @@ JustGage = function(config) {
 
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
 
+    if (min < 0) {
+      max -= min;
+      value -= min;
+      min = 0;
+    }
+
     if (donut) {
       alpha = (1 - 2 * (value - min) / (max - min)) * Math.PI;
       Ro = w / 2 - w / 30;
