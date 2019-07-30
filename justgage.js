@@ -5,6 +5,7 @@
  * @author Bojan Djuricic (@Toorshia)
  **/
 
+
 JustGage = function(config) {
 
   var obj = this;
@@ -402,6 +403,12 @@ JustGage = function(config) {
   obj.canvas.customAttributes.pki = function(value, min, max, w, h, dx, dy, gws, donut, reverse) {
 
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
+
+    if (min < 0) {
+      max -= min;
+      value -= min;
+      min = 0;
+    }
 
     if (donut) {
       alpha = (1 - 2 * (value - min) / (max - min)) * Math.PI;
@@ -1181,3 +1188,12 @@ function extend(out) {
 
   return out;
 };
+
+// am I in a commonJS environment?		 +
+if(typeof exports === "object" && exports) {	
+   // let's import raphael then
+   var Raphael = require('raphael');
+   // and i will export myself as a module.		
+   module.exports = JustGage;		
+ }
+
