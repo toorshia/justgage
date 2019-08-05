@@ -231,7 +231,7 @@ JustGage = function(config) {
 
     // pointerOptions : object
     // define pointer look
-    pointerOptions: kvLookup('pointerOptions', config, dataset, [])
+    pointerOptions: kvLookup('pointerOptions', config, dataset, {})
   };
 
   // variables
