@@ -16,6 +16,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 - [JustGage](#JustGage)
   - [Getting Started](#Getting-Started)
   - [Basic usage](#Basic-usage)
+  - [Options](#Options)
+    - [Custom Sectors](#Custom-Sectors)
+    - [Pointer options](#Pointer-options)
   - [Demo](#Demo)
   - [Examples](#Examples)
   - [Changelog](#Changelog)
@@ -78,6 +81,92 @@ setInterval(() => {
   gauge.refresh(Math.random() * 100);
 }, 5000)
 
+```
+
+## Options
+
+| Name                 | Default                             | Description                                                                         |
+| -------------------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| id                   | (required)                          | The HTML container element `id`                                                     |
+| value                | `0`                                 | Value Gauge is showing                                                              |
+| parentNode           | `null`                              | The HTML container element object. Used if `id` is not present                      |
+| defaults             | `false`                             | Defaults parameters to use globally for gauge objects                               |
+| width                | `null`                              | The Gauge width in pixels (Integer)                                                 |
+| height               | `null`                              | The Gauge height in pixels                                                          |
+| valueFontColor       | `#010101`                           | Color of label showing current value                                                |
+| valueFontFamily      | `Arial`                             | Font of label showing current value                                                 |
+| symbol               | `''`                                | Special symbol to show next to value                                                |
+| min                  | `0`                                 | Min value                                                                           |
+| minTxt               | `false`                             | Min value text                                                                      |
+| max                  | `100`                               | Max value                                                                           |
+| maxTxt               | `false`                             | Max value text                                                                      |
+| reverse              | `false`                             | Reverse min and max                                                                 |
+| humanFriendlyDecimal | `0`                                 | Number of decimal places for our human friendly number to contain                   |
+| textRenderer         | `null`                              | Function applied before redering text `(value) => value`                            |
+| onAnimationEnd       | `null`                              | Function applied after animation is done                                            |
+| gaugeWidthScale      | `1.0`                               | Width of the gauge element                                                          |
+| gaugeColor           | `#edebeb`                           | Background color of gauge element                                                   |
+| label                | `''`                                | Text to show below value                                                            |
+| labelFontColor       | `#b3b3b3`                           | Color of label showing label under value                                            |
+| shadowOpacity        | `0.2`                               | Shadow opacity 0 ~ 1                                                                |
+| shadowSize           | `5`                                 | Inner shadow size                                                                   |
+| shadowVerticalOffset | `3`                                 | How much shadow is offset from top                                                  |
+| levelColors          | `["#a9d70b", "#f9c802", "#ff0000"]` | Colors of indicator, from lower to upper, in RGB format                             |
+| startAnimationTime   | `700`                               | Length of initial animation in milliseconds                                         |
+| startAnimationType   | `>`                                 | Type of initial animation (linear, >, <,  <>, bounce)                               |
+| refreshAnimationTime | `700`                               | Length of refresh animation in milliseconds                                         |
+| refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <,  <>, bounce)                               |
+| donutStartAngle      | `90`                                | Angle to start from when in donut mode                                              |
+| valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                      |
+| labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                            |
+| minLabelMinFontSize  | `10`                                | Absolute minimum font size for the min label                                        |
+| maxLabelMinFontSize  | `10`                                | Absolute minimum font size for the man label                                        |
+| hideValue            | `false`                             | Hide value text                                                                     |
+| hideMinMax           | `false`                             | Hide min/max text                                                                   |
+| showInnerShadow      | `false`                             | Show inner shadow                                                                   |
+| humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M) |
+| noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                      |
+| donut                | `false`                             | Show donut gauge                                                                    |
+| relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                  |
+| counter              | `false`                             | Animate text value number change                                                    |
+| decimals             | `0`                                 | Number of digits after floating point                                               |
+| customSectors        | `{}`                                | Custom sectors colors. Expects an [object](#Custom-Sectors)                         |
+| formatNumber         | `false`                             | Formats numbers with commas where appropriate                                       |
+| pointer              | `false`                             | Show value pointer                                                                  |
+| pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                              |
+
+### Custom Sectors
+
+Example:
+
+```js
+customSectors: {
+  percents: true, // lo and hi values are in %
+  ranges: [{
+    color : "#43bf58",
+    lo : 0,
+    hi : 50
+  },{
+    color : "#ff3b30",
+    lo : 51,
+    hi : 100
+  }]
+```
+
+### Pointer options
+
+Example:
+
+```js
+pointerOptions: {
+  toplength: null,
+  bottomlength: null,
+  bottomwidth: null,
+  stroke: 'none',
+  stroke_width: 0,
+  stroke_linecap: 'square',
+  color: '#000000'
+}
 ```
 
 ## Demo
