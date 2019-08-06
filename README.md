@@ -137,6 +137,7 @@ setInterval(() => {
 | formatNumber         | `false`                             | Formats numbers with commas where appropriate                                       |
 | pointer              | `false`                             | Show value pointer                                                                  |
 | pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                              |
+| displayRemaining     | `false`                             | Replace display number with the value remaining to reach max value                  |
 
 ### Custom Sectors
 
