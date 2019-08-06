@@ -183,6 +183,7 @@ Used to refresh Gauge value and max value
 - `val` : The Gauge value (required)
 - `max` : The Gauge Max value (optional)
 - `min` : The Gauge Min value (optional)
+- `label` : The Gauge label text (optional)
 
 ### Destroy
 
