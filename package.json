@@ -19,7 +19,7 @@
     "github": {
       "release": true,
       "assets": [
-        "dist/*.js"
+        "dist/*"
       ]
     },
     "git": {
@@ -56,7 +56,7 @@
     "url": "https://github.com/toorshia/justgage/issues"
   },
   "dependencies": {
-    "raphael": "^2.1.4"
+    "raphael": "^2.2.8"
   },
   "homepage": "https://github.com/toorshia/justgage",
   "devDependencies": {
