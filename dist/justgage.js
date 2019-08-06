@@ -20,7 +20,9 @@
 
   JustGage = function (config) {
 
-    var obj = this;
+    var obj = this
+
+    obj.events = {}
 
     // Helps in case developer wants to debug it. unobtrusive
     if (config === null || config === undefined) {
@@ -734,7 +736,10 @@
 
     if (obj.config.counter === true) {
       //on each animation frame
-      eve.on("raphael.anim.frame." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.frame." + (obj.level.id), function () {
+
+        if(!obj.events["raphael.anim.frame." + (obj.level.id)]) obj.events["raphael.anim.frame." + (obj.level.id)] = this
+
         var currentValue = obj.level.attr("pki")[0];
         if (obj.config.reverse) {
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
@@ -754,7 +759,10 @@
         currentValue = null;
       });
       //on animation end
-      eve.on("raphael.anim.finish." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.finish." + (obj.level.id), function () {
+
+        if(!obj.events["raphael.anim.finish." + (obj.level.id)]) obj.events["raphael.anim.finish." + (obj.level.id)] = this
+
         obj.txtValue.attr({
           "text": obj.originalValue
         });
@@ -762,7 +770,10 @@
       });
     } else {
       //on animation start
-      eve.on("raphael.anim.start." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.start." + (obj.level.id), function () {
+
+        if(!obj.events["raphael.anim.start." + (obj.level.id)]) obj.events["raphael.anim.start." + (obj.level.id)] = this
+
         obj.txtValue.attr({
           "text": obj.originalValue
         });
@@ -961,6 +972,9 @@
   /** Destroy gauge object */
   JustGage.prototype.destroy = function () {
     if (this.node && this.node.parentNode) this.node.innerHTML = ''
+
+    for(var event in this.events)
+      Raphael.eve.off(event, this.events[event])
   };
 
   /** Generate shadow */
