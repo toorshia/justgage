@@ -1,12 +1,150 @@
+# JustGage
+
+<p align="center"><img src="docs/img/logo.png"/></p>
+
+[![Downloads](https://img.shields.io/npm/dm/justgage.svg)](https://www.npmjs.com/package/justgage)
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)
+
+[![NPM](https://nodei.co/npm/justgage.png?downloads=true)](https://nodei.co/npm/justgage/)
+
 JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. It is based on Raphaël library for vector drawing.
 
-###Update log
+<p align="center"><img src="docs/img/screenshot.gif"/></p>
 
-######September 26, 2016. - release 1.2.9
-* **customSectors** receives structural update + additional "percents" feature (define ranges in %).
-```javascript
+- [JustGage](#JustGage)
+  - [Getting Started](#Getting-Started)
+  - [Basic usage](#Basic-usage)
+  - [Options](#Options)
+    - [Custom Sectors](#Custom-Sectors)
+    - [Pointer options](#Pointer-options)
+  - [Methods](#Methods)
+    - [Refresh](#Refresh)
+    - [Destroy](#Destroy)
+  - [Demo](#Demo)
+  - [Examples](#Examples)
+  - [Changelog](#Changelog)
+  - [License](#License)
+  - [Author](#Author)
+
+## Getting Started
+
+Installing Justgage is as easy as...
+
+```bash
+bower install justgage-official
+```
+
+or maybe you wish to use NPM...
+
+```bash
+npm install justgage --save
+```
+
+or you can always download the CSS and JS files...
+
+```html
+<!-- Raphael must be included before justgage -->
+<script type="text/javascript" src="path/to/raphael-2.1.4.min.js"></script>
+<script type="text/javascript" src="path/to/justgage.js"></script>
+```
+
+or if even don't want to download the files use [cdnjs](https://cdnjs.com/libraries/justgage)
+
+```html
+<!-- Raphael must be included before justgage -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+```
+
+## Basic usage
+
+**Html**
+
+```html
+<div id="gauge"></div>
+```
+
+**JS**
+
+```js
+
+var gauge = new JustGage({
+            id: "gauge", // the id of the html element
+            value: 50,
+            min: 0,
+            max: 100,
+            decimals: 2,
+            gaugeWidthScale: 0.6
+        });
+
+// update the value randomly
+setInterval(() => {
+  gauge.refresh(Math.random() * 100);
+}, 5000)
+
+```
+
+## Options
+
+| Name                 | Default                             | Description                                                                         |
+| -------------------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| id                   | (required)                          | The HTML container element `id`                                                     |
+| value                | `0`                                 | Value Gauge is showing                                                              |
+| parentNode           | `null`                              | The HTML container element object. Used if `id` is not present                      |
+| defaults             | `false`                             | Defaults parameters to use globally for gauge objects                               |
+| width                | `null`                              | The Gauge width in pixels (Integer)                                                 |
+| height               | `null`                              | The Gauge height in pixels                                                          |
+| valueFontColor       | `#010101`                           | Color of label showing current value                                                |
+| valueFontFamily      | `Arial`                             | Font of label showing current value                                                 |
+| symbol               | `''`                                | Special symbol to show next to value                                                |
+| min                  | `0`                                 | Min value                                                                           |
+| minTxt               | `false`                             | Min value text                                                                      |
+| max                  | `100`                               | Max value                                                                           |
+| maxTxt               | `false`                             | Max value text                                                                      |
+| reverse              | `false`                             | Reverse min and max                                                                 |
+| humanFriendlyDecimal | `0`                                 | Number of decimal places for our human friendly number to contain                   |
+| textRenderer         | `null`                              | Function applied before redering text `(value) => value`                            |
+| onAnimationEnd       | `null`                              | Function applied after animation is done                                            |
+| gaugeWidthScale      | `1.0`                               | Width of the gauge element                                                          |
+| gaugeColor           | `#edebeb`                           | Background color of gauge element                                                   |
+| label                | `''`                                | Text to show below value                                                            |
+| labelFontColor       | `#b3b3b3`                           | Color of label showing label under value                                            |
+| shadowOpacity        | `0.2`                               | Shadow opacity 0 ~ 1                                                                |
+| shadowSize           | `5`                                 | Inner shadow size                                                                   |
+| shadowVerticalOffset | `3`                                 | How much shadow is offset from top                                                  |
+| levelColors          | `["#a9d70b", "#f9c802", "#ff0000"]` | Colors of indicator, from lower to upper, in RGB format                             |
+| startAnimationTime   | `700`                               | Length of initial animation in milliseconds                                         |
+| startAnimationType   | `>`                                 | Type of initial animation (linear, >, <,  <>, bounce)                               |
+| refreshAnimationTime | `700`                               | Length of refresh animation in milliseconds                                         |
+| refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <,  <>, bounce)                               |
+| donutStartAngle      | `90`                                | Angle to start from when in donut mode                                              |
+| valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                      |
+| labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                            |
+| minLabelMinFontSize  | `10`                                | Absolute minimum font size for the min label                                        |
+| maxLabelMinFontSize  | `10`                                | Absolute minimum font size for the man label                                        |
+| hideValue            | `false`                             | Hide value text                                                                     |
+| hideMinMax           | `false`                             | Hide min/max text                                                                   |
+| showInnerShadow      | `false`                             | Show inner shadow                                                                   |
+| humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M) |
+| noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                      |
+| donut                | `false`                             | Show donut gauge                                                                    |
+| relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                  |
+| counter              | `false`                             | Animate text value number change                                                    |
+| decimals             | `0`                                 | Number of digits after floating point                                               |
+| customSectors        | `{}`                                | Custom sectors colors. Expects an [object](#Custom-Sectors)                         |
+| formatNumber         | `false`                             | Formats numbers with commas where appropriate                                       |
+| pointer              | `false`                             | Show value pointer                                                                  |
+| pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                              |
+
+### Custom Sectors
+
+Example:
+
+```js
 customSectors: {
-  percents: true,
+  percents: true, // lo and hi values are in %
   ranges: [{
     color : "#43bf58",
     lo : 0,
@@ -16,110 +154,61 @@ customSectors: {
     lo : 51,
     hi : 100
   }]
+```
+
+### Pointer options
+
+Example:
+
+```js
+pointerOptions: {
+  toplength: null,
+  bottomlength: null,
+  bottomwidth: null,
+  stroke: 'none',
+  stroke_width: 0,
+  stroke_linecap: 'square',
+  color: '#000000'
 }
 ```
-Example: http://justgage.com/examples/custom-sectors.html
 
-######September 24, 2016. - release 1.2.7
- * **hideInnerShadow** replaced with **showInnerShadow** due to performance issues with shadows turned on by default
- * relative sizing fixed (it was not working due to wrong canvas size calculations)
+## Methods
 
-######September 23, 2016.
- * **Title feature removed** - after many years, it's finally here :)
+### Refresh
 
-######September 22, 2016.
- * **JustGage.prototype.destroy()** - added method to remove gauge node from DOM
- * fixed https://github.com/toorshia/justgage/issues/146
+Used to refresh Gauge value and max value
 
-######September 20, 2016.
-Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/justgage/issues/245
+`refresh(val, max, min)`
 
-######March 25, 2016.
- * **onAnimationEnd** - callback function after gauge animation ends
- - demo at http://justgage.com/examples/animation-events-hooks.html
+- `val` : The Gauge value (required)
+- `max` : The Gauge Max value (optional)
+- `min` : The Gauge Min value (optional)
+- `label` : The Gauge label text (optional)
 
-######February 3, 2016.
- * **minTxt & maxTxt** - Show custom min and max text - https://github.com/toorshia/justgage/issues/193
+### Destroy
 
-######January 31, 2016.
- * fix - https://github.com/toorshia/justgage/issues/194
+Used to destroy the Gauge element
 
-######January 27, 2016.
- * **titlePosition** - 'above' or 'below'
- * **titleFontFamily** - customize font-family for the title
- * **valueFontFamily** - customize font-family for the value
- - demo at http://justgage.com/examples/font-options.html
+`destroy()`
 
+## Demo
 
-######January 5, 2016.
- * **donut pointer** - render configurable triangle pointer in donut mode - demo at http://justgage.com/examples/pointer.html
+Click [here](https://justgage.com/) to see a demo
 
-######November 10, 2015.
- * **reverse** - reverse the gauge direction - demo at http://justgage.com/examples/reverse.html
- * **pointer** - render triangular value pointer - demo at http://justgage.com/examples/pointer.html
+## Examples
 
+Click [here](http://justgage.com/examples/) for a list of examples
 
-######November 08, 2015.
- * **defaults** - option to define common config object when you're creating multiple gauges - demo at http://justgage.com/examples/defaults.html
+## Changelog
 
-######August 19, 2015.
- * fixed shadow id issue (same ids were being generated)
+Check out the auto-generated [Changelog](CHANGELOG.md)
 
-######February 16, 2014.
- * fix - https://github.com/toorshia/justgage/issues/102
+Or [here](CHANGELOG_OLD.md) you can find the old changelog (up to version 1.2.9)
 
-######October 28, 2013.
- * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
+## License
 
-######April 18, 2013.
- * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at http://justgage.com/examples/custom-node.html
- * **width** - force gauge width
- * **height** - force gauge height
+This project is licensed under [MIT](LICENSE) License
 
-######April 17, 2013.
- * fix - https://github.com/toorshia/justgage/issues/49
+## Author
 
-######April 01, 2013.
- * fix - https://github.com/toorshia/justgage/issues/46
-
-######March 26, 2013.
- * **customSectors** - define one or many value ranges with custom gauge color - demo at http://justgage.com/examples/custom-sectors.html
-
-######March 23, 2013.
- * **counter** - option to animate value in counting fashion - check demo at http://justgage.com/examples/counter.html
-
-######March 19, 2013.
- * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/examples/refresh-maximum.html
-
-######February 26, 2013.
- * **decimals** - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value
- * fixed a missing parameters bug when calling generateShadow()  for IE < 9
-
-######December 31, 2012.
-
- * fixed text y-position for hidden divs - workaround for Raphael <tspan> 'dy' bug - https://github.com/DmitryBaranovskiy/raphael/issues/491
- * 'show' parameters, like showMinMax are now 'hide' because I am lame developer - please update these in your setups
- * Min and Max labels are now auto-off when in donut mode
- * Start angle in donut mode is now 90
- * donutStartAngle - option to define start angle for donut
-
-######November 25, 2012.
-
- * Option to define custom rendering function for displayed value
-
-######November 19, 2012.
-
- * Fix for human friendly option when refreshing
- * Config.value is now updated after gauge refresh
-
-######November 13, 2012.
-
- * Donut display mode added
- * Option to hide value label
- * Option to enable responsive gauge size
- * Removed default title attribute
- * Option to accept min and max defined as string values
- * Option to configure value symbol
- * Fixed bad aspect ratio calculations
- * Option to configure minimum font size for all texts
- * Option to show shorthand big numbers (human friendly)
+- [Bojan Djuricic](https://github.com/toorshia)

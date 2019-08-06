@@ -5,6 +5,7 @@
  * @author Bojan Djuricic (@Toorshia)
  **/
 
+
 JustGage = function(config) {
 
   var obj = this;
@@ -15,22 +16,20 @@ JustGage = function(config) {
     return false;
   }
 
-  var node;
-
   if (config.id !== null && config.id !== undefined) {
-    node = document.getElementById(config.id);
-    if (!node) {
+    obj.node = document.getElementById(config.id);
+    if (!obj.node) {
       console.log('* justgage: No element with id : %s found', config.id);
       return false;
     }
   } else if (config.parentNode !== null && config.parentNode !== undefined) {
-    node = config.parentNode;
+    obj.node = config.parentNode;
   } else {
     console.log('* justgage: Make sure to pass the existing element id or parentNode to the constructor.');
     return false;
   }
 
-  var dataset = node.dataset ? node.dataset : {};
+  var dataset = obj.node.dataset ? obj.node.dataset : {};
 
   // check for defaults
   var defaults = (config.defaults !== null && config.defaults !== undefined) ? config.defaults : false;
@@ -214,9 +213,11 @@ JustGage = function(config) {
     // number of digits after floating point
     decimals: kvLookup('decimals', config, dataset, 0),
 
-    // customSectors : [] of objects
-    // number of digits after floating point
-    customSectors: kvLookup('customSectors', config, dataset, []),
+    // customSectors : object
+    // custom sectors colors. Expects an object with props
+    // percents : bool hi/lo are percents values
+    // ranges : array of objects : {hi, lo, color}
+    customSectors: kvLookup('customSectors', config, dataset, {}),
 
     // formatNumber: boolean
     // formats numbers with commas where appropriate
@@ -228,7 +229,7 @@ JustGage = function(config) {
 
     // pointerOptions : object
     // define pointer look
-    pointerOptions: kvLookup('pointerOptions', config, dataset, []),
+    pointerOptions: kvLookup('pointerOptions', config, dataset, {}),
 
     // displayRemaining: boolean
     // replace display number with the number remaining to reach max
@@ -404,6 +405,12 @@ JustGage = function(config) {
   obj.canvas.customAttributes.pki = function(value, min, max, w, h, dx, dy, gws, donut, reverse) {
 
     var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
+
+    if (min < 0) {
+      max -= min;
+      value -= min;
+      min = 0;
+    }
 
     if (donut) {
       alpha = (1 - 2 * (value - min) / (max - min)) * Math.PI;
@@ -796,15 +803,54 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max) {
+JustGage.prototype.refresh = function(val, max, min, label) {
 
   var obj = this;
-  var displayVal, color, max = max || null;
+  var displayVal, color;
+
+  max = max || null;
+  min = min || null;
+  label = label || null;
+
+  // set label min
+  if (label !== null) {
+    obj.config.label = label;
+
+    obj.txtLabel.attr({
+      "text": obj.config.label
+    });
+    setDy(obj.txtLabel, obj.params.labelFontSize, obj.params.labelY);
+  }
+
+  // set new min
+  if (min !== null) {
+    obj.config.min = min;
+    // TODO: update customSectors
+
+    obj.txtMinimum = obj.config.min;
+    if (obj.config.minTxt) {
+      obj.txtMinimum = obj.config.minTxt;
+    } else if (obj.config.humanFriendly) {
+      obj.txtMinimum = humanFriendlyNumber(obj.config.min, obj.config.humanFriendlyDecimal);
+    } else if (obj.config.formatNumber) {
+      obj.txtMinimum = formatNumber(obj.config.min);
+    }
+    if (!obj.config.reverse) {
+      obj.txtMin.attr({
+        "text": obj.txtMinimum
+      });
+      setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
+    } else {
+      obj.txtMax.attr({
+        "text": obj.txtMinimum
+      });
+      setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
+    }
+  }
 
   // set new max
   if (max !== null) {
     obj.config.max = max;
-    // TODO: update customSectors
 
     obj.txtMaximum = obj.config.max;
     if (obj.config.maxTxt) {
@@ -823,11 +869,7 @@ JustGage.prototype.refresh = function(val, max) {
       obj.txtMin.attr({
         "text": obj.txtMaximum
       });
-      obj.txtMax.attr({
-        "text": obj.txtMinimum
-      });
-      setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
-      setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
+      setDy(obj.txtMin, obj.params.maxFontSize, obj.params.maxY);
     }
   }
 
@@ -901,12 +943,12 @@ JustGage.prototype.refresh = function(val, max) {
   }
 
   // var clear
-  obj, displayVal, color, max = null;
+  obj, displayVal, color, max, min = null;
 };
 
 /** Destroy gauge object */
 JustGage.prototype.destroy = function() {
-  document.getElementById(this.config.id).innerHTML = '';
+  if(this.node && this.node.parentNode) this.node.innerHTML = ''
 };
 
 /** Generate shadow */
@@ -1019,9 +1061,10 @@ function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
 function getColor(val, pct, col, noGradient, custSec) {
 
   var no, inc, colors, percentage, rval, gval, bval, lower, upper, range, rangePct, pctLower, pctUpper, color;
-  var noGradient = noGradient || custSec.length > 0;
+  var cust = custSec && custSec.ranges && custSec.ranges.length > 0;
+  var noGradient = noGradient || cust;
 
-  if (custSec.length > 0) {
+  if (cust) {
     if (custSec.percents === true) val = pct * 100;
     for (var i = 0; i < custSec.ranges.length; i++) {
       if (val >= custSec.ranges[i].lo && val <= custSec.ranges[i].hi) {
@@ -1093,20 +1136,20 @@ function cutHex(str) {
   return (str.charAt(0) == "#") ? str.substring(1, 7) : str;
 }
 
-/**  Human friendly number suffix - From: http://stackoverflow.com/questions/2692323/code-golf-friendly-number-abbreviator */
+/**  Human friendly number suffix - @robertsLando */
 function humanFriendlyNumber(n, d) {
-  var p, d2, i, s;
+  var d2, i, s, c;
+  
+  d2 =  Math.pow(10, d);
+  s = " KMGTPE";
+  i = 0;
+  c = 1000;
+  
+  while((n >= c || n <= -c) && ++i < s.length) n = n / c;
 
-  p = Math.pow;
-  d2 = p(10, d);
-  i = 7;
-  while (i) {
-    s = p(10, i-- * 3);
-    if (s <= n) {
-      n = Math.round(n * d2 / s) / d2 + "KMGTPE" [i];
-    }
-  }
-  return n;
+  i = i >= s.length ? s.length - 1 : i;
+  
+  return Math.round(n * d2) / d2 +  s[i];
 }
 
 /** Format numbers with commas - From: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript */
@@ -1188,3 +1231,12 @@ function extend(out) {
 
   return out;
 };
+
+// am I in a commonJS environment?		 +
+if(typeof exports === "object" && exports) {	
+   // let's import raphael then
+   var Raphael = require('raphael');
+   // and i will export myself as a module.		
+   module.exports = JustGage;		
+ }
+

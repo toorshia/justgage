@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width">
     <style>
     .container {
-        width: 450px;
+        width: 500px;
         margin: 50px auto 0 auto;
         text-align: center;
     }
 
     .gauge {
-        width: 450px;
-        height: 450px;
+        width: 500px;
+        height: 500px;
     }
 
     a:link.button,
@@ -30,11 +30,11 @@
 <body>
     <div class="container">
         <div id="g1" class="gauge"></div>
-        <a href="#" id="g1_refresh" class="button grey">Random Refresh</a>
+        <a href="#" id="g1_refresh" class="button grey">Random refresh</a>
         <br />
-        <a href="#" id="g1_setmax100" class="button grey">Set Max 100</a>
-        <a href="#" id="g1_setmax200" class="button grey">Set Max 200</a>
-        <a href="#" id="g1_setmax400" class="button grey">Set Max 400</a>
+        <a href="#" id="g1_setmax100" class="button grey">Set min 20, max 100</a>
+        <a href="#" id="g1_setmax200" class="button grey">Set min 30, max 200</a>
+        <a href="#" id="g1_setmax400" class="button grey">Set min 5, max 400</a>
     </div>
     <script src="../raphael-2.1.4.min.js"></script>
     <script src="../justgage.js"></script>
@@ -52,29 +52,22 @@
         });
 
         document.getElementById('g1_refresh').addEventListener('click', function() {
-            g1.refresh(getRandomInt(0, 100));
+            g1.refresh(getRandomInt(5, 400));
+            return false;
         });
 
         document.getElementById('g1_setmax100').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 100);
-            g1.txtTitle.attr({
-                "text": "Max is 100."
-            });
+            g1.refresh(g1.originalValue, 100, 20);
+            return false;
         });
 
         document.getElementById('g1_setmax200').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 200);
-            g1.txtTitle.attr({
-                "text": "Whoops, max jumped to 200."
-            });
+            g1.refresh(g1.originalValue, 200, 30);
             return false;
         });
 
         document.getElementById('g1_setmax400').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 400);
-            g1.txtTitle.attr({
-                "text": "Blimey, max blasted to 400!"
-            });
+            g1.refresh(g1.originalValue, 400, 5);
             return false;
         });
 
