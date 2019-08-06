@@ -19,6 +19,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
   - [Options](#Options)
     - [Custom Sectors](#Custom-Sectors)
     - [Pointer options](#Pointer-options)
+  - [Methods](#Methods)
+    - [Refresh](#Refresh)
+    - [Destroy](#Destroy)
   - [Demo](#Demo)
   - [Examples](#Examples)
   - [Changelog](#Changelog)
@@ -168,6 +171,23 @@ pointerOptions: {
   color: '#000000'
 }
 ```
+
+## Methods
+
+### Refresh
+
+Used to refresh Gauge value and max value
+
+`refresh(val, max)`
+
+- `val` : The Gauge value (required)
+- `max` : The Gauge Max value (optional)
+
+### Destroy
+
+Used to destroy the Gauge element
+
+`destroy()`
 
 ## Demo
 
