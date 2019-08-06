@@ -7,16 +7,16 @@
 
 (function (root, factory) {
   if (typeof define === "function" && define.amd) {
-    define(["raphael"], function (raphael) {
+    define(["raphael"], function (raphael) { // AMD
       return (root.JustGage = factory(raphael));
     });
-  } else if (typeof module === "object" && module.exports) {
+  } else if (typeof module === "object" && module.exports) { // Nodejs
     module.exports = (root.JustGage = factory(require("raphael")));
   }
-  else {   //node.js diverges from the CommonJS spec a bit by using module.  So, to use it in other common js environments
+  else {   // browser
     root.JustGage = factory(Raphael);
   }
-}(this, function (Raphael) {//passing this as the root argument, and our module method from earlier as the factory argument. If we run this in the browser, this, will be the window.
+}(this, function (Raphael) {
 
   JustGage = function (config) {
 
