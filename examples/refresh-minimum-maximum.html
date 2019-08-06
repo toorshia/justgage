@@ -36,14 +36,14 @@
         <a href="#" id="g1_setmax200" class="button grey">Set min 30, max 200</a>
         <a href="#" id="g1_setmax400" class="button grey">Set min 5, max 400</a>
     </div>
-    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../raphael.min.js"></script>
     <script src="../justgage.js"></script>
     <script>
         /** Random integer  */
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
-        
+
         document.addEventListener("DOMContentLoaded", function (event) {
 
             var g1 = new JustGage({

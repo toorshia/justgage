@@ -95,14 +95,14 @@
     <a href="#" id="jg2_refresh" class="button grey">Random update</a>
   </div>
 
-  <script src="../raphael-2.1.4.min.js"></script>
+  <script src="../raphael.min.js"></script>
   <script src="../justgage.js"></script>
   <script>
     /** Random integer  */
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
+
     document.addEventListener("DOMContentLoaded", function (event) {
       var jg1 = new JustGage({
         id: "jg1",

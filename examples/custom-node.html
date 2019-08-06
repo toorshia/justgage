@@ -49,14 +49,14 @@
         <button type="button" id="g3_refresh">Refresh G3</button>
         <button type="button" id="g4_refresh">Refresh G4</button>
     </div>
-    <script src="../raphael-2.1.4.min.js"></script>
+    <script src="../raphael.min.js"></script>
     <script src="../justgage.js"></script>
     <script>
         /** Random integer  */
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
-        
+
         document.addEventListener("DOMContentLoaded", function (event) {
             var gNode1 = document.createElement('div');
             gNode1.setAttribute("class", "gauge");

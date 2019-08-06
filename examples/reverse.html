@@ -66,14 +66,14 @@
   <div class="container">
     <button type="button" id="gauge_refresh">Refresh Gauges</button>
   </div>
-  <script src="../raphael-2.1.4.min.js"></script>
+  <script src="../raphael.min.js"></script>
   <script src="../justgage.js"></script>
   <script>
     /** Random integer  */
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
+
     document.addEventListener("DOMContentLoaded", function (event) {
 
       var g1 = new JustGage({

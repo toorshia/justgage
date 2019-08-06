@@ -46,7 +46,7 @@ or you can always download the CSS and JS files...
 
 ```html
 <!-- Raphael must be included before justgage -->
-<script type="text/javascript" src="path/to/raphael-2.1.4.min.js"></script>
+<script type="text/javascript" src="path/to/raphael.min.js"></script>
 <script type="text/javascript" src="path/to/justgage.js"></script>
 ```
 

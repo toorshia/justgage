@@ -34,14 +34,14 @@
     <input type="button" id="gg1_refresh" class="btn" value="Random Refresh" />
   </div>
 
-  <script src="../raphael-2.1.4.min.js"></script>
+  <script src="../raphael.min.js"></script>
   <script src="../justgage.js"></script>
   <script>
     /** Random integer  */
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
+
     document.addEventListener("DOMContentLoaded", function (event) {
       var gg1 = new JustGage({
         id: "gg1",
