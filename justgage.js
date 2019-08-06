@@ -734,7 +734,7 @@
 
     if (obj.config.counter === true) {
       //on each animation frame
-      eve.on("raphael.anim.frame." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.frame." + (obj.level.id), function () {
         var currentValue = obj.level.attr("pki")[0];
         if (obj.config.reverse) {
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
@@ -754,7 +754,7 @@
         currentValue = null;
       });
       //on animation end
-      eve.on("raphael.anim.finish." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.finish." + (obj.level.id), function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
@@ -762,7 +762,7 @@
       });
     } else {
       //on animation start
-      eve.on("raphael.anim.start." + (obj.level.id), function () {
+      Raphael.eve.on("raphael.anim.start." + (obj.level.id), function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
