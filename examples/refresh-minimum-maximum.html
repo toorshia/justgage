@@ -6,24 +6,24 @@
     <title>Refresh maximum</title>
     <meta name="viewport" content="width=device-width">
     <style>
-    .container {
-        width: 500px;
-        margin: 50px auto 0 auto;
-        text-align: center;
-    }
+        .container {
+            width: 500px;
+            margin: 50px auto 0 auto;
+            text-align: center;
+        }
 
-    .gauge {
-        width: 500px;
-        height: 500px;
-    }
+        .gauge {
+            width: 500px;
+            height: 500px;
+        }
 
-    a:link.button,
-    a:active.button,
-    a:visited.button,
-    a:hover.button {
-        margin: 30px 5px 0 2px;
-        padding: 7px 13px;
-    }
+        a:link.button,
+        a:active.button,
+        a:visited.button,
+        a:hover.button {
+            margin: 30px 5px 0 2px;
+            padding: 7px 13px;
+        }
     </style>
 </head>
 
@@ -39,39 +39,44 @@
     <script src="../raphael-2.1.4.min.js"></script>
     <script src="../justgage.js"></script>
     <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
+        /** Random integer  */
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        document.addEventListener("DOMContentLoaded", function (event) {
 
-        var g1 = new JustGage({
-            id: "g1",
-            title: "Max is 100.",
-            value: 50,
-            min: 0,
-            max: 100,
-            decimals: 0,
-            gaugeWidthScale: 0.6
+            var g1 = new JustGage({
+                id: "g1",
+                title: "Max is 100.",
+                value: 50,
+                min: 0,
+                max: 100,
+                decimals: 0,
+                gaugeWidthScale: 0.6
+            });
+
+            document.getElementById('g1_refresh').addEventListener('click', function () {
+                g1.refresh(getRandomInt(5, 400));
+                return false;
+            });
+
+            document.getElementById('g1_setmax100').addEventListener('click', function () {
+                g1.refresh(g1.originalValue, 100, 20);
+                return false;
+            });
+
+            document.getElementById('g1_setmax200').addEventListener('click', function () {
+                g1.refresh(g1.originalValue, 200, 30);
+                return false;
+            });
+
+            document.getElementById('g1_setmax400').addEventListener('click', function () {
+                g1.refresh(g1.originalValue, 400, 5);
+                return false;
+            });
+
         });
-
-        document.getElementById('g1_refresh').addEventListener('click', function() {
-            g1.refresh(getRandomInt(5, 400));
-            return false;
-        });
-
-        document.getElementById('g1_setmax100').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 100, 20);
-            return false;
-        });
-
-        document.getElementById('g1_setmax200').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 200, 30);
-            return false;
-        });
-
-        document.getElementById('g1_setmax400').addEventListener('click', function() {
-            g1.refresh(g1.originalValue, 400, 5);
-            return false;
-        });
-
-    });
     </script>
 </body>
 

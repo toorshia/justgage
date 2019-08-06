@@ -1,48 +1,62 @@
 <!doctype html>
 
 <html>
-  <head>
-    <title>Customize style</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <style>
-      body {
-        text-align: center;
-      }
+<head>
+  <title>Customize style</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-      #g1, #g2, #g3, #g4, #g5, #g6 {
-        width:200px; height:160px;
-        display: inline-block;
-        margin: 1em;
-      }
+  <style>
+    body {
+      text-align: center;
+    }
 
-      p {
-        display: block;
-        width: 450px;
-        margin: 2em auto;
-        text-align: left;
-      }
-    </style>
+    #g1,
+    #g2,
+    #g3,
+    #g4,
+    #g5,
+    #g6 {
+      width: 200px;
+      height: 160px;
+      display: inline-block;
+      margin: 1em;
+    }
 
-	</head>
-  <body>
-    <div id="g1"></div>
-    <div id="g2"></div>
-    <div id="g3"></div>
-    <div id="g4"></div>
-    <div id="g5"></div>
-    <div id="g6"></div>
-    <p>
-      Not digging default style? Then mock your own, Picasso! JustGage features bunch of styling options including gauge width, gauge color and shadow, gauge level colors, colors for title, value, min &amp; max etc.
-    </p>
-    <p>
-      Check non-minified version of justgage.js for list of all setup parameters.
-    </p>
-    <script src="../raphael-2.1.4.min.js"></script>
-    <!--<script src="../justgage-1.0.1.js"></script>-->
-    <script src="../justgage.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
+    p {
+      display: block;
+      width: 450px;
+      margin: 2em auto;
+      text-align: left;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="g1"></div>
+  <div id="g2"></div>
+  <div id="g3"></div>
+  <div id="g4"></div>
+  <div id="g5"></div>
+  <div id="g6"></div>
+  <p>
+    Not digging default style? Then mock your own, Picasso! JustGage features bunch of styling options including gauge
+    width, gauge color and shadow, gauge level colors, colors for title, value, min &amp; max etc.
+  </p>
+  <p>
+    Check non-minified version of justgage.js for list of all setup parameters.
+  </p>
+  <script src="../raphael-2.1.4.min.js"></script>
+  <!--<script src="../justgage-1.0.1.js"></script>-->
+  <script src="../justgage.js"></script>
+  <script>
+    /** Random integer  */
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function (event) {
 
       var g1, g2, g3, g4, g5, g6;
 
@@ -122,16 +136,17 @@
         refreshAnimationType: "linear"
       });
 
-        setInterval(function() {
-          g1.refresh(getRandomInt(0, 100));
-          g2.refresh(getRandomInt(0, 100));
-          g3.refresh(getRandomInt(0, 100));
-          g4.refresh(getRandomInt(0, 100));
-          g5.refresh(getRandomInt(0, 100));
-          g6.refresh(getRandomInt(0, 100));
-        }, 2500);
+      setInterval(function () {
+        g1.refresh(getRandomInt(0, 100));
+        g2.refresh(getRandomInt(0, 100));
+        g3.refresh(getRandomInt(0, 100));
+        g4.refresh(getRandomInt(0, 100));
+        g5.refresh(getRandomInt(0, 100));
+        g6.refresh(getRandomInt(0, 100));
+      }, 2500);
 
     });
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>

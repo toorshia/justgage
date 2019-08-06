@@ -1,11 +1,11 @@
 <!doctype html>
 <html>
 
-  <head>
-    <meta charset="utf-8" />
-    <title>Pointer</title>
-    <meta name="viewport" content="width=device-width">
-    <style>
+<head>
+  <meta charset="utf-8" />
+  <title>Pointer</title>
+  <meta name="viewport" content="width=device-width">
+  <style>
     .wrapper {
       position: relative;
       width: 640px;
@@ -45,31 +45,36 @@
       color: white;
       cursor: pointer;
     }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
-    <div class="wrapper">
-      <div class="box">
-        <div id="g1" class="gauge"></div>
-      </div>
-      <div class="box">
-        <div id="g2" class="gauge"></div>
-      </div>
-      <div class="box">
-        <div id="g3" class="gauge"></div>
-      </div>
-      <div class="box">
-        <div id="g4" class="gauge"></div>
-      </div>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <div id="g1" class="gauge"></div>
     </div>
-    <div class="container">
-      <button type="button" id="gauge_refresh">Refresh Gauges</button>
+    <div class="box">
+      <div id="g2" class="gauge"></div>
     </div>
-    <script src="../raphael-2.1.4.min.js"></script>
-    <script src="../justgage.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
+    <div class="box">
+      <div id="g3" class="gauge"></div>
+    </div>
+    <div class="box">
+      <div id="g4" class="gauge"></div>
+    </div>
+  </div>
+  <div class="container">
+    <button type="button" id="gauge_refresh">Refresh Gauges</button>
+  </div>
+  <script src="../raphael-2.1.4.min.js"></script>
+  <script src="../justgage.js"></script>
+  <script>
+    /** Random integer  */
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function (event) {
 
       var g1 = new JustGage({
         id: 'g1',
@@ -155,14 +160,14 @@
         counter: true
       });
 
-      document.getElementById('gauge_refresh').addEventListener('click', function() {
+      document.getElementById('gauge_refresh').addEventListener('click', function () {
         g1.refresh(getRandomInt(0, 100));
         g2.refresh(getRandomInt(0, 100));
         g3.refresh(getRandomInt(0, 100));
         g4.refresh(getRandomInt(0, 100));
       });
     });
-    </script>
-  </body>
+  </script>
+</body>
 
 </html>

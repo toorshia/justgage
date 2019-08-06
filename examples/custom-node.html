@@ -6,31 +6,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
     <style>
-    button {
-        padding: 8px 14px;
-    }
+        button {
+            padding: 8px 14px;
+        }
 
-    .container {
-        width: 850px;
-        margin: 20px auto 0 auto;
-        text-align: center;
-    }
+        .container {
+            width: 850px;
+            margin: 20px auto 0 auto;
+            text-align: center;
+        }
 
-    .gauge {
-        width: 150px;
-        height: 150px;
-        display: inline-block;
-        border: 1px solid #ccc;
-        margin: 5px;
-    }
+        .gauge {
+            width: 150px;
+            height: 150px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            margin: 5px;
+        }
 
-    a:link.button,
-    a:active.button,
-    a:visited.button,
-    a:hover.button {
-        margin: 20px 5px 0 2px;
-        padding: 7px 13px;
-    }
+        a:link.button,
+        a:active.button,
+        a:visited.button,
+        a:hover.button {
+            margin: 20px 5px 0 2px;
+            padding: 7px 13px;
+        }
     </style>
 </head>
 
@@ -52,78 +52,83 @@
     <script src="../raphael-2.1.4.min.js"></script>
     <script src="../justgage.js"></script>
     <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-        var gNode1 = document.createElement('div');
-        gNode1.setAttribute("class", "gauge");
+        /** Random integer  */
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var gNode1 = document.createElement('div');
+            gNode1.setAttribute("class", "gauge");
 
-        var gNode4 = document.createElement('div');
-        gNode4.setAttribute("class", "gauge");
-        gNode4.setAttribute("data-title", "#4");
-        gNode4.setAttribute("data-value", "100");
-        gNode4.setAttribute("data-counter", "true");
+            var gNode4 = document.createElement('div');
+            gNode4.setAttribute("class", "gauge");
+            gNode4.setAttribute("data-title", "#4");
+            gNode4.setAttribute("data-value", "100");
+            gNode4.setAttribute("data-counter", "true");
 
-        var gauge1 = new JustGage({
-            parentNode: gNode1,
-            width: 150,
-            height: 150,
-            title: "#1",
-            value: 25,
-            min: 0,
-            max: 100,
-            decimals: 0,
-            counter: true
+            var gauge1 = new JustGage({
+                parentNode: gNode1,
+                width: 150,
+                height: 150,
+                title: "#1",
+                value: 25,
+                min: 0,
+                max: 100,
+                decimals: 0,
+                counter: true
+            });
+
+            var gauge2 = new JustGage({
+                id: "gauge2",
+                title: "#2",
+                value: 50,
+                min: 0,
+                max: 100,
+                humanFriendly: false,
+                decimals: 0,
+                counter: true
+            });
+
+            var gauge3 = new JustGage({
+                id: "gauge3"
+            });
+
+            var gauge4 = new JustGage({
+                parentNode: gNode4,
+                width: 150,
+                height: 150
+            });
+
+            document.getElementById('g1_refresh').addEventListener('click', function () {
+                gauge1.refresh(getRandomInt(0, 100));
+            });
+
+            document.getElementById('g2_refresh').addEventListener('click', function () {
+                gauge2.refresh(getRandomInt(0, 100));
+            });
+
+            document.getElementById('g3_refresh').addEventListener('click', function () {
+                gauge3.refresh(getRandomInt(0, 100));
+            });
+
+            document.getElementById('g4_refresh').addEventListener('click', function () {
+                gauge4.refresh(getRandomInt(0, 100));
+            });
+
+            document.getElementById('g1_show').addEventListener('click', function () {
+                var container = document.getElementById("cont");
+                container.insertBefore(gNode1, container.childNodes[0]);
+                container = null;
+            });
+
+            document.getElementById('g4_show').addEventListener('click', function () {
+                var container = document.getElementById("cont");
+                container.appendChild(gNode4, container.childNodes[0]);
+                container = null;
+            });
+
         });
-
-        var gauge2 = new JustGage({
-            id: "gauge2",
-            title: "#2",
-            value: 50,
-            min: 0,
-            max: 100,
-            humanFriendly: false,
-            decimals: 0,
-            counter: true
-        });
-
-        var gauge3 = new JustGage({
-            id: "gauge3"
-        });
-
-        var gauge4 = new JustGage({
-            parentNode: gNode4,
-            width: 150,
-            height: 150
-        });
-
-        document.getElementById('g1_refresh').addEventListener('click', function() {
-            gauge1.refresh(getRandomInt(0, 100));
-        });
-
-        document.getElementById('g2_refresh').addEventListener('click', function() {
-            gauge2.refresh(getRandomInt(0, 100));
-        });
-
-        document.getElementById('g3_refresh').addEventListener('click', function() {
-            gauge3.refresh(getRandomInt(0, 100));
-        });
-
-        document.getElementById('g4_refresh').addEventListener('click', function() {
-            gauge4.refresh(getRandomInt(0, 100));
-        });
-
-        document.getElementById('g1_show').addEventListener('click', function() {
-            var container = document.getElementById("cont");
-            container.insertBefore(gNode1, container.childNodes[0]);
-            container = null;
-        });
-
-        document.getElementById('g4_show').addEventListener('click', function() {
-            var container = document.getElementById("cont");
-            container.appendChild(gNode4, container.childNodes[0]);
-            container = null;
-        });
-
-    });
     </script>
 </body>
 
