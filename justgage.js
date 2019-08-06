@@ -16,22 +16,20 @@ JustGage = function(config) {
     return false;
   }
 
-  var node;
-
   if (config.id !== null && config.id !== undefined) {
-    node = document.getElementById(config.id);
-    if (!node) {
+    obj.node = document.getElementById(config.id);
+    if (!obj.node) {
       console.log('* justgage: No element with id : %s found', config.id);
       return false;
     }
   } else if (config.parentNode !== null && config.parentNode !== undefined) {
-    node = config.parentNode;
+    obj.node = config.parentNode;
   } else {
     console.log('* justgage: Make sure to pass the existing element id or parentNode to the constructor.');
     return false;
   }
 
-  var dataset = node.dataset ? node.dataset : {};
+  var dataset = obj.node.dataset ? obj.node.dataset : {};
 
   // check for defaults
   var defaults = (config.defaults !== null && config.defaults !== undefined) ? config.defaults : false;
@@ -905,7 +903,7 @@ JustGage.prototype.refresh = function(val, max) {
 
 /** Destroy gauge object */
 JustGage.prototype.destroy = function() {
-  document.getElementById(this.config.id).innerHTML = '';
+  if(this.node && this.node.parentNode) this.node.innerHTML = ''
 };
 
 /** Generate shadow */
