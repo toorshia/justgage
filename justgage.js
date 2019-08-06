@@ -229,7 +229,11 @@ JustGage = function(config) {
 
     // pointerOptions : object
     // define pointer look
-    pointerOptions: kvLookup('pointerOptions', config, dataset, {})
+    pointerOptions: kvLookup('pointerOptions', config, dataset, {}),
+
+    // displayRemaining: boolean
+    // replace display number with the number remaining to reach max
+    displayRemaining: kvLookup('displayRemaining', config, dataset, false)
   };
 
   // variables
@@ -710,7 +714,9 @@ JustGage = function(config) {
     obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
   } else if (obj.config.formatNumber) {
     obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
-  } else {
+  } else if(obj.config.displayRemaining) {
+    obj.originalValue = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+  }  else {
     obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
 
@@ -727,7 +733,9 @@ JustGage = function(config) {
         obj.txtValue.attr("text", humanFriendlyNumber(Math.floor(currentValue), obj.config.humanFriendlyDecimal) + obj.config.symbol);
       } else if (obj.config.formatNumber) {
         obj.txtValue.attr("text", formatNumber(Math.floor(currentValue)) + obj.config.symbol);
-      } else {
+      } else if (obj.config.displayRemaining) {
+          obj.txtValue.attr("text", ((obj.config.max - currentValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+      }else {
         obj.txtValue.attr("text", (currentValue * 1).toFixed(obj.config.decimals) + obj.config.symbol);
       }
       setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
@@ -882,10 +890,12 @@ JustGage.prototype.refresh = function(val, max, min, label) {
     displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
   } else if (obj.config.formatNumber) {
     displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
+  } else if (obj.config.displayRemaining) {
+      displayVal = ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   } else {
-    displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+        displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
   }
-  obj.originalValue = displayVal;
+    obj.originalValue = displayVal;
   obj.config.value = val * 1;
 
   if (!obj.config.counter) {
