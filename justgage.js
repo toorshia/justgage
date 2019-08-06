@@ -973,7 +973,7 @@
   JustGage.prototype.destroy = function () {
     if (this.node && this.node.parentNode) this.node.innerHTML = ''
 
-    for(const event in this.events)
+    for(var event in this.events)
       Raphael.eve.off(event, this.events[event])
   };
 
