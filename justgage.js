@@ -795,7 +795,7 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, min, max) {
+JustGage.prototype.refresh = function(val, max, min) {
 
   var obj = this;
   var displayVal, color, max = max || null, min = min || null;

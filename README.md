@@ -178,10 +178,11 @@ pointerOptions: {
 
 Used to refresh Gauge value and max value
 
-`refresh(val, max)`
+`refresh(val, max, min)`
 
 - `val` : The Gauge value (required)
 - `max` : The Gauge Max value (optional)
+- `min` : The Gauge Min value (optional)
 
 ### Destroy
 
