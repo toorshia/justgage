@@ -25,18 +25,18 @@
     obj.events = {}
 
     // Helps in case developer wants to debug it. unobtrusive
-    if (config === null || config === undefined) {
+    if (isUndefined(config)) {
       console.log('* justgage: Make sure to pass options to the constructor!');
       return false;
     }
 
-    if (config.id !== null && config.id !== undefined) {
+    if (!isUndefined(config.id)) {
       obj.node = document.getElementById(config.id);
       if (!obj.node) {
         console.log('* justgage: No element with id : %s found', config.id);
         return false;
       }
-    } else if (config.parentNode !== null && config.parentNode !== undefined) {
+    } else if (!isUndefined(config.parentNode)) {
       obj.node = config.parentNode;
     } else {
       console.log('* justgage: Make sure to pass the existing element id or parentNode to the constructor.');
@@ -46,7 +46,7 @@
     var dataset = obj.node.dataset ? obj.node.dataset : {};
 
     // check for defaults
-    var defaults = (config.defaults !== null && config.defaults !== undefined) ? config.defaults : false;
+    var defaults = !isUndefined(config.defaults) ? config.defaults : false;
     if (defaults !== false) {
       config = extend({}, config, defaults);
       delete config.defaults;
@@ -614,10 +614,10 @@
     if (obj.config.pointer) {
       // needle
       obj.needle = obj.canvas.path().attr({
-        "stroke": (obj.config.pointerOptions.stroke !== null && obj.config.pointerOptions.stroke !== undefined) ? obj.config.pointerOptions.stroke : "none",
-        "stroke-width": (obj.config.pointerOptions.stroke_width !== null && obj.config.pointerOptions.stroke_width !== undefined) ? obj.config.pointerOptions.stroke_width : 0,
-        "stroke-linecap": (obj.config.pointerOptions.stroke_linecap !== null && obj.config.pointerOptions.stroke_linecap !== undefined) ? obj.config.pointerOptions.stroke_linecap : "square",
-        "fill": (obj.config.pointerOptions.color !== null && obj.config.pointerOptions.color !== undefined) ? obj.config.pointerOptions.color : "#000000",
+        "stroke": !isUndefined(obj.config.pointerOptions.stroke) ? obj.config.pointerOptions.stroke : "none",
+        "stroke-width": !isUndefined(obj.config.pointerOptions.stroke_width) ? obj.config.pointerOptions.stroke_width : 0,
+        "stroke-linecap": !isUndefined(obj.config.pointerOptions.stroke_linecap) ? obj.config.pointerOptions.stroke_linecap : "square",
+        "fill": !isUndefined(obj.config.pointerOptions.color) ? obj.config.pointerOptions.color : "#000000",
         ndl: [
           obj.config.min,
           obj.config.min,
@@ -1095,18 +1095,18 @@
   function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
     var val = defval;
     var canConvert = false;
-    if (!(key === null || key === undefined)) {
-      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
+    if (!isUndefined(key)) {
+      if (!isUndefined(tableb) && typeof tableb === "object" && key in tableb) {
         val = tableb[key];
         canConvert = true;
-      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
+      } else if (!isUndefined(tablea) && typeof tablea === "object" && key in tablea) {
         val = tablea[key];
         canConvert = true;
       } else {
         val = defval;
       }
       if (canConvert === true) {
-        if (datatype !== null && datatype !== undefined) {
+        if (!isUndefined(datatype)) {
           switch (datatype) {
             case 'int':
               val = parseInt(val, 10);
@@ -1122,6 +1122,10 @@
     }
     return val;
   };
+
+  function isUndefined(v) {
+    return v === null || v === undefined
+  }
 
   /** Get color for value */
   function getColor(val, pct, col, noGradient, custSec) {
