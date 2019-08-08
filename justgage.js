@@ -736,10 +736,7 @@
 
     if (obj.config.counter === true) {
       //on each animation frame
-      Raphael.eve.on("raphael.anim.frame." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.frame." + (obj.level.id)]) obj.events["raphael.anim.frame." + (obj.level.id)] = this
-
+      var onFrame = function () {
         var currentValue = obj.level.attr("pki")[0];
         if (obj.config.reverse) {
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
@@ -757,28 +754,30 @@
         }
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
         currentValue = null;
-      });
+      }
+
       //on animation end
-      Raphael.eve.on("raphael.anim.finish." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.finish." + (obj.level.id)]) obj.events["raphael.anim.finish." + (obj.level.id)] = this
-
+      var onFinish = function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
-      });
+      };
+
+      
+      this.bindEvent("raphael.anim.finish." + (obj.level.id), onFinish)
+      this.bindEvent("raphael.anim.frame." + (obj.level.id), onFrame)
+
     } else {
       //on animation start
-      Raphael.eve.on("raphael.anim.start." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.start." + (obj.level.id)]) obj.events["raphael.anim.start." + (obj.level.id)] = this
-
+      var onStart = function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
-      });
+      };
+
+      this.bindEvent("raphael.anim.start." + (obj.level.id), onStart)
     }
 
     // animate gauge level, value & label
@@ -825,7 +824,32 @@
     }, obj.config.startAnimationTime, obj.config.startAnimationType);
   };
 
-  /** Refresh gauge level */
+
+  /**
+   * Bind a function to a Raphael eve event
+   *
+   * @param {String} eventName Raphael event name
+   * @param {Function} func The function to call on that event
+   */
+  JustGage.prototype.bindEvent = function (eventName, func) {
+    //check for existing bind events
+    if(this.events[eventName]) 
+      Raphael.eve.off(eventName, this.events[eventName])
+    
+    Raphael.eve.on(eventName, func);
+
+    this.events[eventName] = func  
+  }
+
+
+  /**
+   * Update Gauge values
+   *
+   * @param {Number} val The value
+   * @param {Number|String} max Max value
+   * @param {Number|String} min Min value
+   * @param {String} label The Label
+   */
   JustGage.prototype.refresh = function (val, max, min, label) {
 
     var obj = this;
@@ -969,15 +993,28 @@
     obj, displayVal, color, max, min = null;
   };
 
-  /** Destroy gauge object */
+
+  /**
+   * Destroy the Gauge Object and unbind events
+   *
+   */
   JustGage.prototype.destroy = function () {
     if (this.node && this.node.parentNode) this.node.innerHTML = ''
 
-    for(var event in this.events)
+    for(var event in this.events) {
       Raphael.eve.off(event, this.events[event])
+    }
+
+    this.events = {}
   };
 
-  /** Generate shadow */
+  
+  /**
+   * Generate Shadow
+   *
+   * @param {Object} svg The Svg element Object
+   * @param {Object} defs The defs element Object
+   */
   JustGage.prototype.generateShadow = function (svg, defs) {
 
     var obj = this;
