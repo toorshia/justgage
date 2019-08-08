@@ -765,8 +765,8 @@
       };
 
       
-      this.bindEvent("raphael.anim.finish." + (obj.level.id), onFinish)
-      this.bindEvent("raphael.anim.frame." + (obj.level.id), onFrame)
+      this.bindEvent("raphael.anim.finish", onFinish)
+      this.bindEvent("raphael.anim.frame", onFrame)
 
     } else {
       //on animation start
@@ -777,7 +777,7 @@
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       };
 
-      this.bindEvent("raphael.anim.start." + (obj.level.id), onStart)
+      this.bindEvent("raphael.anim.start", onStart)
     }
 
     // animate gauge level, value & label
@@ -832,6 +832,9 @@
    * @param {Function} func The function to call on that event
    */
   JustGage.prototype.bindEvent = function (eventName, func) {
+    // add the level id to the event
+    eventName += '.' + this.level.id
+
     //check for existing bind events
     if(this.events[eventName]) 
       Raphael.eve.off(eventName, this.events[eventName])
