@@ -46,7 +46,7 @@
       $.get("https://api.github.com/repos/toorshia/justgage/contents/docs/examples", function (data, status) {
         let htmlString = '';
         for (let file of data) {
-          htmlString += `<li><a href="${file.path}">${file.name}</a></li>`;
+          htmlString += `<li><a href="${file.path.substr(5)}">${file.name}</a></li>`;
         }
         htmlString += '';
         $('#examples').html(htmlString);
@@ -487,12 +487,11 @@
                   </li>
         </ul>
       </div>
+      <h1>More examples:</h3>
+        <ul class="highlights clear" id="examples"></ul>
     </div>
 
-    <h3>More examples:</h3>
-    <ul id="examples">
-      
-    </ul>
+
   </div>
 
   <!-- RELEASE NOTES -->
