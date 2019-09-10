@@ -14,8 +14,7 @@ yarn.lock
 
 # project files
 test
-examples
-docs
+/docs/*
 CHANGELOG.md
 CHANGELOG_OLD.md
 .travis.yml

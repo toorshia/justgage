@@ -13,20 +13,20 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 <p align="center"><img src="docs/img/screenshot.gif"/></p>
 
-- [JustGage](#JustGage)
-  - [Getting Started](#Getting-Started)
-  - [Basic usage](#Basic-usage)
-  - [Options](#Options)
-    - [Custom Sectors](#Custom-Sectors)
-    - [Pointer options](#Pointer-options)
-  - [Methods](#Methods)
-    - [Refresh](#Refresh)
-    - [Destroy](#Destroy)
-  - [Demo](#Demo)
-  - [Examples](#Examples)
-  - [Changelog](#Changelog)
-  - [License](#License)
-  - [Author](#Author)
+- [JustGage](#justgage)
+  - [Getting Started](#getting-started)
+  - [Basic usage](#basic-usage)
+  - [Options](#options)
+    - [Custom Sectors](#custom-sectors)
+    - [Pointer options](#pointer-options)
+  - [Methods](#methods)
+    - [Refresh](#refresh)
+    - [Destroy](#destroy)
+  - [Demo](#demo)
+  - [Examples](#examples)
+  - [Changelog](#changelog)
+  - [License](#license)
+  - [Author](#author)
 
 ## Getting Started
 
@@ -198,7 +198,7 @@ Click [here](https://justgage.com/) to see a demo
 
 ## Examples
 
-Click [here](http://justgage.com/examples/) for a list of examples
+Click [here](https://toorshia.github.io/justgage/examples) for a list of examples
 
 ## Changelog
 
