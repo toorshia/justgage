@@ -1,137 +1,166 @@
 <!doctype html>
 
 <html>
-  <head>
-    <title>justGage.com</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="Author" content="Bojan Djuricic | pindjur[at]gmail[dot]com | www[dot]madcog[dot]com" lang="en" xml:lang="en" />
-    <meta name="Copyright" content="Copyright (c) 2012. www.justgage.com All rights reserved." lang="en" xml:lang="en" />
-    <meta name="Description" content="JustGage is a handy JavaScript plugin for generating and animating nice & clean dashboard gauges." lang="en" xml:lang="en" />
-    <meta name="Keywords" content="gauge, meter, clean, simple, minimal, svg, vector, performance indicator, measure, dashboard, javascript, plugin" lang="en" xml:lang="en" />
 
-    <meta name="robots" content="Index, Follow"/>
-    <meta name="revisit-after" content="7 days"/>
+<head>
+  <title>justGage.com</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="Author" content="Bojan Djuricic | pindjur[at]gmail[dot]com | www[dot]madcog[dot]com" lang="en"
+    xml:lang="en" />
+  <meta name="Copyright" content="Copyright (c) 2012. www.justgage.com All rights reserved." lang="en" xml:lang="en" />
+  <meta name="Description"
+    content="JustGage is a handy JavaScript plugin for generating and animating nice & clean dashboard gauges."
+    lang="en" xml:lang="en" />
+  <meta name="Keywords"
+    content="gauge, meter, clean, simple, minimal, svg, vector, performance indicator, measure, dashboard, javascript, plugin"
+    lang="en" xml:lang="en" />
 
-    <meta property="og:title" content="JustGage - nice & clean dashboard gauges" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="JustGage is a handy JavaScript plugin for generating and animating nice & clean dashboard gauges." />
-    <meta property="og:url" content="https://www.justgage.com" />
-    <meta property="og:image" content="https://www.justgage.com/resources/img/justgage_url_img.png" />
-    <meta property="og:site_name" content="JustGage" />
-    <meta property="fb:admins" content="571959117" />
+  <meta name="robots" content="Index, Follow" />
+  <meta name="revisit-after" content="7 days" />
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="resources/css/style.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700' rel='stylesheet' type='text/css'>
+  <meta property="og:title" content="JustGage - nice & clean dashboard gauges" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description"
+    content="JustGage is a handy JavaScript plugin for generating and animating nice & clean dashboard gauges." />
+  <meta property="og:url" content="https://www.justgage.com" />
+  <meta property="og:image" content="https://www.justgage.com/resources/img/justgage_url_img.png" />
+  <meta property="og:site_name" content="JustGage" />
+  <meta property="fb:admins" content="571959117" />
 
-    <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
-    <script src="resources/js/script1.js"></script>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="resources/css/style.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700' rel='stylesheet' type='text/css'>
 
-    <script>
-      var g1, g1a, g2, g2a, g2b, g3, g4, g4a, g4b, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16;
-      var loaded = [false, false, false, false];
+  <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <script src="resources/js/script1.js"></script>
 
-      $(document).ready(function(){
-        initGauges(0);
-        initDemos();
+  <script>
+    var g1, g1a, g2, g2a, g2b, g3, g4, g4a, g4b, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16;
+    var loaded = [false, false, false, false];
+
+    $(document).ready(function () {
+      initGauges(0);
+      initDemos();
+
+      $.get("https://api.github.com/repos/toorshia/justgage/contents/docs/examples", function (data, status) {
+        let htmlString = '';
+        for (let file of data) {
+          htmlString += `<li><a href="${file.path}">${file.name}</a></li>`;
+        }
+        htmlString += '';
+        l$('#examples').html(htmlString);
       });
 
-      // google analytics
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-33407720-1']);
-      _gaq.push(['_trackPageview']);
+    });
 
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'https://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
 
-	</head>
-  <body>
+    // google analytics
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33407720-1']);
+    _gaq.push(['_trackPageview']);
 
-    <div id="g960"></div>
+    (function () {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'https://www') +
+        '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 
-    <!-- HEADER -->
-    <div id="header">
+</head>
+
+<body>
+
+  <div id="g960"></div>
+
+  <!-- HEADER -->
+  <div id="header">
     <div class="w960 clear">
-        <div class="box x12">
-          <div class="logo"></div>
-        </div>
+      <div class="box x12">
+        <div class="logo"></div>
       </div>
     </div>
+  </div>
 
-    <div id="logoContainer">
-      <div class="w960 clear">
-        <div class="box x12">
-          <div class="logoBig"></div>
-        </div>
+  <div id="logoContainer">
+    <div class="w960 clear">
+      <div class="box x12">
+        <div class="logoBig"></div>
       </div>
     </div>
+  </div>
 
-    <div id="menu">
-      <div class="w960 clear">
-        <div class="box x12">
-          <ul class="mainMenu clear">
-            <li><a href="javascript:void(0);" rel="about">About</a></li>
-            <li><a href="javascript:void(0);" rel="setup">Setup</a></li>
-            <li><a href="javascript:void(0);" rel="demos">Demos</a></li>
-            <li><a href="javascript:void(0);" rel="notes">Release Notes</a></li>
-            <li><a id="tweet" href="https://twitter.com/share?url=http%3A%2F%2Fwww.justgage.com&text=JavaScript plugin for creating nice and clean dashboard gauges" class="button blue">Tweet<span class="ico16 ico16AbsoluteR icoTwitterSmall"></span></a></li>
-            <li><a id="github" target="_blank" href="https://github.com/toorshia/justgage" class="button red">Fork on GitHub<span class="ico16 ico16AbsoluteR icoGitHubSmall"></span></a></li>
-          </ul>
-        </div>
+  <div id="menu">
+    <div class="w960 clear">
+      <div class="box x12">
+        <ul class="mainMenu clear">
+          <li><a href="#about">About</a></li>
+          <li><a href="#setup">Setup</a></li>
+          <li><a href="#demos">Demos</a></li>
+          <li><a href="#notes">Release Notes</a></li>
+          <li><a id="tweet"
+              href="https://twitter.com/share?url=http%3A%2F%2Fwww.justgage.com&text=JavaScript plugin for creating nice and clean dashboard gauges"
+              class="button blue">Tweet<span class="ico16 ico16AbsoluteR icoTwitterSmall"></span></a></li>
+          <li><a id="github" target="_blank" href="https://github.com/toorshia/justgage" class="button red">Fork on
+              GitHub<span class="ico16 ico16AbsoluteR icoGitHubSmall"></span></a></li>
+        </ul>
       </div>
     </div>
+  </div>
 
-    <!-- ABOUT -->
-    <div id="about">
-      <div class="w960 clear">
-        <div class="box x6">
-          <h1>What is JustGage?</h1>
-          <p>
-            JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean gauges. It is based on Raphaël library for vector drawing, so it’s completely <strong>resolution independent</strong> and self-adjusting.
-          </p>
-          <p>
-            Oh yes, since it’s pure SVG, it <strong>works in almost any browser</strong> -<br />
-            IE6+, Chrome, Firefox, Safari, Opera, Android, etc.
-          </p>
-          <div class="clear" style="padding:2em 0 0 0em">
-            <a href="download/justgage-1.2.2.zip" class="button green btnDownload">Download<div class="split"></div><span class="ico_ArrowD"></span></a>
-            <div class="label">JustGage v1.2.2 + examples, .zip (53KB)</div>
+  <!-- ABOUT -->
+  <div id="about">
+    <div class="w960 clear">
+      <div class="box x6">
+        <h1>What is JustGage?</h1>
+        <p>
+          JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean gauges. It is based on
+          Raphaël library for vector drawing, so it’s completely <strong>resolution independent</strong> and
+          self-adjusting.
+        </p>
+        <p>
+          Oh yes, since it’s pure SVG, it <strong>works in almost any browser</strong> -<br />
+          IE6+, Chrome, Firefox, Safari, Opera, Android, etc.
+        </p>
+        <div class="clear" style="padding:2em 0 0 0em">
+          <a href="download/justgage-1.2.2.zip" class="button green btnDownload">Download<div class="split"></div><span
+              class="ico_ArrowD"></span></a>
+          <div class="label">JustGage v1.2.2 + examples, .zip (53KB)</div>
+        </div>
+      </div>
+      <div class="box x6">
+        <div class="kv clear">
+          <div class="left col1">
+            <div id="g1" class="sz1"></div>
+            <div id="g1a" class="sz1"></div>
+          </div>
+          <div class="left col2">
+            <div id="g2" class="sz0"></div>
+            <div id="g2a" class="sz0"></div>
+            <div id="g2b" class="sz0"></div>
           </div>
         </div>
-        <div class="box x6">
-          <div class="kv clear">
-              <div class="left col1">
-                <div id="g1" class="sz1"></div>
-                <div id="g1a" class="sz1"></div>
-              </div>
-              <div class="left col2">
-                <div id="g2" class="sz0"></div>
-                <div id="g2a" class="sz0"></div>
-                <div id="g2b" class="sz0"></div>
-              </div>
-          </div>
-        </div>
-
       </div>
-    </div>
 
-    <!-- SETUP -->
-    <div id="setup" class="whiteSection">
-      <div class="w960 clear">
-        <div class="box x6">
-<pre class="js setup frst">
+    </div>
+  </div>
+
+  <!-- SETUP -->
+  <div id="setup" class="whiteSection">
+    <div class="w960 clear">
+      <div class="box x6">
+        <pre class="js setup frst">
 &lt;script src="raphael.2.1.0.min.js">&lt;/script&gt;
 &lt;script src="justgage.1.0.1.min.js">&lt;/script&gt;
 </pre>
-<pre class="html setup">
+        <pre class="html setup">
 &lt;div id="gauge" class="200x160px"&gt;&lt;/div&gt;
 </pre>
-<pre class="js setup">
+        <pre class="js setup">
 &lt;script&gt;
   var g = new JustGage({
     id: "gauge",
@@ -142,48 +171,50 @@
   });
 &lt;/script&gt;
 </pre>
-        </div>
-        <div class="box x6">
-          <h1>How do I use it?</h1>
-          <ul class="highlights clear">
-            <li>
-              <span class="bullet">1</span>
-              <span class="text">Include JustGage and Raphael scripts in your page.</span>
-            </li>
-            <li>
-              <span class="bullet">2</span>
-              <span class="text">Create a div with id, width & height</span>
-            </li>
-            <li>
-              <span class="bullet">3</span>
-              <span class="text">Call ‘justGage({id, value})’</span>
-            </li>
-          </ul>
-          <p>
-            This is the most basic setup. Feel like getting your hands greasy? There’s more nuts &amp; bolts you can tinker with - checkout Demos section to see cool stuff you can do by <strong>customizing setup parameters</strong>.
-          </p>
-        </div>
+      </div>
+      <div class="box x6">
+        <h1>How do I use it?</h1>
+        <ul class="highlights clear">
+          <li>
+            <span class="bullet">1</span>
+            <span class="text">Include JustGage and Raphael scripts in your page.</span>
+          </li>
+          <li>
+            <span class="bullet">2</span>
+            <span class="text">Create a div with id, width & height</span>
+          </li>
+          <li>
+            <span class="bullet">3</span>
+            <span class="text">Call ‘justGage({id, value})’</span>
+          </li>
+        </ul>
+        <p>
+          This is the most basic setup. Feel like getting your hands greasy? There’s more nuts &amp; bolts you can
+          tinker with - checkout Demos section to see cool stuff you can do by <strong>customizing setup
+            parameters</strong>.
+        </p>
       </div>
     </div>
+  </div>
 
-    <!-- DEMOS -->
-    <div id="demos" class="whiteSection">
-      <div class="w960 clear">
-        <div class="box x4">
-          <h1>What can it do?</h1>
-          <div id="submenu" class="submenu">
-            <div id="tip"></div>
-            <ul id="nav">
-              <li class="active">Auto-adjust size</li>
-              <li>Custom interval</li>
-              <li>Show color by sector</li>
-              <li>Customize style</li>
-            </ul>
-          </div>
+  <!-- DEMOS -->
+  <div id="demos" class="whiteSection">
+    <div class="w960 clear">
+      <div class="box x4">
+        <h1>What can it do?</h1>
+        <div id="submenu" class="submenu">
+          <div id="tip"></div>
+          <ul id="nav">
+            <li class="active">Auto-adjust size</li>
+            <li>Custom interval</li>
+            <li>Show color by sector</li>
+            <li>Customize style</li>
+          </ul>
         </div>
-        <div class="box x8">
-          <ul id="democontainer">
-            <! --*** DEMO 1 ***-->
+      </div>
+      <div class="box x8">
+        <ul id="democontainer">
+          <! --*** DEMO 1 ***-->
             <li>
               <div class="viewport">
                 <div class="demo" rel="dmo">
@@ -198,31 +229,35 @@
                 <div class="code" rel="cod"></div>
               </div>
               <p>
-                JustGage auto-adjusts to the size of containing element. And to the screen zoom level. And screen density. Nice. This means you’ll get clean, sharp and nice looking gauge at all times. Try zooming the page to see the results.
+                JustGage auto-adjusts to the size of containing element. And to the screen zoom level. And screen
+                density. Nice. This means you’ll get clean, sharp and nice looking gauge at all times. Try zooming the
+                page to see the results.
               </p>
-<pre class="html">
+              <pre class="html">
 &lt;div id="bigfella" style="width:400px; height:320px"&gt;&lt;/div&gt;
 &lt;div id="smallbuddy" style="width:100px; height:80px"&gt;&lt;/div&gt;
 </pre>
             </li>
             <! --*** DEMO 2 ***-->
-            <li>
-              <div class="viewport">
-                <div class="demo" rel="dmo">
-                  <div id="g5"></div>
-                  <div id="g6"></div>
-                  <div id="g7"></div>
-                  <a id="r2" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
+              <li>
+                <div class="viewport">
+                  <div class="demo" rel="dmo">
+                    <div id="g5"></div>
+                    <div id="g6"></div>
+                    <div id="g7"></div>
+                    <a id="r2" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
+                  </div>
+                  <div class="code" rel="cod"></div>
                 </div>
-                <div class="code" rel="cod"></div>
-              </div>
-              <p>
-                You need to measure, say, between 350 and 980? No problem, just tell it to justGage. Displayed value and color are calculated as a percentage in defined range, with optional min and max labels shown.
-              </p>
-              <p>
-                Also, if displayed value is out of range, relax and kick your feet up - justGage will take care of it for you.
-              </p>
-<pre class="js">
+                <p>
+                  You need to measure, say, between 350 and 980? No problem, just tell it to justGage. Displayed value
+                  and color are calculated as a percentage in defined range, with optional min and max labels shown.
+                </p>
+                <p>
+                  Also, if displayed value is out of range, relax and kick your feet up - justGage will take care of it
+                  for you.
+                </p>
+                <pre class="js">
 &lt;script&gt;
   var g = new JustGage({
     id: "gauge",
@@ -234,25 +269,29 @@
   });
 &lt;/script&gt;
 </pre>
-            </li>
-            <! --*** DEMO 3 ***-->
-            <li>
-              <div class="viewport">
-                <div class="demo" rel="dmo">
-                  <div id="g8"></div>
-                  <div id="g9"></div>
-                  <div id="g10"></div>
-                  <a id="r3" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
-                </div>
-                <div class="code" rel="cod"></div>
-              </div>
-              <p>
-                Too many gauges on your page, feels like Woodstock with all them colors around? Then choose sector-based color representation of the displayed value. It means color will stay green for all values below 33%, yellow from 34% up until 66%. Take it over 67% and your gauge will glow red. These three are the default colors.
-              </p>
-              <p>
-                You can also define your own set of any number of colors, and thus get same number of color-coded sectors. Sweet.
-              </p>
-<pre class="js">
+              </li>
+              <! --*** DEMO 3 ***-->
+                <li>
+                  <div class="viewport">
+                    <div class="demo" rel="dmo">
+                      <div id="g8"></div>
+                      <div id="g9"></div>
+                      <div id="g10"></div>
+                      <a id="r3" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
+                    </div>
+                    <div class="code" rel="cod"></div>
+                  </div>
+                  <p>
+                    Too many gauges on your page, feels like Woodstock with all them colors around? Then choose
+                    sector-based color representation of the displayed value. It means color will stay green for all
+                    values below 33%, yellow from 34% up until 66%. Take it over 67% and your gauge will glow red. These
+                    three are the default colors.
+                  </p>
+                  <p>
+                    You can also define your own set of any number of colors, and thus get same number of color-coded
+                    sectors. Sweet.
+                  </p>
+                  <pre class="js">
 &lt;script&gt;
   var g5 = new JustGage({
     id: "g5",
@@ -265,28 +304,31 @@
   });
 &lt;/script&gt;
 </pre>
-            </li>
-            <! --*** DEMO 4 ***-->
-            <li>
-              <div class="viewport">
-                <div class="demo" rel="dmo">
-                  <div id="g11"></div>
-                  <div id="g12"></div>
-                  <div id="g13"></div>
-                  <div id="g14"></div>
-                  <div id="g15"></div>
-                  <div id="g16"></div>
-                  <a id="r4" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
-                </div>
-                <div class="code" rel="cod"></div>
-              </div>
-              <p>
-                Not digging default style? Then mock your own, Picasso! JustGage features bunch of styling options including gauge width, gauge color and shadow, gauge level colors, colors for title, value, min &amp; max etc.
-              </p>
-              <p>
-                Checkout list of all config parameters at <a href="https://github.com/toorshia/justgage#options" target="_new">GitHub source</a>.
-              </p>
-              <!-- <ul class="features">
+                </li>
+                <! --*** DEMO 4 ***-->
+                  <li>
+                    <div class="viewport">
+                      <div class="demo" rel="dmo">
+                        <div id="g11"></div>
+                        <div id="g12"></div>
+                        <div id="g13"></div>
+                        <div id="g14"></div>
+                        <div id="g15"></div>
+                        <div id="g16"></div>
+                        <a id="r4" href="javascript:void(0);" class="button yellow">Refresh Gauges</a>
+                      </div>
+                      <div class="code" rel="cod"></div>
+                    </div>
+                    <p>
+                      Not digging default style? Then mock your own, Picasso! JustGage features bunch of styling options
+                      including gauge width, gauge color and shadow, gauge level colors, colors for title, value, min
+                      &amp; max etc.
+                    </p>
+                    <p>
+                      Checkout list of all config parameters at <a href="https://github.com/toorshia/justgage#options"
+                        target="_new">GitHub source</a>.
+                    </p>
+                    <!-- <ul class="features">
                 <li>
                   <span class="circle"></span>
                   <span class="option">id</span>
@@ -442,27 +484,34 @@
                   <span class="desc">type of refresh animation (linear, >, <,  <>, bounce)</span>
                 </li>
               </ul> -->
-            </li>
-          </ul>
-        </div>
+                  </li>
+        </ul>
       </div>
     </div>
 
-    <!-- RELEASE NOTES -->
-    <div id="notes" class="darkSection">
-      <div class="w960 clear">
-        <div class="box x4">
-          <div class="download">
-            <a class="button green btnDownload" href="download/justgage-1.2.2.zip">Download<div class="split"></div><span class="ico_ArrowD"></span></a>
-            <div class="label">JustGage v1.2.2 + examples, .zip (53KB)</div>
-          </div>
+    <h3>More examples:</h3>
+    <ul id="examples">
+      
+    </ul>
+  </div>
+
+  <!-- RELEASE NOTES -->
+  <div id="notes" class="darkSection">
+    <div class="w960 clear">
+      <div class="box x4">
+        <div class="download">
+          <a class="button green btnDownload" href="download/justgage-1.2.2.zip">Download<div class="split"></div><span
+              class="ico_ArrowD"></span></a>
+          <div class="label">JustGage v1.2.2 + examples, .zip (53KB)</div>
         </div>
-        <div class="box x8">
-          <h1>Release Notes</h1>
-          <p>
-            JustGage is released under <a href="https://opensource.org/licenses/mit-license.php" target="_blank">MIT license</a>. Feel free to use it and modify it in any way you find suitable.
-          </p>
-          <!-- <p>
+      </div>
+      <div class="box x8">
+        <h1>Release Notes</h1>
+        <p>
+          JustGage is released under <a href="https://opensource.org/licenses/mit-license.php" target="_blank">MIT
+            license</a>. Feel free to use it and modify it in any way you find suitable.
+        </p>
+        <!-- <p>
             In theory, it's supposed to work in any browser supporting SVG. In practice, it was tested <strong>compatible with Chrome 20, Firefox 12, IE6, 7, 8, 9, Opera 12, Safari 5.1.2, Android 4.0.</strong>
           </p>
           <p>
@@ -472,7 +521,7 @@
             And it can even be made working on older Androids but hey - you don't really expect me to do all the heavy lifting, do you?
           </p> -->
 
-         <!-- <div class="clear">
+        <!-- <div class="clear">
            <div class="box inner x6">
               <p>
                 So, if you feel like justGage has been useful to you, or you’d like to see more features, buy me a coffee so I can stay awake and do more cool stuff.
@@ -488,18 +537,19 @@
            </div>
          </div> -->
 
-         <p>
-           Send comments & questions <a target="_blank" href="https://twitter.com/Toorshia">@Toorshia</a>.
-         </p>
-         <div class="center" style="padding: 40px 0 0 0">
+        <p>
+          Send comments & questions <a target="_blank" href="https://twitter.com/Toorshia">@Toorshia</a>.
+        </p>
+        <div class="center" style="padding: 40px 0 0 0">
           <div class="hosted">hosted by</div><a href="https://mint.rs/pocetna" target="_blank" class="mint">&nbsp;</a>
-        </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- FOOTER -->
-    <div id="footer" class="center"></div>
+  <!-- FOOTER -->
+  <div id="footer" class="center"></div>
 
-  </body>
+</body>
+
 </html>
