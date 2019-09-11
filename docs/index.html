@@ -40,7 +40,7 @@
     var loaded = [false, false, false, false];
 
     function fileName(string) {
-      string = string.replace(/-/, ' ')
+      string = string.replace(/-/g, ' ')
       string = string.substring(0, string.indexOf('.htm'))
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
