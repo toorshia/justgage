@@ -39,6 +39,12 @@
     var g1, g1a, g2, g2a, g2b, g3, g4, g4a, g4b, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16;
     var loaded = [false, false, false, false];
 
+    function fileName(string) {
+      string = string.replace(/-/, ' ')
+      string = string.substring(0, string.indexOf('.htm'))
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     $(document).ready(function () {
       initGauges(0);
       initDemos();
@@ -46,7 +52,7 @@
       $.get("https://api.github.com/repos/toorshia/justgage/contents/docs/examples", function (data, status) {
         let htmlString = '';
         for (let file of data) {
-          htmlString += `<li><a href="${file.path.substr(5)}">${file.name}</a></li>`;
+          htmlString += `<li><a href="${file.path.substr(5)}">${fileName(file.name)}</a></li>`;
         }
         htmlString += '';
         $('#examples').html(htmlString);
