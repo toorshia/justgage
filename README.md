@@ -198,7 +198,7 @@ Click [here](https://toorshia.github.io/justgage) to see a demo
 
 ## Examples
 
-Click [here](https://toorshia.github.io/justgage/#demo) for a list of examples
+Click [here](https://toorshia.github.io/justgage/#demos) for a list of examples
 
 ## Changelog
 
