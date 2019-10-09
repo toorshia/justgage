@@ -441,12 +441,12 @@
 
         path = "M" + (Cx - Ri) + "," + Cy + " ";
         path += "L" + (Cx - Ro) + "," + Cy + " ";
-        if (value > ((max - min) / 2)) {
+        if (value - min > ((max - min) / 2)) {
           path += "A" + Ro + "," + Ro + " 0 0 1 " + (Cx + Ro) + "," + Cy + " ";
         }
         path += "A" + Ro + "," + Ro + " 0 0 1 " + Xo + "," + Yo + " ";
         path += "L" + Xi + "," + Yi + " ";
-        if (value > ((max - min) / 2)) {
+        if (value - min > ((max - min) / 2)) {
           path += "A" + Ri + "," + Ri + " 0 0 0 " + (Cx + Ri) + "," + Cy + " ";
         }
         path += "A" + Ri + "," + Ri + " 0 0 0 " + (Cx - Ri) + "," + Cy + " ";
