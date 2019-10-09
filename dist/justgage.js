@@ -25,18 +25,18 @@
     obj.events = {}
 
     // Helps in case developer wants to debug it. unobtrusive
-    if (config === null || config === undefined) {
+    if (isUndefined(config)) {
       console.log('* justgage: Make sure to pass options to the constructor!');
       return false;
     }
 
-    if (config.id !== null && config.id !== undefined) {
+    if (!isUndefined(config.id)) {
       obj.node = document.getElementById(config.id);
       if (!obj.node) {
         console.log('* justgage: No element with id : %s found', config.id);
         return false;
       }
-    } else if (config.parentNode !== null && config.parentNode !== undefined) {
+    } else if (!isUndefined(config.parentNode)) {
       obj.node = config.parentNode;
     } else {
       console.log('* justgage: Make sure to pass the existing element id or parentNode to the constructor.');
@@ -46,7 +46,7 @@
     var dataset = obj.node.dataset ? obj.node.dataset : {};
 
     // check for defaults
-    var defaults = (config.defaults !== null && config.defaults !== undefined) ? config.defaults : false;
+    var defaults = !isUndefined(config.defaults) ? config.defaults : false;
     if (defaults !== false) {
       config = extend({}, config, defaults);
       delete config.defaults;
@@ -441,12 +441,12 @@
 
         path = "M" + (Cx - Ri) + "," + Cy + " ";
         path += "L" + (Cx - Ro) + "," + Cy + " ";
-        if (value > ((max - min) / 2)) {
+        if (value - min > ((max - min) / 2)) {
           path += "A" + Ro + "," + Ro + " 0 0 1 " + (Cx + Ro) + "," + Cy + " ";
         }
         path += "A" + Ro + "," + Ro + " 0 0 1 " + Xo + "," + Yo + " ";
         path += "L" + Xi + "," + Yi + " ";
-        if (value > ((max - min) / 2)) {
+        if (value - min > ((max - min) / 2)) {
           path += "A" + Ri + "," + Ri + " 0 0 0 " + (Cx + Ri) + "," + Cy + " ";
         }
         path += "A" + Ri + "," + Ri + " 0 0 0 " + (Cx - Ri) + "," + Cy + " ";
@@ -614,10 +614,10 @@
     if (obj.config.pointer) {
       // needle
       obj.needle = obj.canvas.path().attr({
-        "stroke": (obj.config.pointerOptions.stroke !== null && obj.config.pointerOptions.stroke !== undefined) ? obj.config.pointerOptions.stroke : "none",
-        "stroke-width": (obj.config.pointerOptions.stroke_width !== null && obj.config.pointerOptions.stroke_width !== undefined) ? obj.config.pointerOptions.stroke_width : 0,
-        "stroke-linecap": (obj.config.pointerOptions.stroke_linecap !== null && obj.config.pointerOptions.stroke_linecap !== undefined) ? obj.config.pointerOptions.stroke_linecap : "square",
-        "fill": (obj.config.pointerOptions.color !== null && obj.config.pointerOptions.color !== undefined) ? obj.config.pointerOptions.color : "#000000",
+        "stroke": !isUndefined(obj.config.pointerOptions.stroke) ? obj.config.pointerOptions.stroke : "none",
+        "stroke-width": !isUndefined(obj.config.pointerOptions.stroke_width) ? obj.config.pointerOptions.stroke_width : 0,
+        "stroke-linecap": !isUndefined(obj.config.pointerOptions.stroke_linecap) ? obj.config.pointerOptions.stroke_linecap : "square",
+        "fill": !isUndefined(obj.config.pointerOptions.color) ? obj.config.pointerOptions.color : "#000000",
         ndl: [
           obj.config.min,
           obj.config.min,
@@ -736,10 +736,7 @@
 
     if (obj.config.counter === true) {
       //on each animation frame
-      Raphael.eve.on("raphael.anim.frame." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.frame." + (obj.level.id)]) obj.events["raphael.anim.frame." + (obj.level.id)] = this
-
+      var onFrame = function () {
         var currentValue = obj.level.attr("pki")[0];
         if (obj.config.reverse) {
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
@@ -757,28 +754,30 @@
         }
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
         currentValue = null;
-      });
+      }
+
       //on animation end
-      Raphael.eve.on("raphael.anim.finish." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.finish." + (obj.level.id)]) obj.events["raphael.anim.finish." + (obj.level.id)] = this
-
+      var onFinish = function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
-      });
+      };
+
+      
+      this.bindEvent("raphael.anim.finish", onFinish)
+      this.bindEvent("raphael.anim.frame", onFrame)
+
     } else {
       //on animation start
-      Raphael.eve.on("raphael.anim.start." + (obj.level.id), function () {
-
-        if(!obj.events["raphael.anim.start." + (obj.level.id)]) obj.events["raphael.anim.start." + (obj.level.id)] = this
-
+      var onStart = function () {
         obj.txtValue.attr({
           "text": obj.originalValue
         });
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
-      });
+      };
+
+      this.bindEvent("raphael.anim.start", onStart)
     }
 
     // animate gauge level, value & label
@@ -825,7 +824,35 @@
     }, obj.config.startAnimationTime, obj.config.startAnimationType);
   };
 
-  /** Refresh gauge level */
+
+  /**
+   * Bind a function to a Raphael eve event
+   *
+   * @param {String} eventName Raphael event name
+   * @param {Function} func The function to call on that event
+   */
+  JustGage.prototype.bindEvent = function (eventName, func) {
+    // add the level id to the event
+    eventName += '.' + this.level.id
+
+    //check for existing bind events
+    if(this.events[eventName]) 
+      Raphael.eve.off(eventName, this.events[eventName])
+    
+    Raphael.eve.on(eventName, func);
+
+    this.events[eventName] = func  
+  }
+
+
+  /**
+   * Update Gauge values
+   *
+   * @param {Number} val The value
+   * @param {Number|String} max Max value
+   * @param {Number|String} min Min value
+   * @param {String} label The Label
+   */
   JustGage.prototype.refresh = function (val, max, min, label) {
 
     var obj = this;
@@ -969,15 +996,28 @@
     obj, displayVal, color, max, min = null;
   };
 
-  /** Destroy gauge object */
+
+  /**
+   * Destroy the Gauge Object and unbind events
+   *
+   */
   JustGage.prototype.destroy = function () {
     if (this.node && this.node.parentNode) this.node.innerHTML = ''
 
-    for(var event in this.events)
+    for(var event in this.events) {
       Raphael.eve.off(event, this.events[event])
+    }
+
+    this.events = {}
   };
 
-  /** Generate shadow */
+  
+  /**
+   * Generate Shadow
+   *
+   * @param {Object} svg The Svg element Object
+   * @param {Object} defs The defs element Object
+   */
   JustGage.prototype.generateShadow = function (svg, defs) {
 
     var obj = this;
@@ -1055,18 +1095,18 @@
   function kvLookup(key, tablea, tableb, defval, datatype, delimiter) {
     var val = defval;
     var canConvert = false;
-    if (!(key === null || key === undefined)) {
-      if (tableb !== null && tableb !== undefined && typeof tableb === "object" && key in tableb) {
+    if (!isUndefined(key)) {
+      if (!isUndefined(tableb) && typeof tableb === "object" && key in tableb) {
         val = tableb[key];
         canConvert = true;
-      } else if (tablea !== null && tablea !== undefined && typeof tablea === "object" && key in tablea) {
+      } else if (!isUndefined(tablea) && typeof tablea === "object" && key in tablea) {
         val = tablea[key];
         canConvert = true;
       } else {
         val = defval;
       }
       if (canConvert === true) {
-        if (datatype !== null && datatype !== undefined) {
+        if (!isUndefined(datatype)) {
           switch (datatype) {
             case 'int':
               val = parseInt(val, 10);
@@ -1082,6 +1122,10 @@
     }
     return val;
   };
+
+  function isUndefined(v) {
+    return v === null || v === undefined
+  }
 
   /** Get color for value */
   function getColor(val, pct, col, noGradient, custSec) {
