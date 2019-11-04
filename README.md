@@ -42,7 +42,7 @@ or maybe you wish to use NPM...
 npm install justgage --save
 ```
 
-- Example [NPM setup using Browserfy](https://github.com/deezone/justgage-npm-sample)
+- Example **[NPM setup using Browserfy](https://github.com/deezone/justgage-npm-sample)**
 
 or you can always download the CSS and JS files...
 
