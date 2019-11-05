@@ -18,7 +18,7 @@
   }
 }(this, function (Raphael) {
 
-  JustGage = function (config) {
+  var JustGage = function (config) {
 
     var obj = this
 
