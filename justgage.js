@@ -996,6 +996,30 @@
     obj, displayVal, color, max, min = null;
   };
 
+  /**
+   * Update Gauge options
+   *
+   * @param {String} option The target option name
+   * @param {Number|String} val The value to be assigned to the option
+   */
+  JustGage.prototype.update = function (option, val) {
+    var obj = this;
+
+    switch (option) {
+      case 'valueFontColor':
+        if (!isHexNumber(val)) {
+          console.log('* justgage: the updated valueFontColor value is not a valid hex value');
+          break;
+        }
+
+        obj.txtValue.attr({
+          'fill': val
+        });
+        break;
+      default:
+        console.log(`* justgage: "${option}" is not a supported update setting`);
+    }
+  };
 
   /**
    * Destroy the Gauge Object and unbind events
@@ -1201,6 +1225,17 @@
     return (str.charAt(0) == "#") ? str.substring(1, 7) : str;
   }
 
+  /**
+   * Validate if hex value
+   *
+   * @param val
+   * @returns {*|boolean}
+   */
+  function isHexNumber(val) {
+    var regExp = /^[-+]?[0-9A-Fa-f]+\.?[0-9A-Fa-f]*?$/;
+    return (typeof val === 'string' && regExp.test(val));
+  }
+
   /**  Human friendly number suffix - @robertsLando */
   function humanFriendlyNumber(n, d) {
     var d2, i, s, c;
@@ -1299,9 +1334,3 @@
 
   return JustGage
 }));
-
-
-
-
-
-
