@@ -999,12 +999,40 @@
   /**
    * Update Gauge options
    *
-   * @param {String} option The target option name
-   * @param {Number|String} val The value to be assigned to the option
+   * @param options {String} option The target option name
+   * @param val {Number|String} val The value to be assigned to the option
+   *
+   * Alternative signature
+   * @param options (Array) options name and value
    */
-  JustGage.prototype.update = function (option, val) {
-    var obj = this;
+  JustGage.prototype.update = function (options, val) {
+    const obj = this;
 
+    // support options as array of key values
+    if (options instanceof Array) {
+      for (var option in options) {
+        val = options[option];
+
+        console.log(`option: ${option}`);
+        console.log(`val: ${val}`);
+
+        updateProp(obj, option, val);
+      }
+
+    // support options as single option / val pair
+    } else {
+      updateProp(obj, options, val);
+    }
+  };
+
+  /**
+   * Utility function to update properties to a JustGage object
+   *
+   * @param obj {JustGage Object} JustGage object to apply the property update to
+   * @param option {String} option name
+   * @param val {String} option value
+   */
+  function updateProp(obj, option, val) {
     switch (option) {
       case 'valueFontColor':
         if (!isHexNumber(val)) {
@@ -1019,7 +1047,7 @@
       default:
         console.log(`* justgage: "${option}" is not a supported update setting`);
     }
-  };
+  }
 
   /**
    * Destroy the Gauge Object and unbind events
