@@ -1003,23 +1003,19 @@
    * @param val {Number|String} val The value to be assigned to the option
    *
    * Alternative signature
-   * @param options (Array) options name and value
+   * @param options {String|Object} options name and value
    */
   JustGage.prototype.update = function (options, val) {
     const obj = this;
 
-    // support options as array of key values
-    if (options instanceof Array) {
+    // options as an object of option/val values
+    if (options instanceof Object) {
       for (var option in options) {
         val = options[option];
-
-        console.log(`option: ${option}`);
-        console.log(`val: ${val}`);
-
         updateProp(obj, option, val);
       }
 
-    // support options as single option / val pair
+    // options as single option/val
     } else {
       updateProp(obj, options, val);
     }
@@ -1044,6 +1040,25 @@
           'fill': val
         });
         break;
+
+      case 'labelFontColor':
+        if (!isHexNumber(val)) {
+          console.log('* justgage: the updated labelFontColor value is not a valid hex value');
+          break;
+        }
+
+        obj.txtMin.attr({
+          "fill": val,
+        });
+        obj.txtMax.attr({
+          "fill": val,
+        });
+        obj.txtLabel.attr({
+          "fill": val,
+        });
+
+        break;
+
       default:
         console.log(`* justgage: "${option}" is not a supported update setting`);
     }
@@ -1063,7 +1078,6 @@
     this.events = {}
   };
 
-  
   /**
    * Generate Shadow
    *
