@@ -152,11 +152,13 @@ customSectors: {
     color : "#43bf58",
     lo : 0,
     hi : 50
-  },{
+  },
+  {
     color : "#ff3b30",
     lo : 51,
     hi : 100
   }]
+}
 ```
 
 ### Pointer options
@@ -181,18 +183,42 @@ pointerOptions: {
 
 Used to refresh Gauge value and max value
 
-`refresh(val, max, min, label)`
+`guage.refresh(val, max, min, label)`
 
 - `val` : The Gauge value (required)
 - `max` : The Gauge Max value (optional)
 - `min` : The Gauge Min value (optional)
 - `label` : The Gauge label text (optional)
 
+### Update
+
+Used to dynamically update existing Gauge appearence
+
+`gauge.update(option, value)`
+
+vs
+
+```js
+const options = {
+  valueFontColor: '#ff0000',
+  labelFontColor: '#ff0000',
+}
+gauge.update(options)
+```
+
+#### Options
+
+| Name                 | Description                                 |
+| -------------------- | ------------------------------------------- |
+| valueFontColor       | HEX color for gauge value text              |
+| labelFontColor       | HEX color for gauge min, max and label text |
+
+
 ### Destroy
 
 Used to destroy the Gauge element
 
-`destroy()`
+`guage.destroy()`
 
 ## Demo
 
