@@ -21,10 +21,13 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
     - [Pointer options](#pointer-options)
   - [Methods](#methods)
     - [Refresh](#refresh)
+    - [Update](#update)
+      - [Update Options](#update-options)
     - [Destroy](#destroy)
   - [Demo](#demo)
   - [Examples](#examples)
   - [Changelog](#changelog)
+    - [BREAKING CHANGES](#breaking-changes)
   - [License](#license)
   - [Author](#author)
 
@@ -206,13 +209,12 @@ const options = {
 gauge.update(options)
 ```
 
-#### Options
+#### Update Options
 
 | Name                 | Description                                 |
 | -------------------- | ------------------------------------------- |
 | valueFontColor       | HEX color for gauge value text              |
 | labelFontColor       | HEX color for gauge min, max and label text |
-
 
 ### Destroy
 
@@ -233,6 +235,13 @@ Click [here](https://toorshia.github.io/justgage/#demos) for a list of examples
 Check out the auto-generated [Changelog](CHANGELOG.md)
 
 Or [here](CHANGELOG_OLD.md) you can find the old changelog (up to version 1.2.9)
+
+### BREAKING CHANGES
+
+- 1.2.9
+  - `customSectors` expects an object and not an array (percent support, check docs for more info)
+- 1.2.6
+  - Removed `title` feature
 
 ## License
 
