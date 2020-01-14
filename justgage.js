@@ -1031,8 +1031,8 @@
   function updateProp(obj, option, val) {
     switch (option) {
       case 'valueFontColor':
-        if (!isHexNumber(val)) {
-          console.log('* justgage: the updated valueFontColor value is not a valid hex value');
+        if (!isHexColor(val)) {
+          console.log('* justgage: the updated valueFontColor value is not a valid hex color');
           break;
         }
 
@@ -1042,8 +1042,8 @@
         break;
 
       case 'labelFontColor':
-        if (!isHexNumber(val)) {
-          console.log('* justgage: the updated labelFontColor value is not a valid hex value');
+        if (!isHexColor(val)) {
+          console.log('* justgage: the updated labelFontColor value is not a valid hex color');
           break;
         }
 
@@ -1268,13 +1268,13 @@
   }
 
   /**
-   * Validate if hex value
+   * Validate if html hex color presentation
    *
    * @param val
    * @returns {*|boolean}
    */
-  function isHexNumber(val) {
-    var regExp = /^[-+]?[0-9A-Fa-f]+\.?[0-9A-Fa-f]*?$/;
+  function isHexColor(val) {
+    var regExp = /^#([0-9A-Fa-f]{3}){1,2}$/;
     return (typeof val === 'string' && regExp.test(val));
   }
 
