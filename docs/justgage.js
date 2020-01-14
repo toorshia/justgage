@@ -996,6 +996,73 @@
     obj, displayVal, color, max, min = null;
   };
 
+  /**
+   * Update Gauge options
+   *
+   * @param options {String} option The target option name
+   * @param val {Number|String} val The value to be assigned to the option
+   *
+   * Alternative signature
+   * @param options {String|Object} options name and value
+   */
+  JustGage.prototype.update = function (options, val) {
+    var obj = this;
+
+    // options as an object of option/val values
+    if (options instanceof Object) {
+      for (var option in options) {
+        val = options[option];
+        updateProp(obj, option, val);
+      }
+
+    // options as single option/val
+    } else {
+      updateProp(obj, options, val);
+    }
+  };
+
+  /**
+   * Utility function to update properties to a JustGage object
+   *
+   * @param obj {JustGage Object} JustGage object to apply the property update to
+   * @param option {String} option name
+   * @param val {String} option value
+   */
+  function updateProp(obj, option, val) {
+    switch (option) {
+      case 'valueFontColor':
+        if (!isHexNumber(val)) {
+          console.log('* justgage: the updated valueFontColor value is not a valid hex value');
+          break;
+        }
+
+        obj.txtValue.attr({
+          'fill': val
+        });
+        break;
+
+      case 'labelFontColor':
+        if (!isHexNumber(val)) {
+          console.log('* justgage: the updated labelFontColor value is not a valid hex value');
+          break;
+        }
+
+        obj.txtMin.attr({
+          "fill": val,
+        });
+        obj.txtMax.attr({
+          "fill": val,
+        });
+        obj.txtLabel.attr({
+          "fill": val,
+        });
+
+        break;
+
+      default:
+        console.log('* justgage: "${option}" is not a supported update setting');
+    }
+  }
 
   /**
    * Destroy the Gauge Object and unbind events
@@ -1011,7 +1078,6 @@
     this.events = {}
   };
 
-  
   /**
    * Generate Shadow
    *
@@ -1201,6 +1267,17 @@
     return (str.charAt(0) == "#") ? str.substring(1, 7) : str;
   }
 
+  /**
+   * Validate if hex value
+   *
+   * @param val
+   * @returns {*|boolean}
+   */
+  function isHexNumber(val) {
+    var regExp = /^[-+]?[0-9A-Fa-f]+\.?[0-9A-Fa-f]*?$/;
+    return (typeof val === 'string' && regExp.test(val));
+  }
+
   /**  Human friendly number suffix - @robertsLando */
   function humanFriendlyNumber(n, d) {
     var d2, i, s, c;
@@ -1299,9 +1376,3 @@
 
   return JustGage
 }));
-
-
-
-
-
-
