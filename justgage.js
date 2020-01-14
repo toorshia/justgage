@@ -1006,7 +1006,7 @@
    * @param options {String|Object} options name and value
    */
   JustGage.prototype.update = function (options, val) {
-    const obj = this;
+    var obj = this;
 
     // options as an object of option/val values
     if (options instanceof Object) {
@@ -1060,7 +1060,7 @@
         break;
 
       default:
-        console.log(`* justgage: "${option}" is not a supported update setting`);
+        console.log('* justgage: "${option}" is not a supported update setting');
     }
   }
 
