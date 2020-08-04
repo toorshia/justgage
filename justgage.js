@@ -16,7 +16,7 @@
   else {   // browser
     root.JustGage = factory(Raphael);
   }
-}(this, function (Raphael) {
+}(typeof window !== 'undefined' ? window : this, function (Raphael) {
 
   var JustGage = function (config) {
 
