@@ -16,7 +16,7 @@
   else {   // browser
     root.JustGage = factory(Raphael);
   }
-}(this, function (Raphael) {
+}(typeof window !== 'undefined' ? window : this, function (Raphael) {
 
   var JustGage = function (config) {
 
@@ -415,8 +415,23 @@
     // var clear
     canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null;
 
-    // pki - custom attribute for generating gauge paths
-    obj.canvas.customAttributes.pki = function (value, min, max, w, h, dx, dy, gws, donut, reverse) {
+    /**
+     * pki - custom attribute for generating gauge paths
+     *
+     * @param {Number} value display value
+     * @returns SVG path string for gauge level
+     */
+    obj.canvas.customAttributes.pki = function (value) {
+
+      var min = obj.config.min;
+      var max = obj.config.max;
+      var w = obj.params.widgetW;
+      var h = obj.params.widgetH;
+      var dx = obj.params.dx;
+      var dy = obj.params.dy;
+      var gws = obj.config.gaugeWidthScale;
+      var donut = obj.config.donut;
+      var reverse = obj.config.reverse;
 
       var alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
 
@@ -489,8 +504,22 @@
       alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path = null;
     };
 
-    // ndl - custom attribute for generating needle path
-    obj.canvas.customAttributes.ndl = function (value, min, max, w, h, dx, dy, gws, donut) {
+    /**
+     * ndl - custom attribute for generating pointer path
+     *
+     * @param {Number} value display value
+     * @returns SVG path string for gauge pointer
+     */
+    obj.canvas.customAttributes.ndl = function (value) {
+
+      var min = obj.config.min;
+      var max = obj.config.max;
+      var w = obj.params.widgetW;
+      var h = obj.params.widgetH;
+      var dx = obj.params.dx;
+      var dy = obj.params.dy;
+      var gws = obj.config.gaugeWidthScale;
+      var donut = obj.config.donut;
 
       var dlt = w * 3.5 / 100;
       var dlb = w / 15;
@@ -576,36 +605,14 @@
     obj.gauge = obj.canvas.path().attr({
       "stroke": "none",
       "fill": obj.config.gaugeColor,
-      pki: [
-        obj.config.max,
-        obj.config.min,
-        obj.config.max,
-        obj.params.widgetW,
-        obj.params.widgetH,
-        obj.params.dx,
-        obj.params.dy,
-        obj.config.gaugeWidthScale,
-        obj.config.donut,
-        obj.config.reverse
-      ]
+      pki: [ obj.config.max ]
     });
 
     // level
     obj.level = obj.canvas.path().attr({
       "stroke": "none",
       "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
-      pki: [
-        obj.config.min,
-        obj.config.min,
-        obj.config.max,
-        obj.params.widgetW,
-        obj.params.widgetH,
-        obj.params.dx,
-        obj.params.dy,
-        obj.config.gaugeWidthScale,
-        obj.config.donut,
-        obj.config.reverse
-      ]
+      pki: [ obj.config.min ]
     });
     if (obj.config.donut) {
       obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 2 + obj.params.dy));
@@ -618,17 +625,7 @@
         "stroke-width": !isUndefined(obj.config.pointerOptions.stroke_width) ? obj.config.pointerOptions.stroke_width : 0,
         "stroke-linecap": !isUndefined(obj.config.pointerOptions.stroke_linecap) ? obj.config.pointerOptions.stroke_linecap : "square",
         "fill": !isUndefined(obj.config.pointerOptions.color) ? obj.config.pointerOptions.color : "#000000",
-        ndl: [
-          obj.config.min,
-          obj.config.min,
-          obj.config.max,
-          obj.params.widgetW,
-          obj.params.widgetH,
-          obj.params.dx,
-          obj.params.dy,
-          obj.config.gaugeWidthScale,
-          obj.config.donut
-        ]
+        ndl: [ obj.config.min ]
       });
 
       if (obj.config.donut) {
@@ -786,33 +783,12 @@
       rvl = (obj.config.max * 1) + (obj.config.min * 1) - (obj.config.value * 1);
     }
     obj.level.animate({
-      pki: [
-        rvl,
-        obj.config.min,
-        obj.config.max,
-        obj.params.widgetW,
-        obj.params.widgetH,
-        obj.params.dx,
-        obj.params.dy,
-        obj.config.gaugeWidthScale,
-        obj.config.donut,
-        obj.config.reverse
-      ]
+      pki: [ rvl ]
     }, obj.config.startAnimationTime, obj.config.startAnimationType, obj.config.onAnimationEnd);
 
     if (obj.config.pointer) {
       obj.needle.animate({
-        ndl: [
-          rvl,
-          obj.config.min,
-          obj.config.max,
-          obj.params.widgetW,
-          obj.params.widgetH,
-          obj.params.dx,
-          obj.params.dy,
-          obj.config.gaugeWidthScale,
-          obj.config.donut
-        ]
+        ndl: [ rvl ]
       }, obj.config.startAnimationTime, obj.config.startAnimationType);
     }
 
@@ -961,34 +937,13 @@
     }
 
     obj.level.animate({
-      pki: [
-        rvl,
-        obj.config.min,
-        obj.config.max,
-        obj.params.widgetW,
-        obj.params.widgetH,
-        obj.params.dx,
-        obj.params.dy,
-        obj.config.gaugeWidthScale,
-        obj.config.donut,
-        obj.config.reverse
-      ],
+      pki: [ rvl ],
       "fill": color
     }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType, obj.config.onAnimationEnd);
 
     if (obj.config.pointer) {
       obj.needle.animate({
-        ndl: [
-          rvl,
-          obj.config.min,
-          obj.config.max,
-          obj.params.widgetW,
-          obj.params.widgetH,
-          obj.params.dx,
-          obj.params.dy,
-          obj.config.gaugeWidthScale,
-          obj.config.donut
-        ]
+        ndl: [ rvl ]
       }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
     }
 
