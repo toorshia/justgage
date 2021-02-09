@@ -139,6 +139,10 @@
       // color of label showing label under value
       labelFontColor: kvLookup('labelFontColor', config, dataset, "#b3b3b3"),
 
+      // valueFontFamily : string
+      // font-family for label as well as min/max value
+      labelFontFamily: kvLookup('labelFontFamily', config, dataset, "Arial"),
+
       // shadowOpacity : int
       // 0 ~ 1
       shadowOpacity: kvLookup('shadowOpacity', config, dataset, 0.2),
@@ -649,7 +653,7 @@
     obj.txtLabel.attr({
       "font-size": obj.params.labelFontSize,
       "font-weight": "normal",
-      "font-family": "Arial",
+      "font-family": obj.config.labelFontFamily,
       "fill": obj.config.labelFontColor,
       "fill-opacity": "0"
     });
@@ -673,7 +677,7 @@
     obj.txtMin.attr({
       "font-size": obj.params.minFontSize,
       "font-weight": "normal",
-      "font-family": "Arial",
+      "font-family": obj.config.labelFontFamily,
       "fill": obj.config.labelFontColor,
       "fill-opacity": (obj.config.hideMinMax || obj.config.donut) ? "0" : "1"
     });
@@ -696,7 +700,7 @@
     obj.txtMax.attr({
       "font-size": obj.params.maxFontSize,
       "font-weight": "normal",
-      "font-family": "Arial",
+      "font-family": obj.config.labelFontFamily,
       "fill": obj.config.labelFontColor,
       "fill-opacity": (obj.config.hideMinMax || obj.config.donut) ? "0" : "1"
     });
@@ -761,7 +765,7 @@
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
       };
 
-      
+
       this.bindEvent("raphael.anim.finish", onFinish)
       this.bindEvent("raphael.anim.frame", onFrame)
 
@@ -812,12 +816,12 @@
     eventName += '.' + this.level.id
 
     //check for existing bind events
-    if(this.events[eventName]) 
+    if(this.events[eventName])
       Raphael.eve.off(eventName, this.events[eventName])
-    
+
     Raphael.eve.on(eventName, func);
 
-    this.events[eventName] = func  
+    this.events[eventName] = func
   }
 
 
