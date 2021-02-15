@@ -609,14 +609,14 @@
     obj.gauge = obj.canvas.path().attr({
       "stroke": "none",
       "fill": obj.config.gaugeColor,
-      pki: [ obj.config.max ]
+      pki: [obj.config.max]
     });
 
     // level
     obj.level = obj.canvas.path().attr({
       "stroke": "none",
       "fill": getColor(obj.config.value, (obj.config.value - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors),
-      pki: [ obj.config.min ]
+      pki: [obj.config.min]
     });
     if (obj.config.donut) {
       obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW / 2 + obj.params.dx) + ", " + (obj.params.widgetH / 2 + obj.params.dy));
@@ -629,7 +629,7 @@
         "stroke-width": !isUndefined(obj.config.pointerOptions.stroke_width) ? obj.config.pointerOptions.stroke_width : 0,
         "stroke-linecap": !isUndefined(obj.config.pointerOptions.stroke_linecap) ? obj.config.pointerOptions.stroke_linecap : "square",
         "fill": !isUndefined(obj.config.pointerOptions.color) ? obj.config.pointerOptions.color : "#000000",
-        ndl: [ obj.config.min ]
+        ndl: [obj.config.min]
       });
 
       if (obj.config.donut) {
@@ -787,12 +787,12 @@
       rvl = (obj.config.max * 1) + (obj.config.min * 1) - (obj.config.value * 1);
     }
     obj.level.animate({
-      pki: [ rvl ]
+      pki: [rvl]
     }, obj.config.startAnimationTime, obj.config.startAnimationType, obj.config.onAnimationEnd);
 
     if (obj.config.pointer) {
       obj.needle.animate({
-        ndl: [ rvl ]
+        ndl: [rvl]
       }, obj.config.startAnimationTime, obj.config.startAnimationType);
     }
 
@@ -816,7 +816,7 @@
     eventName += '.' + this.level.id
 
     //check for existing bind events
-    if(this.events[eventName])
+    if (this.events[eventName])
       Raphael.eve.off(eventName, this.events[eventName])
 
     Raphael.eve.on(eventName, func);
@@ -838,8 +838,20 @@
     var obj = this;
     var displayVal, color;
 
-    max = max || null;
-    min = min || null;
+    if (Number.isInteger(max) || Number(max) === max && max % 1 !== 0) {
+      //max is an integer or decimal
+      //If the mod of a number divided by 1 is not equal to zero then it must a float number.
+      max = max;
+    } else {
+      max = null;
+    }
+    if (Number.isInteger(min) || Number(min) === min && min % 1 !== 0) {
+      //min is an integer or decimal
+      //If the mod of a number divided by 1 is not equal to zero then it must a float number.
+      min = min;
+    } else {
+      max = null;
+    }
     label = label || null;
 
     // set label min
@@ -941,13 +953,13 @@
     }
 
     obj.level.animate({
-      pki: [ rvl ],
+      pki: [rvl],
       "fill": color
     }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType, obj.config.onAnimationEnd);
 
     if (obj.config.pointer) {
       obj.needle.animate({
-        ndl: [ rvl ]
+        ndl: [rvl]
       }, obj.config.refreshAnimationTime, obj.config.refreshAnimationType);
     }
 
@@ -974,7 +986,7 @@
         updateProp(obj, option, val);
       }
 
-    // options as single option/val
+      // options as single option/val
     } else {
       updateProp(obj, options, val);
     }
@@ -1030,7 +1042,7 @@
   JustGage.prototype.destroy = function () {
     if (this.node && this.node.parentNode) this.node.innerHTML = ''
 
-    for(var event in this.events) {
+    for (var event in this.events) {
       Raphael.eve.off(event, this.events[event])
     }
 
