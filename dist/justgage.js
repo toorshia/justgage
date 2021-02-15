@@ -838,20 +838,8 @@
     var obj = this;
     var displayVal, color;
 
-    if (Number.isInteger(max) || Number(max) === max && max % 1 !== 0) {
-      //max is an integer or decimal
-      //If the mod of a number divided by 1 is not equal to zero then it must a float number.
-      max = max;
-    } else {
-      max = null;
-    }
-    if (Number.isInteger(min) || Number(min) === min && min % 1 !== 0) {
-      //min is an integer or decimal
-      //If the mod of a number divided by 1 is not equal to zero then it must a float number.
-      min = min;
-    } else {
-      max = null;
-    }
+    max = isNumber(max) ? max : null
+    min = isNumber(min) ? min : null
     label = label || null;
 
     // set label min
@@ -1344,6 +1332,10 @@
 
     return out;
   };
+
+  function isNumber(n) {
+    return n !== null && n !== undefined && !isNaN(n)
+  }
 
   return JustGage
 }));
