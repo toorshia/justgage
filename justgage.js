@@ -724,7 +724,7 @@
 
     // set value to display
     if (obj.config.textRenderer) {
-      obj.originalValue = obj.config.textRenderer(obj.originalValue);
+      obj.originalValue = obj.config.textRenderer(obj.originalValue, obj.config);
     } else if (obj.config.humanFriendly) {
       obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
     } else if (obj.config.formatNumber) {
@@ -743,7 +743,7 @@
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
         }
         if (obj.config.textRenderer) {
-          obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue)));
+          obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue), obj.config));
         } else if (obj.config.humanFriendly) {
           obj.txtValue.attr("text", humanFriendlyNumber(Math.floor(currentValue), obj.config.humanFriendlyDecimal) + obj.config.symbol);
         } else if (obj.config.formatNumber) {
@@ -915,7 +915,7 @@
     color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
     if (obj.config.textRenderer) {
-      displayVal = obj.config.textRenderer(displayVal);
+      displayVal = obj.config.textRenderer(displayVal, obj.config);
     } else if (obj.config.humanFriendly) {
       displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
     } else if (obj.config.formatNumber) {
