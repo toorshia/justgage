@@ -722,23 +722,26 @@
     // var clear
     defs, svg = null;
 
+    var orginalValueToSet;
+
     // set value to display
     // set original value to false before trying to call textRenderer for later check
-    obj.originalValue = false;
+    orginalValueToSet = false;
     if (obj.config.textRenderer) {
-      obj.originalValue = obj.config.textRenderer(obj.originalValue);
+      orginalValueToSet = obj.config.textRenderer(obj.originalValue);
     }
-    if (obj.originalValue === false) {
+    if (orginalValueToSet === false) {
       if (obj.config.humanFriendly) {
-        obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
+        orginalValueToSet = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
       } else if (obj.config.formatNumber) {
-        obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
+        orginalValueToSet = formatNumber(obj.originalValue) + obj.config.symbol;
       } else if (obj.config.displayRemaining) {
-        obj.originalValue = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+        orginalValueToSet = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
       } else {
-        obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+        orginalValueToSet = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
       }
     }
+    obj.originalValue = orginalValueToSet;
 
     if (obj.config.counter === true) {
       //on each animation frame
