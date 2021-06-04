@@ -723,36 +723,45 @@
     defs, svg = null;
 
     // set value to display
+    // set original value to false before trying to call textRenderer for later check
+    obj.originalValue = false;
     if (obj.config.textRenderer) {
-      obj.originalValue = obj.config.textRenderer(obj.originalValue, obj.config);
-    } else if (obj.config.humanFriendly) {
-      obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
-    } else if (obj.config.formatNumber) {
-      obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
-    } else if (obj.config.displayRemaining) {
-      obj.originalValue = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
-    } else {
-      obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      obj.originalValue = obj.config.textRenderer(obj.originalValue);
+    }
+    if (obj.originalValue === false) {
+      if (obj.config.humanFriendly) {
+        obj.originalValue = humanFriendlyNumber(obj.originalValue, obj.config.humanFriendlyDecimal) + obj.config.symbol;
+      } else if (obj.config.formatNumber) {
+        obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
+      } else if (obj.config.displayRemaining) {
+        obj.originalValue = ((obj.config.max - obj.originalValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      } else {
+        obj.originalValue = (obj.originalValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      }
     }
 
     if (obj.config.counter === true) {
       //on each animation frame
       var onFrame = function () {
-        var currentValue = obj.level.attr("pki")[0];
+        var currentValue = obj.level.attr("pki")[0], valueToSet = false;
         if (obj.config.reverse) {
           currentValue = (obj.config.max * 1) + (obj.config.min * 1) - (obj.level.attr("pki")[0] * 1);
         }
         if (obj.config.textRenderer) {
-          obj.txtValue.attr("text", obj.config.textRenderer(Math.floor(currentValue), obj.config));
-        } else if (obj.config.humanFriendly) {
-          obj.txtValue.attr("text", humanFriendlyNumber(Math.floor(currentValue), obj.config.humanFriendlyDecimal) + obj.config.symbol);
-        } else if (obj.config.formatNumber) {
-          obj.txtValue.attr("text", formatNumber(Math.floor(currentValue)) + obj.config.symbol);
-        } else if (obj.config.displayRemaining) {
-          obj.txtValue.attr("text", ((obj.config.max - currentValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol);
-        } else {
-          obj.txtValue.attr("text", (currentValue * 1).toFixed(obj.config.decimals) + obj.config.symbol);
+          valueToSet = obj.config.textRenderer(Math.floor(currentValue));
+        } 
+        if (valueToSet === false) {
+          if (obj.config.humanFriendly) {
+            valueToSet = humanFriendlyNumber(Math.floor(currentValue), obj.config.humanFriendlyDecimal) + obj.config.symbol;
+          } else if (obj.config.formatNumber) {
+            valueToSet = formatNumber(Math.floor(currentValue)) + obj.config.symbol;
+          } else if (obj.config.displayRemaining) {
+            valueToSet = ((obj.config.max - currentValue) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+          } else {
+            valueToSet = (currentValue * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+          }
         }
+        obj.txtValue.attr("text", valueToSet);
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
         currentValue = null;
       }
@@ -914,16 +923,21 @@
 
     color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
+    // set display value to false before trying to call textRenderer for later check
+    displayVal = false;
     if (obj.config.textRenderer) {
-      displayVal = obj.config.textRenderer(displayVal, obj.config);
-    } else if (obj.config.humanFriendly) {
-      displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
-    } else if (obj.config.formatNumber) {
-      displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
-    } else if (obj.config.displayRemaining) {
-      displayVal = ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
-    } else {
-      displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      displayVal = obj.config.textRenderer(displayVal);
+    }
+    if (displayVal === false) {
+      if (obj.config.humanFriendly) {
+        displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
+      } else if (obj.config.formatNumber) {
+        displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
+      } else if (obj.config.displayRemaining) {
+        displayVal = ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      } else {
+        displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      }
     }
     obj.originalValue = displayVal;
     obj.config.value = val * 1;
