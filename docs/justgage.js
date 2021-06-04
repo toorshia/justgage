@@ -845,7 +845,7 @@
   JustGage.prototype.refresh = function (val, max, min, label) {
 
     var obj = this;
-    var displayVal, color;
+    var displayVal, displayValToSet, color;
 
     max = isNumber(max) ? max : null
     min = isNumber(min) ? min : null
@@ -924,22 +924,22 @@
     color = getColor(val, (val - obj.config.min) / (obj.config.max - obj.config.min), obj.config.levelColors, obj.config.noGradient, obj.config.customSectors);
 
     // set display value to false before trying to call textRenderer for later check
-    displayVal = false;
+    displayValToSet = false;
     if (obj.config.textRenderer) {
-      displayVal = obj.config.textRenderer(displayVal);
+      displayValToSet = obj.config.textRenderer(displayVal);
     }
-    if (displayVal === false) {
+    if (displayValToSet === false) {
       if (obj.config.humanFriendly) {
-        displayVal = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
+        displayValToSet = humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) + obj.config.symbol;
       } else if (obj.config.formatNumber) {
-        displayVal = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
+        displayValToSet = formatNumber((displayVal * 1).toFixed(obj.config.decimals)) + obj.config.symbol;
       } else if (obj.config.displayRemaining) {
-        displayVal = ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+        displayValToSet = ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) + obj.config.symbol;
       } else {
-        displayVal = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+        displayValToSet = (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
       }
     }
-    obj.originalValue = displayVal;
+    obj.originalValue = displayVal = displayValToSet;
     obj.config.value = val * 1;
 
     if (!obj.config.counter) {
