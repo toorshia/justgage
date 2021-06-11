@@ -5,7 +5,7 @@
  * @author Bojan Djuricic (@Toorshia)
  **/
 
- (function (root, factory) {
+(function (root, factory) {
   if (typeof define === "function" && define.amd) {
     define(["raphael"], function (raphael) {
       // AMD
