@@ -1,3 +1,3 @@
-//this file is to export the module
+// this file is to export the module
 
-  module.exports = require("./justgage.js");
+module.exports = require("./justgage.js");
