@@ -4,6 +4,8 @@
 
 [![Downloads](https://img.shields.io/npm/dm/justgage.svg)](https://www.npmjs.com/package/justgage)
 
+[![Build](https://github.com/toorshia/justgage/actions/workflows/build.yml/badge.svg)](https://github.com/toorshia/justgage/actions/workflows/build.yml)
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)
 
