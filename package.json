@@ -1,6 +1,6 @@
 {
   "name": "justgage",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.",
   "main": "index.js",
   "scripts": {
