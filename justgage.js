@@ -60,6 +60,10 @@
       // id : string
       // this is container element id
       id: config.id,
+      
+      // classId : string
+      // this is the class id utilize when generating styles
+      classId: config.classId,
 
       // value : float
       // value gauge is showing
@@ -1259,7 +1263,7 @@
    */
   JustGage.prototype.generateShadow = function (svg, defs) {
     const obj = this;
-    const sid = "inner-shadow-" + obj.config.id;
+    const sid = "inner-shadow-" + (obj.config.classId || obj.config.id);
 
     // FILTER
     const gaussFilter = document.createElementNS(svg, "filter");
