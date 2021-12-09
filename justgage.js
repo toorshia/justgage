@@ -1263,7 +1263,7 @@
    */
   JustGage.prototype.generateShadow = function (svg, defs) {
     const obj = this;
-    const sid = "inner-shadow-" + (obj.config.classId || obj.config.id);
+    const sid = "inner-shadow-" + (obj.config.id || obj.config.classId);
 
     // FILTER
     const gaussFilter = document.createElementNS(svg, "filter");
