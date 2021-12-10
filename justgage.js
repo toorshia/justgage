@@ -60,7 +60,7 @@
       // id : string
       // this is container element id
       id: config.id,
-      
+
       // classId : string
       // this is the class id utilize when generating styles
       classId: uuid(),
