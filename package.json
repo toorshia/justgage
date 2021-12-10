@@ -65,6 +65,7 @@
   },
   "homepage": "https://github.com/toorshia/justgage",
   "devDependencies": {
+    "auto-changelog": "^2.3.0",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
