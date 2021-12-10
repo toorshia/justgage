@@ -61,6 +61,10 @@
       // this is container element id
       id: config.id,
 
+      // classId : string
+      // this is the class id utilize when generating styles
+      classId: uuid(),
+
       // value : float
       // value gauge is showing
       value: kvLookup("value", config, dataset, 0, "float"),
@@ -1259,7 +1263,7 @@
    */
   JustGage.prototype.generateShadow = function (svg, defs) {
     const obj = this;
-    const sid = "inner-shadow-" + obj.config.id;
+    const sid = "inner-shadow-" + (obj.config.id || obj.config.classId);
 
     // FILTER
     const gaussFilter = document.createElementNS(svg, "filter");
@@ -1312,11 +1316,11 @@
     if (obj.config.showInnerShadow) {
       obj.canvas.canvas.childNodes[2].setAttribute(
         "filter",
-        "url(" + window.location.pathname + "#" + sid + ")"
+        "url(#" + sid + ")"
       );
       obj.canvas.canvas.childNodes[3].setAttribute(
         "filter",
-        "url(" + window.location.pathname + "#" + sid + ")"
+        "url(#" + sid + ")"
       );
     }
   };
@@ -1571,6 +1575,21 @@
 
   function isNumber(n) {
     return n !== null && n !== undefined && !isNaN(n);
+  }
+
+  /**
+   * Generate UUID
+   * @returns UUID
+   */
+  function uuid() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   }
 
   return JustGage;
