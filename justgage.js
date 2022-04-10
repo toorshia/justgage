@@ -553,7 +553,9 @@
           path: path,
         };
       } else if (isDiff) {
-        console.log(value)
+        // At the moment only works with min = -max
+        // otherwise would need to work out the zero point 
+        // Which of course is possible, but haven't done it yet
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
         Ro = w / 2 - w / 10;
         Ri = Ro - (w / 6.666666666666667) * gws;
@@ -566,8 +568,10 @@
         Xi = Cx + Ri * Math.cos(alpha);
         Yi = Cy - Ri * Math.sin(alpha);
 
-        So = isDiff ? 1 : 0
-        Si = isDiff ? 0 : 1
+        So = (value < 0) ? 1 : 0
+        Si = (value < 0) ? 0 : 1
+
+        //console.log(`Value: ${value} So: ${So} Si: ${Si}`)
 
         path = "M" + Cx + "," + (Cy - Ri) + " ";
         path += "L" + Cx + "," + (Cy - Ro) + " ";
@@ -1186,7 +1190,7 @@
 
     obj.level.animate(
       {
-        pki: [rvl],
+        pki: [rvl,obj.config.differential],
         fill: color,
       },
       obj.config.refreshAnimationTime,
