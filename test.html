@@ -1,0 +1,25 @@
+
+<div id="gauge"></div>
+
+<!-- Raphael must be included before justgage -->
+<script type="text/javascript" src="./raphael.min.js"></script>
+<script type="text/javascript" src="./justgage.js"></script>
+
+<script>
+
+var gauge = new JustGage({
+            id: "gauge", // the id of the html element
+            value: -20,
+            min: -30,
+            max: 30,
+            decimals: 2,
+            gaugeWidthScale: 0.6,
+            differential: true
+        });
+
+// update the value randomly
+//setInterval(() => {
+//  gauge.refresh(Math.random() * 100 - 50);
+//}, 5000)
+
+  </script>
