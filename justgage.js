@@ -580,7 +580,7 @@
         path += "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
         path += "Z ";
 
-        console.log(path)
+        //console.log(path)
 
         return {
           path: path,
