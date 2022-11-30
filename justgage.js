@@ -571,16 +571,12 @@
         So = (value < 0) ? 1 : 0
         Si = (value < 0) ? 0 : 1
 
-        //console.log(`Value: ${value} So: ${So} Si: ${Si}`)
-
         path = "M" + Cx + "," + (Cy - Ri) + " ";
         path += "L" + Cx + "," + (Cy - Ro) + " ";
         path += "A" + Ro + "," + Ro + " 0 0 " + Si + " " + Xo + "," + Yo + " ";
         path += "L" + Xi + "," + Yi + " ";
         path += "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
         path += "Z ";
-
-        //console.log(path)
 
         return {
           path: path,
@@ -995,7 +991,6 @@
     if (obj.config.reverse) {
       rvl = obj.config.max * 1 + obj.config.min * 1 - obj.config.value * 1;
     }
-    console.log("animate?",rvl)
 
     obj.level.animate(
       {
