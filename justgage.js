@@ -512,9 +512,8 @@
       const dy = obj.params.dy;
       const gws = obj.config.gaugeWidthScale;
       const donut = obj.config.donut;
-      const differential = obj.config.differential;
 
-      let alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
+      let alpha, Ro, Ri, Cx, Cy, So, Si, Xo, Yo, Xi, Yi, path;
 
 
       if (min < 0 && !isDiff) {
@@ -568,8 +567,8 @@
         Xi = Cx + Ri * Math.cos(alpha);
         Yi = Cy - Ri * Math.sin(alpha);
 
-        So = (value < 0) ? 1 : 0
-        Si = (value < 0) ? 0 : 1
+        So = value < 0 ? 1 : 0
+        Si = value < 0 ? 0 : 1
 
         path = "M" + Cx + "," + (Cy - Ri) + " ";
         path += "L" + Cx + "," + (Cy - Ro) + " ";
