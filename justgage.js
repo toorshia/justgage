@@ -503,7 +503,7 @@
      * @param {Number} value display value
      * @returns SVG path string for gauge level
      */
-    obj.canvas.customAttributes.pki = function (value,isDiff) {
+    obj.canvas.customAttributes.pki = function (value, isDiff) {
       let min = obj.config.min;
       let max = obj.config.max;
       const w = obj.params.widgetW;
@@ -514,7 +514,6 @@
       const donut = obj.config.donut;
 
       let alpha, Ro, Ri, Cx, Cy, So, Si, Xo, Yo, Xi, Yi, path;
-
 
       if (min < 0 && !isDiff) {
         max -= min;
@@ -553,7 +552,7 @@
         };
       } else if (isDiff) {
         // At the moment only works with min = -max
-        // otherwise would need to work out the zero point 
+        // otherwise would need to work out the zero point
         // Which of course is possible, but haven't done it yet
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
         Ro = w / 2 - w / 10;
@@ -567,14 +566,15 @@
         Xi = Cx + Ri * Math.cos(alpha);
         Yi = Cy - Ri * Math.sin(alpha);
 
-        So = value < 0 ? 1 : 0
-        Si = value < 0 ? 0 : 1
+        So = value < 0 ? 1 : 0;
+        Si = value < 0 ? 0 : 1;
 
         path = "M" + Cx + "," + (Cy - Ri) + " ";
         path += "L" + Cx + "," + (Cy - Ro) + " ";
         path += "A" + Ro + "," + Ro + " 0 0 " + Si + " " + Xo + "," + Yo + " ";
         path += "L" + Xi + "," + Yi + " ";
-        path += "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
+        path +=
+          "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
         path += "Z ";
 
         return {
@@ -747,7 +747,10 @@
         obj.config.noGradient,
         obj.config.customSectors
       ),
-      pki: [obj.config.differential ? 0 : obj.config.min,obj.config.differential],
+      pki: [
+        obj.config.differential ? 0 : obj.config.min,
+        obj.config.differential,
+      ],
     });
 
     if (obj.config.donut) {
@@ -993,12 +996,12 @@
 
     obj.level.animate(
       {
-        pki: [rvl,obj.config.differential],
+        pki: [rvl, obj.config.differential],
       },
       obj.config.startAnimationTime,
       obj.config.startAnimationType,
       obj.config.onAnimationEnd
-    ); 
+    );
 
     if (obj.config.pointer) {
       obj.needle.animate(
@@ -1184,7 +1187,7 @@
 
     obj.level.animate(
       {
-        pki: [rvl,obj.config.differential],
+        pki: [rvl, obj.config.differential],
         fill: color,
       },
       obj.config.refreshAnimationTime,
