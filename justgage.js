@@ -474,24 +474,24 @@
 
     // parameters
     obj.params = {
-      canvasW: canvasW,
-      canvasH: canvasH,
-      widgetW: widgetW,
-      widgetH: widgetH,
-      dx: dx,
-      dy: dy,
-      valueFontSize: valueFontSize,
-      valueX: valueX,
-      valueY: valueY,
-      labelFontSize: labelFontSize,
-      labelX: labelX,
-      labelY: labelY,
-      minFontSize: minFontSize,
-      minX: minX,
-      minY: minY,
-      maxFontSize: maxFontSize,
-      maxX: maxX,
-      maxY: maxY,
+      canvasW,
+      canvasH,
+      widgetW,
+      widgetH,
+      dx,
+      dy,
+      valueFontSize,
+      valueX,
+      valueY,
+      labelFontSize,
+      labelX,
+      labelY,
+      minFontSize,
+      minX,
+      minY,
+      maxFontSize,
+      maxX,
+      maxY,
     };
 
     // var clear
@@ -548,7 +548,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       } else if (isDiff) {
         // At the moment only works with min = -max
@@ -578,7 +578,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       } else {
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
@@ -606,7 +606,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       }
     };
@@ -694,7 +694,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       } else {
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
@@ -725,7 +725,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       }
     };

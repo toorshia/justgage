@@ -252,6 +252,10 @@
       // show full donut gauge
       donut: kvLookup("donut", config, dataset, false),
 
+      // differential : bool
+      // show gauge with 0 at 12 o'clock
+      differential: kvLookup("differential", config, dataset, false),
+
       // relativeGaugeSize : bool
       // whether gauge size should follow changes in container element size
       relativeGaugeSize: kvLookup("relativeGaugeSize", config, dataset, false),
@@ -470,24 +474,24 @@
 
     // parameters
     obj.params = {
-      canvasW: canvasW,
-      canvasH: canvasH,
-      widgetW: widgetW,
-      widgetH: widgetH,
-      dx: dx,
-      dy: dy,
-      valueFontSize: valueFontSize,
-      valueX: valueX,
-      valueY: valueY,
-      labelFontSize: labelFontSize,
-      labelX: labelX,
-      labelY: labelY,
-      minFontSize: minFontSize,
-      minX: minX,
-      minY: minY,
-      maxFontSize: maxFontSize,
-      maxX: maxX,
-      maxY: maxY,
+      canvasW,
+      canvasH,
+      widgetW,
+      widgetH,
+      dx,
+      dy,
+      valueFontSize,
+      valueX,
+      valueY,
+      labelFontSize,
+      labelX,
+      labelY,
+      minFontSize,
+      minX,
+      minY,
+      maxFontSize,
+      maxX,
+      maxY,
     };
 
     // var clear
@@ -499,7 +503,7 @@
      * @param {Number} value display value
      * @returns SVG path string for gauge level
      */
-    obj.canvas.customAttributes.pki = function (value) {
+    obj.canvas.customAttributes.pki = function (value, isDiff) {
       let min = obj.config.min;
       let max = obj.config.max;
       const w = obj.params.widgetW;
@@ -509,9 +513,9 @@
       const gws = obj.config.gaugeWidthScale;
       const donut = obj.config.donut;
 
-      let alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path;
+      let alpha, Ro, Ri, Cx, Cy, So, Si, Xo, Yo, Xi, Yi, path;
 
-      if (min < 0) {
+      if (min < 0 && !isDiff) {
         max -= min;
         value -= min;
         min = 0;
@@ -544,7 +548,37 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
+        };
+      } else if (isDiff) {
+        // At the moment only works with min = -max
+        // otherwise would need to work out the zero point
+        // Which of course is possible, but haven't done it yet
+        alpha = (1 - (value - min) / (max - min)) * Math.PI;
+        Ro = w / 2 - w / 10;
+        Ri = Ro - (w / 6.666666666666667) * gws;
+
+        Cx = w / 2 + dx;
+        Cy = h / 1.25 + dy;
+
+        Xo = Cx + Ro * Math.cos(alpha);
+        Yo = Cy - Ro * Math.sin(alpha);
+        Xi = Cx + Ri * Math.cos(alpha);
+        Yi = Cy - Ri * Math.sin(alpha);
+
+        So = value < 0 ? 1 : 0;
+        Si = value < 0 ? 0 : 1;
+
+        path = "M" + Cx + "," + (Cy - Ri) + " ";
+        path += "L" + Cx + "," + (Cy - Ro) + " ";
+        path += "A" + Ro + "," + Ro + " 0 0 " + Si + " " + Xo + "," + Yo + " ";
+        path += "L" + Xi + "," + Yi + " ";
+        path +=
+          "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
+        path += "Z ";
+
+        return {
+          path,
         };
       } else {
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
@@ -572,7 +606,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       }
     };
@@ -660,7 +694,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       } else {
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
@@ -691,7 +725,7 @@
         path += "Z ";
 
         return {
-          path: path,
+          path,
         };
       }
     };
@@ -713,8 +747,12 @@
         obj.config.noGradient,
         obj.config.customSectors
       ),
-      pki: [obj.config.min],
+      pki: [
+        obj.config.differential ? 0 : obj.config.min,
+        obj.config.differential,
+      ],
     });
+
     if (obj.config.donut) {
       obj.level.transform(
         "r" +
@@ -955,9 +993,10 @@
     if (obj.config.reverse) {
       rvl = obj.config.max * 1 + obj.config.min * 1 - obj.config.value * 1;
     }
+
     obj.level.animate(
       {
-        pki: [rvl],
+        pki: [rvl, obj.config.differential],
       },
       obj.config.startAnimationTime,
       obj.config.startAnimationType,
@@ -1148,7 +1187,7 @@
 
     obj.level.animate(
       {
-        pki: [rvl],
+        pki: [rvl, obj.config.differential],
         fill: color,
       },
       obj.config.refreshAnimationTime,
