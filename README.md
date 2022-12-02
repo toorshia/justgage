@@ -137,7 +137,7 @@ setInterval(() => {
 | humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)                             |
 | noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                                                  |
 | donut                | `false`                             | Show donut gauge                  
-| differential         | `false`                             | min must = -max and pointer will be at top when = 0
+| differential         | `false`                             | Gauge will fill starting from the center, rather than from the min value                                       |
 | relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                                              |
 | counter              | `false`                             | Animate text value number change                                                                                |
 | decimals             | `0`                                 | Number of digits after floating point                                                                           |
