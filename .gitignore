@@ -61,3 +61,6 @@ typings/
 .next
 
 .vscode
+
+# Apple Desktop Services Store
+.DS_Store
