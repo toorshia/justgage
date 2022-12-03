@@ -62,7 +62,7 @@ or if even don't want to download the files use [cdnjs](https://cdnjs.com/librar
 ```html
 <!-- Raphael must be included before justgage -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.6.0/justgage.min.js"></script>
 ```
 
 ## Basic usage
@@ -103,21 +103,17 @@ setInterval(() => {
 | defaults             | `false`                             | Defaults parameters to use globally for gauge objects                                                           |
 | width                | `null`                              | The Gauge width in pixels (Integer)                                                                             |
 | height               | `null`                              | The Gauge height in pixels                                                                                      |
-| valueFontColor       | `#010101`                           | Color of label showing current value                                                                            |
-| valueFontFamily      | `Arial`                             | Font of label showing current value                                                                             |
 | symbol               | `''`                                | Special symbol to show next to value                                                                            |
 | min                  | `0`                                 | Min value                                                                                                       |
 | minTxt               | `false`                             | Min value text, overrides `min` if specified                                                                    |
 | max                  | `100`                               | Max value                                                                                                       |
 | maxTxt               | `false`                             | Max value text, overrides `max` if specified                                                                    |
 | reverse              | `false`                             | Reverse min and max                                                                                             |
-| humanFriendlyDecimal | `0`                                 | Number of decimal places for our human friendly number to contain                                               |
 | textRenderer         | `null`                              | Function applied before redering text `(value) => value` return `false` to format value based on config options |
 | onAnimationEnd       | `null`                              | Function applied after animation is done                                                                        |
 | gaugeWidthScale      | `1.0`                               | Width of the gauge element                                                                                      |
 | gaugeColor           | `#edebeb`                           | Background color of gauge element                                                                               |
 | label                | `''`                                | Text to show below value                                                                                        |
-| labelFontColor       | `#b3b3b3`                           | Color of label showing label under value                                                                        |
 | shadowOpacity        | `0.2`                               | Shadow opacity 0 ~ 1                                                                                            |
 | shadowSize           | `5`                                 | Inner shadow size                                                                                               |
 | shadowVerticalOffset | `3`                                 | How much shadow is offset from top                                                                              |
@@ -127,25 +123,40 @@ setInterval(() => {
 | refreshAnimationTime | `700`                               | Length of refresh animation in milliseconds                                                                     |
 | refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <,  <>, bounce)                                                           |
 | donutStartAngle      | `90`                                | Angle to start from when in donut mode                                                                          |
-| valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                                                  |
-| labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                                                        |
-| minLabelMinFontSize  | `10`                                | Absolute minimum font size for the min label                                                                    |
-| maxLabelMinFontSize  | `10`                                | Absolute minimum font size for the man label                                                                    |
-| hideValue            | `false`                             | Hide value text                                                                                                 |
-| hideMinMax           | `false`                             | Hide min/max text                                                                                               |
 | showInnerShadow      | `false`                             | Show inner shadow                                                                                               |
-| humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)                             |
 | noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                                                  |
 | donut                | `false`                             | Show donut gauge                  
 | differential         | `false`                             | min must = -max and pointer will be at top when = 0
 | relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                                              |
 | counter              | `false`                             | Animate text value number change                                                                                |
-| decimals             | `0`                                 | Number of digits after floating point                                                                           |
 | customSectors        | `{}`                                | Custom sectors colors. Expects an [object](#Custom-Sectors)                                                     |
-| formatNumber         | `false`                             | Formats numbers with commas where appropriate                                                                   |
 | pointer              | `false`                             | Show value pointer                                                                                              |
 | pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                                                          |
 | displayRemaining     | `false`                             | Replace display number with the value remaining to reach max value                                              |
+
+### Format Options
+
+| Name                 | Default                             | Description                                                                                                     |
+| -------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| language             | `null`                              | Overwrite the Browser language                                                                                  |
+| valueFormat          | `null`                              | Format of the value (simpleCommas, humanFriendly, humanFriendlyCompact)                                         |
+| valueDecimals        | `0`                                 | Number of fixed digits after floating point (negative means up to x digits)                                     |
+| minMaxFormat         | `null`                              | Format of the min and max (simpleCommas, humanFriendly, humanFriendlyCompact)                                   |
+| minMaxDecimals       | `0`                                 | Number of fixed digits after floating point (negative means up to x digits)                                     |
+
+### Font Options
+
+| Name                 | Default                             | Description                                                                                                     |
+| -------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| valueFontColor       | `#010101`                           | Color of label showing current value                                                                            |
+| valueFontFamily      | `Arial`                             | Font of label showing current value                                                                             |
+| valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                                                  |
+| labelFontColor       | `#b3b3b3`                           | Color of label showing label under value                                                                        |
+| labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                                                        |
+| minLabelMinFontSize  | `10`                                | Absolute minimum font size for the min label                                                                    |
+| maxLabelMinFontSize  | `10`                                | Absolute minimum font size for the man label                                                                    |
+| hideValue            | `false`                             | Hide value text                                                                                                 |
+| hideMinMax           | `false`                             | Hide min/max text                                                                                               |
 
 ### Custom Sectors
 

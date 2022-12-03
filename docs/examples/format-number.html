@@ -47,7 +47,9 @@
                 max: 1000000,
                 gaugeWidthScale: 0.6,
                 counter: true,
-                formatNumber: true
+                valueFormat: "simpleCommas",
+                valueDecimals: -2,
+                minMaxFormat: "simpleCommas",
             });
 
             document.getElementById('gg1_refresh').addEventListener('click', function () {

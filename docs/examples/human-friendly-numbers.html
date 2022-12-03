@@ -80,6 +80,7 @@
 
 <body>
     <div id="gg1" style="width: 200px; height: 150px;"></div>
+    <div id="gg2" style="width: 200px; height: 150px;"></div>
     <a href="#" id="gg1_refresh" class="button grey">Random Refresh</a>
     <script src="../raphael.min.js"></script>
     <script src="../justgage.js"></script>
@@ -93,16 +94,34 @@
             var gg1 = new JustGage({
                 id: "gg1",
                 value: 1024,
-                min: 0,
-                max: 1000000,
+                min: -1000000000,
+                max: 2000000000,
                 title: "Target",
-                label: "",
-                humanFriendly: true,
+                label: "Friendly",
+                valueFormat: "humanFriendly",
+                valueDecimals: -2,
+                minMaxFormat: "humanFriendly",
+                minMaxDecimals: -2,
+                refreshAnimationTime: 1000
+            });
+            var gg2 = new JustGage({
+                id: "gg2",
+                value: 1024,
+                min: -1000000000,
+                max: 2000000000,
+                title: "Target",
+                label: "Compact",
+                valueFormat: "humanFriendlyCompact",
+                valueDecimals: -2,
+                minMaxFormat: "humanFriendlyCompact",
+                minMaxDecimals: -2,
                 refreshAnimationTime: 1000
             });
 
             document.getElementById('gg1_refresh').addEventListener('click', function () {
-                gg1.refresh(getRandomInt(0, 1000000));
+                let x = getRandomInt(-1000000000, 2000000000)
+                gg1.refresh(x);
+                gg2.refresh(x);
                 console.log(gg1);
                 return false;
             });

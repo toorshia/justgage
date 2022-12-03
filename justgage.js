@@ -117,15 +117,6 @@
       // reverse min and max
       reverse: kvLookup("reverse", config, dataset, false),
 
-      // humanFriendlyDecimal : int
-      // number of decimal places for our human friendly number to contain
-      humanFriendlyDecimal: kvLookup(
-        "humanFriendlyDecimal",
-        config,
-        dataset,
-        0
-      ),
-
       // textRenderer: func
       // function applied before rendering text
       textRenderer: kvLookup("textRenderer", config, dataset, null),
@@ -240,10 +231,6 @@
       // show inner shadow
       showInnerShadow: kvLookup("showInnerShadow", config, dataset, false),
 
-      // humanFriendly : bool
-      // convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
-      humanFriendly: kvLookup("humanFriendly", config, dataset, false),
-
       // noGradient : bool
       // whether to use gradual color change for value, or sector-based
       noGradient: kvLookup("noGradient", config, dataset, false),
@@ -264,19 +251,11 @@
       // animate level number change
       counter: kvLookup("counter", config, dataset, false),
 
-      // decimals : int
-      // number of digits after floating point
-      decimals: kvLookup("decimals", config, dataset, 0),
-
       // customSectors : object
       // custom sectors colors. Expects an object with props
       // percents : bool hi/lo are percents values
       // ranges : array of objects : {hi, lo, color}
       customSectors: kvLookup("customSectors", config, dataset, {}),
-
-      // formatNumber: boolean
-      // formats numbers with commas where appropriate
-      formatNumber: kvLookup("formatNumber", config, dataset, false),
 
       // pointer : bool
       // show value pointer
@@ -289,6 +268,52 @@
       // displayRemaining: boolean
       // replace display number with the number remaining to reach max
       displayRemaining: kvLookup("displayRemaining", config, dataset, false),
+    
+      // language : string
+      // Overwrite the Browser language
+      language: kvLookup(
+        "language",
+        config,
+        dataset,
+        navigator.language || navigator.userLanguage
+      ),
+    
+      // valueFormat : string
+      // Format of the value
+      valueFormat: kvLookup(
+        "valueFormat",
+        config,
+        dataset,
+        null
+      ),
+
+      // valueDecimals : int
+      // Number of fixed digits after floating point
+      valueDecimals: kvLookup(
+        "valueDecimals",
+        config,
+        dataset,
+        null
+      ),
+
+      // minMaxFormat : string
+      // Format of the min and max
+      minMaxFormat: kvLookup(
+        "minMaxFormat",
+        config,
+        dataset,
+        null
+      ),
+
+      // minMaxDecimals : int
+      // Number of fixed digits after floating point
+      minMaxDecimals: kvLookup(
+        "minMaxDecimals",
+        config,
+        dataset,
+        null
+      )
+    
     };
 
     // variables
@@ -756,11 +781,11 @@
     if (obj.config.donut) {
       obj.level.transform(
         "r" +
-          obj.config.donutStartAngle +
-          ", " +
-          (obj.params.widgetW / 2 + obj.params.dx) +
-          ", " +
-          (obj.params.widgetH / 2 + obj.params.dy)
+        obj.config.donutStartAngle +
+        ", " +
+        (obj.params.widgetW / 2 + obj.params.dx) +
+        ", " +
+        (obj.params.widgetH / 2 + obj.params.dy)
       );
     }
 
@@ -785,11 +810,11 @@
       if (obj.config.donut) {
         obj.needle.transform(
           "r" +
-            obj.config.donutStartAngle +
-            ", " +
-            (obj.params.widgetW / 2 + obj.params.dx) +
-            ", " +
-            (obj.params.widgetH / 2 + obj.params.dy)
+          obj.config.donutStartAngle +
+          ", " +
+          (obj.params.widgetW / 2 + obj.params.dx) +
+          ", " +
+          (obj.params.widgetH / 2 + obj.params.dy)
         );
       }
     }
@@ -829,13 +854,12 @@
     obj.txtMinimum = min;
     if (obj.config.minTxt) {
       obj.txtMinimum = obj.config.minTxt;
-    } else if (obj.config.humanFriendly) {
-      obj.txtMinimum = humanFriendlyNumber(
+    } else {
+      obj.txtMinimum = formatNumber(
         min,
-        obj.config.humanFriendlyDecimal
-      );
-    } else if (obj.config.formatNumber) {
-      obj.txtMinimum = formatNumber(min);
+        obj.config.language,
+        obj.config.minMaxFormat,
+        obj.config.minMaxDecimals);
     }
     obj.txtMin = obj.canvas.text(
       obj.params.minX,
@@ -859,13 +883,12 @@
     obj.txtMaximum = max;
     if (obj.config.maxTxt) {
       obj.txtMaximum = obj.config.maxTxt;
-    } else if (obj.config.humanFriendly) {
-      obj.txtMaximum = humanFriendlyNumber(
+    } else {
+      obj.txtMaximum = formatNumber(
         max,
-        obj.config.humanFriendlyDecimal
-      );
-    } else if (obj.config.formatNumber) {
-      obj.txtMaximum = formatNumber(max);
+        obj.config.language,
+        obj.config.minMaxFormat,
+        obj.config.minMaxDecimals);
     }
     obj.txtMax = obj.canvas.text(
       obj.params.maxX,
@@ -900,23 +923,20 @@
       obj.config.textRenderer(obj.originalValue) !== false
     ) {
       obj.originalValue = obj.config.textRenderer(obj.originalValue);
-    } else if (obj.config.humanFriendly) {
-      obj.originalValue =
-        humanFriendlyNumber(
-          obj.originalValue,
-          obj.config.humanFriendlyDecimal
-        ) + obj.config.symbol;
-    } else if (obj.config.formatNumber) {
-      obj.originalValue = formatNumber(obj.originalValue) + obj.config.symbol;
     } else if (obj.config.displayRemaining) {
-      obj.originalValue =
-        ((obj.config.max - obj.originalValue) * 1).toFixed(
-          obj.config.decimals
-        ) + obj.config.symbol;
+      obj.originalValue = formatNumber(
+        obj.config.max - obj.originalValue,
+        obj.config.language,
+        obj.config.valueFormat,
+        obj.config.valueDecimals)
+        + obj.config.symbol;
     } else {
-      obj.originalValue =
-        (obj.originalValue * 1).toFixed(obj.config.decimals) +
-        obj.config.symbol;
+      obj.originalValue = formatNumber(
+        obj.originalValue,
+        obj.config.language,
+        obj.config.valueFormat,
+        obj.config.valueDecimals)
+        + obj.config.symbol;
     }
 
     if (obj.config.counter === true) {
@@ -937,29 +957,25 @@
             "text",
             obj.config.textRenderer(Math.floor(currentValue))
           );
-        } else if (obj.config.humanFriendly) {
-          obj.txtValue.attr(
-            "text",
-            humanFriendlyNumber(
-              Math.floor(currentValue),
-              obj.config.humanFriendlyDecimal
-            ) + obj.config.symbol
-          );
-        } else if (obj.config.formatNumber) {
-          obj.txtValue.attr(
-            "text",
-            formatNumber(Math.floor(currentValue)) + obj.config.symbol
-          );
         } else if (obj.config.displayRemaining) {
           obj.txtValue.attr(
             "text",
-            ((obj.config.max - currentValue) * 1).toFixed(obj.config.decimals) +
-              obj.config.symbol
+            formatNumber(
+              obj.config.max - currentValue,
+              obj.config.language,
+              obj.config.valueFormat,
+              obj.config.valueDecimals)
+              + obj.config.symbol
           );
         } else {
           obj.txtValue.attr(
             "text",
-            (currentValue * 1).toFixed(obj.config.decimals) + obj.config.symbol
+            formatNumber(
+              currentValue,
+              obj.config.language,
+              obj.config.valueFormat,
+              obj.config.valueDecimals)
+              + obj.config.symbol
           );
         }
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
@@ -1083,13 +1099,12 @@
       obj.txtMinimum = obj.config.min;
       if (obj.config.minTxt) {
         obj.txtMinimum = obj.config.minTxt;
-      } else if (obj.config.humanFriendly) {
-        obj.txtMinimum = humanFriendlyNumber(
-          obj.config.min,
-          obj.config.humanFriendlyDecimal
-        );
-      } else if (obj.config.formatNumber) {
-        obj.txtMinimum = formatNumber(obj.config.min);
+      } else {
+        obj.txtMinimum = formatNumber(
+          min,
+          obj.config.language,
+          obj.config.minMaxFormat,
+          obj.config.minMaxDecimals);
       }
       if (!obj.config.reverse) {
         obj.txtMin.attr({
@@ -1111,13 +1126,12 @@
       obj.txtMaximum = obj.config.max;
       if (obj.config.maxTxt) {
         obj.txtMaximum = obj.config.maxTxt;
-      } else if (obj.config.humanFriendly) {
-        obj.txtMaximum = humanFriendlyNumber(
-          obj.config.max,
-          obj.config.humanFriendlyDecimal
-        );
-      } else if (obj.config.formatNumber) {
-        obj.txtMaximum = formatNumber(obj.config.max);
+      } else {
+        obj.txtMaximum = formatNumber(
+          max,
+          obj.config.language,
+          obj.config.minMaxFormat,
+          obj.config.minMaxDecimals);
       }
       if (!obj.config.reverse) {
         obj.txtMax.attr({
@@ -1154,21 +1168,20 @@
       obj.config.textRenderer(displayVal) !== false
     ) {
       displayVal = obj.config.textRenderer(displayVal);
-    } else if (obj.config.humanFriendly) {
-      displayVal =
-        humanFriendlyNumber(displayVal, obj.config.humanFriendlyDecimal) +
-        obj.config.symbol;
-    } else if (obj.config.formatNumber) {
-      displayVal =
-        formatNumber((displayVal * 1).toFixed(obj.config.decimals)) +
-        obj.config.symbol;
     } else if (obj.config.displayRemaining) {
-      displayVal =
-        ((obj.config.max - displayVal) * 1).toFixed(obj.config.decimals) +
-        obj.config.symbol;
+      displayVal = formatNumber(
+        obj.config.max - displayVal,
+        obj.config.language,
+        obj.config.valueFormat,
+        obj.config.valueDecimals)
+        + obj.config.symbol;
     } else {
-      displayVal =
-        (displayVal * 1).toFixed(obj.config.decimals) + obj.config.symbol;
+      displayVal = formatNumber(
+        displayVal,
+        obj.config.language,
+        obj.config.valueFormat,
+        obj.config.valueDecimals)
+        + obj.config.symbol;
     }
     obj.originalValue = displayVal;
     obj.config.value = val * 1;
@@ -1517,25 +1530,32 @@
     return typeof val === "string" && regExp.test(val);
   }
 
-  /**  Human friendly number suffix - @robertsLando */
-  function humanFriendlyNumber(n, d) {
-    const d2 = Math.pow(10, d);
-    const s = " KMGTPE";
-    let i = 0;
-    const c = 1000;
+  function formatNumber(number, language, format, decimals) {
+    switch (format) {
+      case 'simpleCommas':
+        return number.toLocaleString(language, { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) });
+        break;
+      case 'humanFriendly':
+      case 'humanFriendlyCompact':
+        const s = " KMGTPE";
+        let i = 0;
+        const c = 1000;
 
-    while ((n >= c || n <= -c) && ++i < s.length) n = n / c;
+        while ((number >= c || number <= -c) && ++i < s.length) number = number / c;
+        i = i >= s.length ? s.length - 1 : i;
 
-    i = i >= s.length ? s.length - 1 : i;
-
-    return Math.round(n * d2) / d2 + s[i];
-  }
-
-  /** Format numbers with commas - From: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript */
-  function formatNumber(x) {
-    const parts = x.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
+        if (format == 'humanFriendlyCompact') {
+          if (Math.trunc(number) == number && decimals <= 0)
+            return number.toLocaleString(language) + s[i];
+          else
+            return number.toLocaleString('en-US', { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) }).replace('.', s[i]);
+        } else {
+          return number.toLocaleString(language, { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) }) + s[i];
+        }
+        break;
+      default:
+        return number;
+    }
   }
 
   /**  Get style  */
