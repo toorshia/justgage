@@ -924,6 +924,7 @@
     ) {
       obj.originalValue = obj.config.textRenderer(obj.originalValue);
     } else if (obj.config.displayRemaining) {
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - obj.originalValue, obj.config.valueDecimals);
       obj.originalValue = formatNumber(
         obj.config.max - obj.originalValue,
         obj.config.language,
@@ -931,6 +932,7 @@
         obj.config.valueDecimals)
         + obj.config.symbol;
     } else {
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.originalValue, obj.config.valueDecimals);
       obj.originalValue = formatNumber(
         obj.originalValue,
         obj.config.language,
@@ -964,7 +966,7 @@
               obj.config.max - currentValue,
               obj.config.language,
               obj.config.valueFormat,
-              obj.config.valueDecimals)
+              obj.counterTargetDecimals)
               + obj.config.symbol
           );
         } else {
@@ -974,7 +976,7 @@
               currentValue,
               obj.config.language,
               obj.config.valueFormat,
-              obj.config.valueDecimals)
+              obj.counterTargetDecimals)
               + obj.config.symbol
           );
         }
@@ -1169,6 +1171,7 @@
     ) {
       displayVal = obj.config.textRenderer(displayVal);
     } else if (obj.config.displayRemaining) {
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - displayVal, obj.config.valueDecimals);
       displayVal = formatNumber(
         obj.config.max - displayVal,
         obj.config.language,
@@ -1176,6 +1179,7 @@
         obj.config.valueDecimals)
         + obj.config.symbol;
     } else {
+      obj.counterTargetDecimals = getDecimalsAfterFormat(displayVal, obj.config.valueDecimals);
       displayVal = formatNumber(
         displayVal,
         obj.config.language,
@@ -1533,7 +1537,7 @@
   function formatNumber(number, language, format, decimals) {
     switch (format) {
       case 'simpleCommas':
-        return number.toLocaleString(language, { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) });
+        return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)});
         break;
       case 'humanFriendly':
       case 'humanFriendlyCompact':
@@ -1548,14 +1552,24 @@
           if (Math.trunc(number) == number && decimals <= 0)
             return number.toLocaleString(language) + s[i];
           else
-            return number.toLocaleString('en-US', { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) }).replace('.', s[i]);
+            return number.toLocaleString('en-US', {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)}).replace('.', s[i]);
         } else {
-          return number.toLocaleString(language, { minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals) }) + s[i];
+          return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)}) + s[i];
         }
         break;
       default:
         return number;
     }
+  }
+
+  function getDecimalsAfterFormat(number, decimals) {
+    number -= Math.trunc(number);
+    let s = number.toLocaleString('en-US', {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)});
+    console.log("DEBUG getDecimalsAfterFormat: " + s);
+    if(s == "0")
+      return 0;
+    else
+      return s.length -2;
   }
 
   /**  Get style  */
