@@ -293,7 +293,7 @@
         "valueDecimals",
         config,
         dataset,
-        null
+        0
       ),
 
       // minMaxFormat : string
@@ -311,10 +311,27 @@
         "minMaxDecimals",
         config,
         dataset,
-        null
+        0
       )
     
     };
+
+    // Backward compatibility, map old config options
+    if(obj.config.valueFormat == null && obj.config.minMaxFormat == null) {
+      if(kvLookup("humanFriendly", config, dataset, false)) {
+        obj.config.valueFormat = "humanFriendly";
+        obj.config.minMaxFormat = "humanFriendly";
+        obj.config.valueDecimals = kvLookup("humanFriendlyDecimal", config, dataset, obj.config.valueDecimals);
+        obj.config.minMaxDecimals = kvLookup("humanFriendlyDecimal", config, dataset, obj.config.minMaxDecimals);
+        console.log("* justgage: Used depricated option humanFriendly. Update to the new valueFormat/minMaxFormat")
+      } else if(kvLookup("formatNumber", config, dataset, false)) {
+        obj.config.valueFormat = "simpleCommas";
+        obj.config.minMaxFormat = "simpleCommas";
+        obj.config.valueDecimals = kvLookup("decimals", config, dataset, obj.config.valueDecimals);
+        obj.config.minMaxDecimals = kvLookup("decimals", config, dataset, obj.config.minMaxDecimals);
+        console.log("* justgage: Used depricated option formatNumber. Update to the new valueFormat/minMaxFormat")
+      }
+    }
 
     // variables
     let canvasW,
@@ -924,7 +941,7 @@
     ) {
       obj.originalValue = obj.config.textRenderer(obj.originalValue);
     } else if (obj.config.displayRemaining) {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - obj.originalValue, obj.config.valueDecimals);
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - obj.originalValue, obj.config.valueFormat, obj.config.valueDecimals);
       obj.originalValue = formatNumber(
         obj.config.max - obj.originalValue,
         obj.config.language,
@@ -932,7 +949,7 @@
         obj.config.valueDecimals)
         + obj.config.symbol;
     } else {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.originalValue, obj.config.valueDecimals);
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.originalValue, obj.config.valueFormat, obj.config.valueDecimals);
       obj.originalValue = formatNumber(
         obj.originalValue,
         obj.config.language,
@@ -1171,7 +1188,7 @@
     ) {
       displayVal = obj.config.textRenderer(displayVal);
     } else if (obj.config.displayRemaining) {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - displayVal, obj.config.valueDecimals);
+      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - displayVal, obj.config.valueFormat, obj.config.valueDecimals);
       displayVal = formatNumber(
         obj.config.max - displayVal,
         obj.config.language,
@@ -1179,7 +1196,7 @@
         obj.config.valueDecimals)
         + obj.config.symbol;
     } else {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(displayVal, obj.config.valueDecimals);
+      obj.counterTargetDecimals = getDecimalsAfterFormat(displayVal, obj.config.valueFormat, obj.config.valueDecimals);
       displayVal = formatNumber(
         displayVal,
         obj.config.language,
@@ -1558,18 +1575,20 @@
         }
         break;
       default:
-        return number;
+        if(decimals >= 0)
+          return number.toFixed(decimals).toString();
+        else
+          return parseFloat(number.toFixed(Math.abs(decimals))).toString();
     }
   }
 
-  function getDecimalsAfterFormat(number, decimals) {
+  function getDecimalsAfterFormat(number, format, decimals) {
     number -= Math.trunc(number);
-    let s = number.toLocaleString('en-US', {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)});
-    console.log("DEBUG getDecimalsAfterFormat: " + s);
-    if(s == "0")
-      return 0;
-    else
+    let s = formatNumber(number, 'en-US', format, decimals);
+    if(s.length > 2)
       return s.length -2;
+    else
+      return 0;
   }
 
   /**  Get style  */
