@@ -51,7 +51,8 @@
     // check for defaults
     const defaults = !isUndefined(config.defaults) ? config.defaults : false;
     if (defaults !== false) {
-      config = extend({}, config, defaults);
+      // Changed order to be able to overwrite default settings with individual gage settings
+      config = extend({}, defaults, config);
       delete config.defaults;
     }
 
