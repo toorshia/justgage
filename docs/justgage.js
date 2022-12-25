@@ -240,7 +240,7 @@
       donut: kvLookup("donut", config, dataset, false),
 
       // differential : bool
-      // show gauge with 0 at 12 o'clock
+      // Gauge will fill starting from the center, rather than from the min value
       differential: kvLookup("differential", config, dataset, false),
 
       // relativeGaugeSize : bool
@@ -555,7 +555,18 @@
       const gws = obj.config.gaugeWidthScale;
       const donut = obj.config.donut;
 
-      let alpha, Ro, Ri, Cx, Cy, So, Si, Xo, Yo, Xi, Yi, path;
+      let alpha; // angle in radians
+      let Ro; // outer radius, from center to outer edge of gauge
+      let Ri; // inner radius, from center to inner edge of gauge
+      let Cx; // center x
+      let Cy; // center y
+      let So; // sweep flag for outer arc
+      let Si; // sweep flag for inner arc
+      let Xo; // outer x, from center to outer edge of arc
+      let Yo; // outer y, from center to outer edge of arc
+      let Xi; // inner x, from center to inner edge of arc
+      let Yi; // inner y, from center to inner edge of arc
+      let path; // SVG path string
 
       if (min < 0 && !isDiff) {
         max -= min;
@@ -593,9 +604,6 @@
           path,
         };
       } else if (isDiff) {
-        // At the moment only works with min = -max
-        // otherwise would need to work out the zero point
-        // Which of course is possible, but haven't done it yet
         alpha = (1 - (value - min) / (max - min)) * Math.PI;
         Ro = w / 2 - w / 10;
         Ri = Ro - (w / 6.666666666666667) * gws;
@@ -608,16 +616,20 @@
         Xi = Cx + Ri * Math.cos(alpha);
         Yi = Cy - Ri * Math.sin(alpha);
 
-        So = value < 0 ? 1 : 0;
-        Si = value < 0 ? 0 : 1;
+        const middle = min + (max - min) / 2;
 
-        path = "M" + Cx + "," + (Cy - Ri) + " ";
-        path += "L" + Cx + "," + (Cy - Ro) + " ";
-        path += "A" + Ro + "," + Ro + " 0 0 " + Si + " " + Xo + "," + Yo + " ";
-        path += "L" + Xi + "," + Yi + " ";
+        // sweep flag determines if the arc should begin moving at positive angles
+        // or negative ones
+        So = value < middle ? 1 : 0; // sweep flag for outer arc
+        Si = value < middle ? 0 : 1; // sweep flag for inner arc
+
+        path = "M" + Cx + "," + (Cy - Ri) + " "; // start at bottom center
+        path += "L" + Cx + "," + (Cy - Ro) + " "; // line to top center (Cx, Cy - Ro)
+        path += "A" + Ro + "," + Ro + " 0 0 " + Si + " " + Xo + "," + Yo + " "; // arc to outer edge
+        path += "L" + Xi + "," + Yi + " "; // line to inner edge (Xi, Yi)
         path +=
-          "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " ";
-        path += "Z ";
+          "A" + Ri + "," + Ri + " 0 0 " + So + " " + Cx + "," + (Cy - Ri) + " "; // arc to bottom center
+        path += "Z "; // close path
 
         return {
           path,

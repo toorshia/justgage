@@ -23,16 +23,29 @@
 <body>
   <div class="container">
     <div id="gauge"></div>
+    <button style="margin-bottom: 20px" onclick="g1.refresh(getRandomInt(-10, 50))">Refresh</button>
+
+    <div id="gauge2"></div>
+    <button onclick="g2.refresh(getRandomInt(-10, 50))">Refresh</button>
+
   </div>
   <script src="../raphael.min.js"></script>
-  <script src="../justgage.js"></script>
+  <script src="../../justgage.js"></script>
+
   <script>
+    var g1, g2
+
+    /** Random integer  */
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     document.addEventListener("DOMContentLoaded", function (event) {
 
-      var gauge = new JustGage({
+      g1 = new JustGage({
         id: "gauge", // the id of the html element
         value: 20,
-        min: -50,
+        min: -10,
         max: 50,
         label: "Amps",
         decimals: 2,
@@ -50,10 +63,26 @@
         }
       });
 
-      // update the value randomly
-      setInterval(() => {
-        gauge.refresh(Math.random() * 100 - 50);
-      }, 5000)
+      g2 = new JustGage({
+        id: "gauge2", // the id of the html element
+        value: -20,
+        min: -50,
+        max: 50,
+        label: "Amps",
+        decimals: 2,
+        gaugeWidthScale: 0.6,
+        differential: true,
+        pointer: true,
+        pointerOptions: {
+          toplength: -30,
+          bottomlength: 10,
+          bottomwidth: 10,
+          color: '#8e8e93',
+          stroke: '#ffffff',
+          stroke_width: 2,
+          stroke_linecap: 'round'
+        }
+      });
 
     });
   </script>
