@@ -1553,16 +1553,14 @@
   }
 
   function formatNumber(number, language, format, decimals) {
+    const s = " KMGTPE";
+    const c = 1000;
+    let i = 0;
     switch (format) {
       case 'simpleCommas':
         return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)});
-        break;
       case 'humanFriendly':
       case 'humanFriendlyCompact':
-        const s = " KMGTPE";
-        let i = 0;
-        const c = 1000;
-
         while ((number >= c || number <= -c) && ++i < s.length) number = number / c;
         i = i >= s.length ? s.length - 1 : i;
 
@@ -1574,7 +1572,6 @@
         } else {
           return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)}) + s[i];
         }
-        break;
       default:
         if(decimals >= 0)
           return number.toFixed(decimals).toString();
