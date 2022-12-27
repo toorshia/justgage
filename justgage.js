@@ -281,7 +281,7 @@
 
       // valueFormat : string
       // Format of the value
-      valueFormat: kvLookup( "valueFormat", config, dataset, null),
+      valueFormat: kvLookup("valueFormat", config, dataset, null),
 
       // valueDecimals : int
       // Number of fixed digits after floating point
@@ -293,8 +293,8 @@
 
       // minMaxDecimals : int
       // Number of fixed digits after floating point
-      minMaxDecimals: kvLookup("minMaxDecimals", config, dataset, 0)
-    
+      minMaxDecimals: kvLookup("minMaxDecimals", config, dataset, 0),
+
     };
 
     // Backward compatibility, map old config options
@@ -307,20 +307,34 @@
           config,
           dataset,
           obj.config.valueDecimals
-          );
+        );
         obj.config.minMaxDecimals = kvLookup(
           "humanFriendlyDecimal",
           config,
           dataset,
           obj.config.minMaxDecimals
-          );
-        console.log("* justgage: Used deprecated option humanFriendly. Update to the new valueFormat/minMaxFormat")
+        );
+        console.log(
+          "* justgage: Used deprecated option humanFriendly. Update to the new valueFormat/minMaxFormat"
+        );
       } else if (kvLookup("formatNumber", config, dataset, false)) {
         obj.config.valueFormat = "simpleCommas";
         obj.config.minMaxFormat = "simpleCommas";
-        obj.config.valueDecimals = kvLookup("decimals", config, dataset, obj.config.valueDecimals);
-        obj.config.minMaxDecimals = kvLookup("decimals", config, dataset, obj.config.minMaxDecimals);
-        console.log("* justgage: Used deprecated option formatNumber. Update to the new valueFormat/minMaxFormat")
+        obj.config.valueDecimals = kvLookup(
+          "decimals",
+          config,
+          dataset,
+          obj.config.valueDecimals
+        );
+        obj.config.minMaxDecimals = kvLookup(
+          "decimals",
+          config,
+          dataset,
+          obj.config.minMaxDecimals
+        );
+        console.log(
+          "* justgage: Used deprecated option formatNumber. Update to the new valueFormat/minMaxFormat"
+        );
       }
     }
 
