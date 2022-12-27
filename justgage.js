@@ -269,7 +269,7 @@
       // displayRemaining: boolean
       // replace display number with the number remaining to reach max
       displayRemaining: kvLookup("displayRemaining", config, dataset, false),
-    
+
       // language : string
       // Overwrite the Browser language
       language: kvLookup(
@@ -278,59 +278,49 @@
         dataset,
         navigator.language || navigator.userLanguage
       ),
-    
+
       // valueFormat : string
       // Format of the value
-      valueFormat: kvLookup(
-        "valueFormat",
-        config,
-        dataset,
-        null
-      ),
+      valueFormat: kvLookup( "valueFormat", config, dataset, null),
 
       // valueDecimals : int
       // Number of fixed digits after floating point
-      valueDecimals: kvLookup(
-        "valueDecimals",
-        config,
-        dataset,
-        0
-      ),
+      valueDecimals: kvLookup("valueDecimals", config, dataset, 0),
 
       // minMaxFormat : string
       // Format of the min and max
-      minMaxFormat: kvLookup(
-        "minMaxFormat",
-        config,
-        dataset,
-        null
-      ),
+      minMaxFormat: kvLookup("minMaxFormat", config, dataset, null),
 
       // minMaxDecimals : int
       // Number of fixed digits after floating point
-      minMaxDecimals: kvLookup(
-        "minMaxDecimals",
-        config,
-        dataset,
-        0
-      )
+      minMaxDecimals: kvLookup("minMaxDecimals", config, dataset, 0)
     
     };
 
     // Backward compatibility, map old config options
-    if(obj.config.valueFormat == null && obj.config.minMaxFormat == null) {
-      if(kvLookup("humanFriendly", config, dataset, false)) {
+    if (obj.config.valueFormat == null && obj.config.minMaxFormat == null) {
+      if (kvLookup("humanFriendly", config, dataset, false)) {
         obj.config.valueFormat = "humanFriendly";
         obj.config.minMaxFormat = "humanFriendly";
-        obj.config.valueDecimals = kvLookup("humanFriendlyDecimal", config, dataset, obj.config.valueDecimals);
-        obj.config.minMaxDecimals = kvLookup("humanFriendlyDecimal", config, dataset, obj.config.minMaxDecimals);
-        console.log("* justgage: Used depricated option humanFriendly. Update to the new valueFormat/minMaxFormat")
-      } else if(kvLookup("formatNumber", config, dataset, false)) {
+        obj.config.valueDecimals = kvLookup(
+          "humanFriendlyDecimal",
+          config,
+          dataset,
+          obj.config.valueDecimals
+          );
+        obj.config.minMaxDecimals = kvLookup(
+          "humanFriendlyDecimal",
+          config,
+          dataset,
+          obj.config.minMaxDecimals
+          );
+        console.log("* justgage: Used deprecated option humanFriendly. Update to the new valueFormat/minMaxFormat")
+      } else if (kvLookup("formatNumber", config, dataset, false)) {
         obj.config.valueFormat = "simpleCommas";
         obj.config.minMaxFormat = "simpleCommas";
         obj.config.valueDecimals = kvLookup("decimals", config, dataset, obj.config.valueDecimals);
         obj.config.minMaxDecimals = kvLookup("decimals", config, dataset, obj.config.minMaxDecimals);
-        console.log("* justgage: Used depricated option formatNumber. Update to the new valueFormat/minMaxFormat")
+        console.log("* justgage: Used deprecated option formatNumber. Update to the new valueFormat/minMaxFormat")
       }
     }
 
