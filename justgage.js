@@ -294,7 +294,6 @@
       // minMaxDecimals : int
       // Number of fixed digits after floating point
       minMaxDecimals: kvLookup("minMaxDecimals", config, dataset, 0),
-
     };
 
     // Backward compatibility, map old config options
@@ -815,11 +814,11 @@
     if (obj.config.donut) {
       obj.level.transform(
         "r" +
-        obj.config.donutStartAngle +
-        ", " +
-        (obj.params.widgetW / 2 + obj.params.dx) +
-        ", " +
-        (obj.params.widgetH / 2 + obj.params.dy)
+          obj.config.donutStartAngle +
+          ", " +
+          (obj.params.widgetW / 2 + obj.params.dx) +
+          ", " +
+          (obj.params.widgetH / 2 + obj.params.dy)
       );
     }
 
@@ -844,11 +843,11 @@
       if (obj.config.donut) {
         obj.needle.transform(
           "r" +
-          obj.config.donutStartAngle +
-          ", " +
-          (obj.params.widgetW / 2 + obj.params.dx) +
-          ", " +
-          (obj.params.widgetH / 2 + obj.params.dy)
+            obj.config.donutStartAngle +
+            ", " +
+            (obj.params.widgetW / 2 + obj.params.dx) +
+            ", " +
+            (obj.params.widgetH / 2 + obj.params.dy)
         );
       }
     }
@@ -893,7 +892,8 @@
         min,
         obj.config.language,
         obj.config.minMaxFormat,
-        obj.config.minMaxDecimals);
+        obj.config.minMaxDecimals
+      );
     }
     obj.txtMin = obj.canvas.text(
       obj.params.minX,
@@ -922,7 +922,8 @@
         max,
         obj.config.language,
         obj.config.minMaxFormat,
-        obj.config.minMaxDecimals);
+        obj.config.minMaxDecimals
+      );
     }
     obj.txtMax = obj.canvas.text(
       obj.params.maxX,
@@ -958,21 +959,31 @@
     ) {
       obj.originalValue = obj.config.textRenderer(obj.originalValue);
     } else if (obj.config.displayRemaining) {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - obj.originalValue, obj.config.valueFormat, obj.config.valueDecimals);
-      obj.originalValue = formatNumber(
+      obj.counterTargetDecimals = getDecimalsAfterFormat(
         obj.config.max - obj.originalValue,
-        obj.config.language,
         obj.config.valueFormat,
-        obj.config.valueDecimals)
-        + obj.config.symbol;
+        obj.config.valueDecimals
+      );
+      obj.originalValue =
+        formatNumber(
+          obj.config.max - obj.originalValue,
+          obj.config.language,
+          obj.config.valueFormat,
+          obj.config.valueDecimals
+        ) + obj.config.symbol;
     } else {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.originalValue, obj.config.valueFormat, obj.config.valueDecimals);
-      obj.originalValue = formatNumber(
+      obj.counterTargetDecimals = getDecimalsAfterFormat(
         obj.originalValue,
-        obj.config.language,
         obj.config.valueFormat,
-        obj.config.valueDecimals)
-        + obj.config.symbol;
+        obj.config.valueDecimals
+      );
+      obj.originalValue =
+        formatNumber(
+          obj.originalValue,
+          obj.config.language,
+          obj.config.valueFormat,
+          obj.config.valueDecimals
+        ) + obj.config.symbol;
     }
 
     if (obj.config.counter === true) {
@@ -1000,8 +1011,8 @@
               obj.config.max - currentValue,
               obj.config.language,
               obj.config.valueFormat,
-              obj.counterTargetDecimals)
-              + obj.config.symbol
+              obj.counterTargetDecimals
+            ) + obj.config.symbol
           );
         } else {
           obj.txtValue.attr(
@@ -1010,8 +1021,8 @@
               currentValue,
               obj.config.language,
               obj.config.valueFormat,
-              obj.counterTargetDecimals)
-              + obj.config.symbol
+              obj.counterTargetDecimals
+            ) + obj.config.symbol
           );
         }
         setDy(obj.txtValue, obj.params.valueFontSize, obj.params.valueY);
@@ -1140,7 +1151,8 @@
           min,
           obj.config.language,
           obj.config.minMaxFormat,
-          obj.config.minMaxDecimals);
+          obj.config.minMaxDecimals
+        );
       }
       if (!obj.config.reverse) {
         obj.txtMin.attr({
@@ -1167,7 +1179,8 @@
           max,
           obj.config.language,
           obj.config.minMaxFormat,
-          obj.config.minMaxDecimals);
+          obj.config.minMaxDecimals
+        );
       }
       if (!obj.config.reverse) {
         obj.txtMax.attr({
@@ -1205,21 +1218,31 @@
     ) {
       displayVal = obj.config.textRenderer(displayVal);
     } else if (obj.config.displayRemaining) {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(obj.config.max - displayVal, obj.config.valueFormat, obj.config.valueDecimals);
-      displayVal = formatNumber(
+      obj.counterTargetDecimals = getDecimalsAfterFormat(
         obj.config.max - displayVal,
-        obj.config.language,
         obj.config.valueFormat,
-        obj.config.valueDecimals)
-        + obj.config.symbol;
+        obj.config.valueDecimals
+      );
+      displayVal =
+        formatNumber(
+          obj.config.max - displayVal,
+          obj.config.language,
+          obj.config.valueFormat,
+          obj.config.valueDecimals
+        ) + obj.config.symbol;
     } else {
-      obj.counterTargetDecimals = getDecimalsAfterFormat(displayVal, obj.config.valueFormat, obj.config.valueDecimals);
-      displayVal = formatNumber(
+      obj.counterTargetDecimals = getDecimalsAfterFormat(
         displayVal,
-        obj.config.language,
         obj.config.valueFormat,
-        obj.config.valueDecimals)
-        + obj.config.symbol;
+        obj.config.valueDecimals
+      );
+      displayVal =
+        formatNumber(
+          displayVal,
+          obj.config.language,
+          obj.config.valueFormat,
+          obj.config.valueDecimals
+        ) + obj.config.symbol;
     }
     obj.originalValue = displayVal;
     obj.config.value = val * 1;
@@ -1573,36 +1596,46 @@
     const c = 1000;
     let i = 0;
     switch (format) {
-      case 'simpleCommas':
-        return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)});
-      case 'humanFriendly':
-      case 'humanFriendlyCompact':
-        while ((number >= c || number <= -c) && ++i < s.length) number = number / c;
+      case "simpleCommas":
+        return number.toLocaleString(language, {
+          minimumFractionDigits: decimals > 0 ? decimals : 0,
+          maximumFractionDigits: Math.abs(decimals),
+        });
+      case "humanFriendly":
+      case "humanFriendlyCompact":
+        while ((number >= c || number <= -c) && ++i < s.length)
+          number = number / c;
         i = i >= s.length ? s.length - 1 : i;
 
-        if (format == 'humanFriendlyCompact') {
-          if (Math.trunc(number) == number && decimals <= 0)
+        if (format === "humanFriendlyCompact") {
+          if (Math.trunc(number) === number && decimals <= 0)
             return number.toLocaleString(language) + s[i];
           else
-            return number.toLocaleString('en-US', {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)}).replace('.', s[i]);
+            return number
+              .toLocaleString("en-US", {
+                minimumFractionDigits: decimals > 0 ? decimals : 0,
+                maximumFractionDigits: Math.abs(decimals),
+              })
+              .replace(".", s[i]);
         } else {
-          return number.toLocaleString(language, {minimumFractionDigits: (decimals > 0 ? decimals : 0), maximumFractionDigits: Math.abs(decimals)}) + s[i];
+          return (
+            number.toLocaleString(language, {
+              minimumFractionDigits: decimals > 0 ? decimals : 0,
+              maximumFractionDigits: Math.abs(decimals),
+            }) + s[i]
+          );
         }
       default:
-        if(decimals >= 0)
-          return number.toFixed(decimals).toString();
-        else
-          return parseFloat(number.toFixed(Math.abs(decimals))).toString();
+        if (decimals >= 0) return number.toFixed(decimals).toString();
+        else return parseFloat(number.toFixed(Math.abs(decimals))).toString();
     }
   }
 
   function getDecimalsAfterFormat(number, format, decimals) {
     number -= Math.trunc(number);
-    let s = formatNumber(number, 'en-US', format, decimals);
-    if(s.length > 2)
-      return s.length -2;
-    else
-      return 0;
+    const s = formatNumber(number, "en-US", format, decimals);
+    if (s.length > 2) return s.length - 2;
+    else return 0;
   }
 
   /**  Get style  */
