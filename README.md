@@ -146,6 +146,9 @@ setInterval(() => {
 | pointer              | `false`                             | Show value pointer                                                                                              |
 | pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                                                          |
 | displayRemaining     | `false`                             | Replace display number with the value remaining to reach max value                                              |
+| targetLine           | `null`                              | Value Target line will display                               |
+| targetLineColor      | `"#000000"`                         | Color of Target Line                                        |
+| targetLineWidth      | `1.5`                               | Width of Target Line                                         |
 
 ### Custom Sectors
 
@@ -182,6 +185,28 @@ pointerOptions: {
   color: '#000000'
 }
 ```
+
+### TargetLine
+
+Example:
+
+```js
+var gauge = new JustGage({
+            id: "gauge-targetLine", 
+            value: 50,
+            min: 0,
+            max: 100,
+            decimals: 2,
+            gaugeWidthScale: 0.6,
+    		targetLine: 50,
+    		targetLineColour: "#000",
+    		targetLineWidth: 4
+        });
+```
+
+<p align="center"><img src="docs/img/TargetLine_Example.png"/></p>
+
+
 
 ## Methods
 
