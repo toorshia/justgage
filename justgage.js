@@ -1390,61 +1390,72 @@
     }
   };
 
-  JustGage.prototype.drawTargetLine = function() {
-      const obj = this;
-      
-      if (obj.config.targetLine === null) {
-        return;
-      }
-    
-      let path;
-      const w = obj.params.widgetW;
-      const h = obj.params.widgetH;
-      const dx = obj.params.dx;
-      const dy = obj.params.dy;
-      const gws = obj.config.gaugeWidthScale;
-      const donut = obj.config.donut;
-    
-      let alpha = (1 - (obj.config.targetLine - obj.config.min) / (obj.config.max - obj.config.min)) * Math.PI;
-      let Ro = w / 2 - w / 10;
-      let Ri = Ro - w / 6.666666666666667 * gws;
-      
-      let Cx, Cy, Xo, Yo, Xi, Yi;
-    
-      if (donut) {
-        Ro = w / 2 - w / 30;
-        Ri = Ro - w / 6.666666666666667 * gws;
-    
-        Cx = w / 2 + dx;
-        Cy = h / 2 + dy;
-    
-        Xo = Cx + Ro * Math.cos(alpha);
-        Yo = Cy - Ro * Math.sin(alpha);
-        Xi = Cx + Ri * Math.cos(alpha);
-        Yi = Cy - Ri * Math.sin(alpha);
-    
-        path = "M" + Xi + "," + Yi + " L" + Xo + "," + Yo;
-      } else {
-        Cx = w / 2 + dx;
-        Cy = h / 1.25 + dy;
-    
-        Xo = Cx + Ro * Math.cos(alpha);
-        Yo = Cy - Ro * Math.sin(alpha);
-        Xi = Cx + Ri * Math.cos(alpha);
-        Yi = Cy - Ri * Math.sin(alpha);
-    
-        path = "M" + Xi + "," + Yi + " L" + Xo + "," + Yo;
-      }
-    
-      obj.targetLine = obj.canvas.path(path).attr({
-        "stroke": obj.config.targetLineColor,
-        "stroke-width": obj.config.targetLineWidth
-      });
-    
-      if (donut) {
-        obj.targetLine.transform("r" + obj.config.donutStartAngle + "," + (w / 2 + dx) + "," + (h / 2 + dy));
-      }
-    };
+  JustGage.prototype.drawTargetLine = function () {
+    const obj = this;
+
+    if (obj.config.targetLine === null) {
+      return;
+    }
+
+    let path;
+    const w = obj.params.widgetW;
+    const h = obj.params.widgetH;
+    const dx = obj.params.dx;
+    const dy = obj.params.dy;
+    const gws = obj.config.gaugeWidthScale;
+    const donut = obj.config.donut;
+
+    const alpha =
+      (1 -
+        (obj.config.targetLine - obj.config.min) /
+          (obj.config.max - obj.config.min)) *
+      Math.PI;
+    let Ro = w / 2 - w / 10;
+    let Ri = Ro - (w / 6.666666666666667) * gws;
+
+    let Cx, Cy, Xo, Yo, Xi, Yi;
+
+    if (donut) {
+      Ro = w / 2 - w / 30;
+      Ri = Ro - (w / 6.666666666666667) * gws;
+
+      Cx = w / 2 + dx;
+      Cy = h / 2 + dy;
+
+      Xo = Cx + Ro * Math.cos(alpha);
+      Yo = Cy - Ro * Math.sin(alpha);
+      Xi = Cx + Ri * Math.cos(alpha);
+      Yi = Cy - Ri * Math.sin(alpha);
+
+      path = "M" + Xi + "," + Yi + " L" + Xo + "," + Yo;
+    } else {
+      Cx = w / 2 + dx;
+      Cy = h / 1.25 + dy;
+
+      Xo = Cx + Ro * Math.cos(alpha);
+      Yo = Cy - Ro * Math.sin(alpha);
+      Xi = Cx + Ri * Math.cos(alpha);
+      Yi = Cy - Ri * Math.sin(alpha);
+
+      path = "M" + Xi + "," + Yi + " L" + Xo + "," + Yo;
+    }
+
+    obj.targetLine = obj.canvas.path(path).attr({
+      stroke: obj.config.targetLineColor,
+      "stroke-width": obj.config.targetLineWidth,
+    });
+
+    if (donut) {
+      obj.targetLine.transform(
+        "r" +
+          obj.config.donutStartAngle +
+          "," +
+          (w / 2 + dx) +
+          "," +
+          (h / 2 + dy)
+      );
+    }
+  };
 
   //
   // tiny helper function to lookup value of a key from two hash tables
