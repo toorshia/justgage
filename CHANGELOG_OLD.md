@@ -18,7 +18,7 @@ customSectors: {
 }
 ```
 
-Example: http://justgage.com/examples/custom-sectors.html
+Example: https://toorshia.github.io/justgage/examples/custom-sectors.html
 
 ###### September 24, 2016. - release 1.2.7
  * **hideInnerShadow** replaced with **showInnerShadow** due to performance issues with shadows turned on by default
@@ -36,7 +36,7 @@ Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/jus
 
 ###### March 25, 2016.
  * **onAnimationEnd** - callback function after gauge animation ends
- - demo at http://justgage.com/examples/animation-events-hooks.html
+ - demo at https://toorshia.github.io/justgage/examples/animation-events-hooks.html
 
 ###### February 3, 2016.
  * **minTxt & maxTxt** - Show custom min and max text - https://github.com/toorshia/justgage/issues/193
@@ -48,19 +48,19 @@ Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/jus
  * **titlePosition** - 'above' or 'below'
  * **titleFontFamily** - customize font-family for the title
  * **valueFontFamily** - customize font-family for the value
- - demo at http://justgage.com/examples/font-options.html
+ - demo at https://toorshia.github.io/justgage/examples/font-options.html
 
 
 ###### January 5, 2016.
- * **donut pointer** - render configurable triangle pointer in donut mode - demo at http://justgage.com/examples/pointer.html
+ * **donut pointer** - render configurable triangle pointer in donut mode - demo at https://toorshia.github.io/justgage/examples/pointer.html
 
 ###### November 10, 2015.
- * **reverse** - reverse the gauge direction - demo at http://justgage.com/examples/reverse.html
- * **pointer** - render triangular value pointer - demo at http://justgage.com/examples/pointer.html
+ * **reverse** - reverse the gauge direction - demo at https://toorshia.github.io/justgage/examples/reverse.html
+ * **pointer** - render triangular value pointer - demo at https://toorshia.github.io/justgage/examples/pointer.html
 
 
 ###### November 08, 2015.
- * **defaults** - option to define common config object when you're creating multiple gauges - demo at http://justgage.com/examples/defaults.html
+ * **defaults** - option to define common config object when you're creating multiple gauges - demo at https://toorshia.github.io/justgage/examples/defaults.html
 
 ###### August 19, 2015.
  * fixed shadow id issue (same ids were being generated)
@@ -72,7 +72,7 @@ Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/jus
  * use HTML5 'data' attributes of the DOM Element to render the gauge. (Note: data attributes override the constructor options, if present.)
 
 ###### April 18, 2013.
- * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at http://justgage.com/examples/custom-node.html
+ * **parentNode** - use instead of id, attaches gauge to node which is outside of DOM tree - demo at https://toorshia.github.io/justgage/examples/custom-node.html
  * **width** - force gauge width
  * **height** - force gauge height
 
@@ -83,13 +83,13 @@ Fixing filter paths trying to fetch invalid URLs https://github.com/toorshia/jus
  * fix - https://github.com/toorshia/justgage/issues/46
 
 ###### March 26, 2013.
- * **customSectors** - define one or many value ranges with custom gauge color - demo at http://justgage.com/examples/custom-sectors.html
+ * **customSectors** - define one or many value ranges with custom gauge color - demo at https://toorshia.github.io/justgage/examples/custom-sectors.html
 
 ###### March 23, 2013.
- * **counter** - option to animate value in counting fashion - check demo at http://justgage.com/examples/counter.html
+ * **counter** - option to animate value in counting fashion - check demo at https://toorshia.github.io/justgage/examples/counter.html
 
 ###### March 19, 2013.
- * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at http://justgage.com/examples/refresh-maximum.html
+ * **refresh()** - added optional 'max' parameter to use when you need to update max value - demo at https://toorshia.github.io/justgage/examples/refresh-maximum.html
 
 ###### February 26, 2013.
  * **decimals** - option to define/limit number of decimals when not using humanFriendly or customRenderer to display value

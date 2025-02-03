@@ -1,6 +1,6 @@
 /**
  * JustGage - Animated gauges using RaphaelJS
- * Check http://www.justgage.com for official releases
+ * Check https://toorshia.github.io/justgage for official releases
  * Licensed under MIT.
  * @author Bojan Djuricic (@Toorshia)
  **/
