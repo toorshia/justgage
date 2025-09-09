@@ -1,6 +1,6 @@
 /**
  * JustGage - Animated gauges using RaphaelJS
- * Check https://toorshia.github.io/justgage for official releases
+ * Check http://www.justgage.com for official releases
  * Licensed under MIT.
  * @author Bojan Djuricic (@Toorshia)
  **/
@@ -84,6 +84,22 @@
       // height : int
       // gauge height
       height: kvLookup("height", config, dataset, null),
+
+      // title : string
+      // gauge title
+      title: kvLookup('title', config, dataset, ""),
+
+      // titleFontColor : string
+      // color of gauge title
+      titleFontColor: kvLookup('titleFontColor', config, dataset, "#999999"),
+
+      // titleFontFamily : string
+      // color of gauge title
+      titleFontFamily: kvLookup('titleFontFamily', config, dataset, "sans-serif"),
+
+      // titlePosition : string
+      // 'above' or 'below'
+      titlePosition: kvLookup('titlePosition', config, dataset, "above"),
 
       // valueFontColor : string
       // color of label showing current value
@@ -227,6 +243,10 @@
       // absolute minimum font size for the value
       valueMinFontSize: kvLookup("valueMinFontSize", config, dataset, 16),
 
+      // titleMinFontSize
+      // absolute minimum font size for the title
+      titleMinFontSize: kvLookup('titleMinFontSize', config, dataset, 10),
+
       // labelMinFontSize
       // absolute minimum font size for the label
       labelMinFontSize: kvLookup("labelMinFontSize", config, dataset, 10),
@@ -310,6 +330,9 @@
       aspect,
       dx,
       dy,
+      titleFontSize,
+      titleX,
+      titleY,
       valueFontSize,
       valueX,
       valueY,
@@ -344,10 +367,22 @@
         obj.canvas.setViewBox(0, 0, 200, 200, true);
         canvasW = 200;
         canvasH = 200;
+        //###
+        if (obj.config.title.length > 0){
+          obj.canvas.setViewBox(0, 0, 200, 150, true);
+          canvasW = 200;
+          canvasH = 150;
+        }
       } else {
         obj.canvas.setViewBox(0, 0, 200, 100, true);
         canvasW = 200;
         canvasH = 100;
+        //###
+        if (obj.config.title.length > 0){
+          obj.canvas.setViewBox(0, 0, 200, 150, true);
+          canvasW = 200;
+          canvasH = 150;
+        }
       }
     } else if (obj.config.width !== null && obj.config.height !== null) {
       canvasW = obj.config.width;
@@ -356,6 +391,12 @@
       obj.canvas.setViewBox(0, 0, 200, 100, true);
       canvasW = 200;
       canvasH = 100;
+      //###
+      if (obj.config.title.length > 0){
+        obj.canvas.setViewBox(0, 0, 200, 150, true);
+        canvasW = 200;
+        canvasH = 150;
+      }
     } else {
       canvasW =
         getStyle(document.getElementById(obj.config.id), "width").slice(0, -2) *
@@ -387,6 +428,11 @@
       // delta
       dx = (canvasW - widgetW) / 2;
       dy = (canvasH - widgetH) / 2;
+
+      // title
+      titleFontSize = ((widgetH / 8) > 10) ? (widgetH / 10) : 10;
+      titleX = dx + widgetW / 2;
+      titleY = dy + widgetH / 11;
 
       // value
       valueFontSize = widgetH / 6.4 > 16 ? widgetH / 5.4 : 18;
@@ -422,7 +468,11 @@
       if (canvasW > canvasH) {
         // landscape
         widgetH = canvasH;
-        widgetW = widgetH * 2;
+        widgetW = widgetH * 2; 
+        //###
+        if (obj.config.title.length > 0){
+          widgetW = widgetH * 1.25;
+        }
         if (widgetW > canvasW) {
           // if width doesn't fit, rescale both
           aspect = widgetW / canvasW;
@@ -432,16 +482,33 @@
       } else if (canvasW < canvasH) {
         // portrait
         widgetW = canvasW;
-        widgetH = widgetW / 2;
+        widgetH = widgetW / 2; 
+        //###
+        if (obj.config.title.length > 0){
+          widgetH = widgetW / 1.25;
+        }
       } else {
         // square
         widgetW = canvasW;
-        widgetH = widgetW * 0.5;
+        widgetH = widgetW * 0.5; 
+        //###
+        if (obj.config.title.length > 0){
+          widgetH = widgetW * 0.75;
+        }
       }
 
       // delta
       dx = (canvasW - widgetW) / 2;
       dy = (canvasH - widgetH) / 2;
+      if (obj.config.titlePosition === 'below') {
+        // shift whole thing down
+        dy -= (widgetH / 6.4);
+      }
+
+      // title
+      titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 10) : obj.config.titleMinFontSize;
+      titleX = dx + widgetW / 2;
+      titleY = dy + (obj.config.titlePosition === 'below' ? (widgetH * 1.07) : (widgetH / 6.4));
 
       // value
       valueFontSize =
@@ -491,6 +558,9 @@
       widgetH,
       dx,
       dy,
+      titleFontSize: titleFontSize,
+      titleX: titleX,
+      titleY: titleY,
       valueFontSize,
       valueX,
       valueY,
@@ -506,7 +576,7 @@
     };
 
     // var clear
-    // canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null
+    // canvasW, canvasH, widgetW, widgetH, aspect, dx, dy, titleFontSize, titleX, titleY, valueFontSize, valueX, valueY, labelFontSize, labelX, labelY, minFontSize, minX, minY, maxFontSize, maxX, maxY = null
 
     /**
      * pki - custom attribute for generating gauge paths
@@ -819,6 +889,17 @@
         );
       }
     }
+
+    // title
+    obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
+    obj.txtTitle.attr({
+      "font-size": obj.params.titleFontSize,
+      "font-weight": "bold",
+      "font-family": obj.config.titleFontFamily,
+      "fill": obj.config.titleFontColor,
+      "fill-opacity": "1"
+    });
+    setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
 
     // value
     obj.txtValue = obj.canvas.text(obj.params.valueX, obj.params.valueY, 0);
