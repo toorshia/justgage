@@ -367,7 +367,6 @@
         obj.canvas.setViewBox(0, 0, 200, 200, true);
         canvasW = 200;
         canvasH = 200;
-        //###
         if (obj.config.title.length > 0){
           obj.canvas.setViewBox(0, 0, 200, 150, true);
           canvasW = 200;
@@ -377,7 +376,6 @@
         obj.canvas.setViewBox(0, 0, 200, 100, true);
         canvasW = 200;
         canvasH = 100;
-        //###
         if (obj.config.title.length > 0){
           obj.canvas.setViewBox(0, 0, 200, 150, true);
           canvasW = 200;
@@ -391,7 +389,6 @@
       obj.canvas.setViewBox(0, 0, 200, 100, true);
       canvasW = 200;
       canvasH = 100;
-      //###
       if (obj.config.title.length > 0){
         obj.canvas.setViewBox(0, 0, 200, 150, true);
         canvasW = 200;
@@ -469,7 +466,6 @@
         // landscape
         widgetH = canvasH;
         widgetW = widgetH * 2; 
-        //###
         if (obj.config.title.length > 0){
           widgetW = widgetH * 1.25;
         }
@@ -483,7 +479,6 @@
         // portrait
         widgetW = canvasW;
         widgetH = widgetW / 2; 
-        //###
         if (obj.config.title.length > 0){
           widgetH = widgetW / 1.25;
         }
@@ -491,7 +486,6 @@
         // square
         widgetW = canvasW;
         widgetH = widgetW * 0.5; 
-        //###
         if (obj.config.title.length > 0){
           widgetH = widgetW * 0.75;
         }
