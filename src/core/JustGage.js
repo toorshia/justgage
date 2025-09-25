@@ -197,7 +197,7 @@ export class JustGage {
       this._drawPointer();
     }
 
-    // Draw target line if specified
+    // Draw target line if specified (after gauge elements for proper Z-order)
     if (config.targetLine !== null && config.targetLine !== undefined) {
       this._drawTargetLine();
     }
@@ -305,7 +305,13 @@ export class JustGage {
 
     // Calculate proportional font sizes using original formulas
     const titleFontSize = Math.max(widgetH / 16, 10);
-    const valueFontSize = widgetH / 6.4 > 16 ? widgetH / 5.4 : 18;
+    const valueFontSize = config.donut
+      ? widgetH / 6.4 > 16
+        ? widgetH / 5.4
+        : 18
+      : widgetH / 6.5 > config.valueMinFontSize
+      ? widgetH / 6.5
+      : config.valueMinFontSize;
 
     // Title
     if (config.title) {
@@ -322,23 +328,33 @@ export class JustGage {
     // Value - use original positioning formula with proper offsets
     const displayValue = this._formatValue(config.value);
     const valueX = dx + widgetW / 2;
-    const valueY = config.donut ? cy : config.label ? dy + widgetH / 1.85 : dy + widgetH / 1.7;
+    const valueY = config.donut
+      ? config.label
+        ? dy + widgetH / 1.85
+        : dy + widgetH / 1.7
+      : dy + widgetH / 1.275;
 
     this.canvas.value = this.renderer.text(valueX, valueY, displayValue).attr({
       'font-family': config.valueFontFamily,
       'font-size': valueFontSize,
-      'font-weight': config.valueFontWeight,
+      'font-weight': 'bold',
       'text-anchor': 'middle',
       'dominant-baseline': 'central',
       fill: config.valueFontColor,
     });
 
     // Calculate label font size (used by both main label and min/max positioning)
-    const labelFontSize = Math.max(widgetH / 16, 10);
+    const labelFontSize = config.donut
+      ? widgetH / 16 > 10
+        ? widgetH / 16
+        : 10
+      : widgetH / 16 > config.labelMinFontSize
+      ? widgetH / 16
+      : config.labelMinFontSize;
 
     // Main label (units like %, km/h, etc.)
     if (config.label) {
-      const labelY = valueY + labelFontSize;
+      const labelY = config.donut ? valueY + labelFontSize : valueY + valueFontSize / 2 + 5;
 
       this.canvas.label = this.renderer.text(valueX, labelY, config.label).attr({
         'font-family': config.labelFontFamily,
@@ -349,8 +365,8 @@ export class JustGage {
       });
     }
 
-    // Min/Max labels
-    if (config.showMinMax && !config.hideMinMax) {
+    // Min/Max labels (hidden in donut mode like original)
+    if (config.showMinMax && !config.hideMinMax && !config.donut) {
       // Use original positioning formula with proper offsets
       const gaugeWidthScale = config.gaugeWidthScale || 1.0;
 
@@ -391,7 +407,13 @@ export class JustGage {
       }
 
       // Calculate proportional min/max label font size
-      const minMaxLabelFontSize = Math.max(widgetH / 16, 10);
+      const minMaxLabelFontSize = config.donut
+        ? widgetH / 16 > 10
+          ? widgetH / 16
+          : 10
+        : widgetH / 16 > config.minLabelMinFontSize
+        ? widgetH / 16
+        : config.minLabelMinFontSize;
 
       if (!config.reverse) {
         this.canvas.min = this.renderer.text(minX, minY, minText).attr({
@@ -468,41 +490,55 @@ export class JustGage {
    */
   _drawTargetLine() {
     const config = this.config;
-    const { cx, cy, outerRadius, innerRadius } = this._calculateGaugeGeometry();
 
-    // Calculate angle for target value
-    const range = config.max - config.min;
-    const ratio = (config.targetLine - config.min) / range;
-
-    // Handle angle wrapping (e.g., 135° to 45° should be a 270° span)
-    let angleRange = config.endAngle - config.startAngle;
-    if (angleRange <= 0) {
-      angleRange += 360; // Wrap around for crossing 0°
+    if (config.targetLine === null) {
+      return;
     }
 
-    let targetAngle = config.startAngle + ratio * angleRange;
+    const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
-    if (config.reverse) {
-      targetAngle = config.startAngle + (1 - ratio) * angleRange;
+    // Use original target line calculation
+    const alpha = (1 - (config.targetLine - config.min) / (config.max - config.min)) * Math.PI;
+
+    let Ro = widgetW / 2 - widgetW / 10;
+    let Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
+    let Cx, Cy, Xo, Yo, Xi, Yi;
+
+    if (config.donut) {
+      Ro = widgetW / 2 - widgetW / 30;
+      Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
+
+      Cx = widgetW / 2 + dx;
+      Cy = widgetH / 2 + dy;
+
+      Xo = Cx + Ro * Math.cos(alpha);
+      Yo = Cy - Ro * Math.sin(alpha);
+      Xi = Cx + Ri * Math.cos(alpha);
+      Yi = Cy - Ri * Math.sin(alpha);
+    } else {
+      Cx = widgetW / 2 + dx;
+      Cy = widgetH / 1.25 + dy;
+
+      Xo = Cx + Ro * Math.cos(alpha);
+      Yo = Cy - Ro * Math.sin(alpha);
+      Xi = Cx + Ri * Math.cos(alpha);
+      Yi = Cy - Ri * Math.sin(alpha);
     }
 
-    const targetAngleRad = ((targetAngle - 90) * Math.PI) / 180;
+    // Create path from inner to outer radius (like original)
+    const pathData = `M ${Xi} ${Yi} L ${Xo} ${Yo}`;
 
-    // Calculate line coordinates using gauge geometry
-    const lineInnerRadius = innerRadius * 0.9;
-    const lineOuterRadius = outerRadius * 1.05;
-
-    const x1 = cx + lineInnerRadius * Math.cos(targetAngleRad);
-    const y1 = cy + lineInnerRadius * Math.sin(targetAngleRad);
-    const x2 = cx + lineOuterRadius * Math.cos(targetAngleRad);
-    const y2 = cy + lineOuterRadius * Math.sin(targetAngleRad);
-
-    // Draw target line
-    this.canvas.targetLine = this.renderer.line(x1, y1, x2, y2).attr({
+    this.canvas.targetLine = this.renderer.path(pathData).attr({
       stroke: config.targetLineColor,
       'stroke-width': config.targetLineWidth,
-      'stroke-linecap': 'round',
     });
+
+    // Apply donut rotation if needed (like original)
+    if (config.donut && config.donutStartAngle) {
+      this.canvas.targetLine.transform(
+        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
+      );
+    }
   }
 
   /**
@@ -580,7 +616,8 @@ export class JustGage {
       throw new Error('JustGage: refresh() requires a numeric value');
     }
 
-    const displayVal = val;
+    // Store original value for display formatting (before clamping)
+    const originalVal = val;
 
     // Update label if provided
     if (label !== null && label !== undefined) {
@@ -636,23 +673,56 @@ export class JustGage {
       val = this.config.min * 1;
     }
 
-    this.config.value = val * 1;
+    // Format display value using original logic
+    let displayVal = originalVal; // Use original input value before clamping for display
 
-    // Get color for the new value (will be applied when level is redrawn)
+    if (this.config.textRenderer && this.config.textRenderer(displayVal) !== false) {
+      displayVal = this.config.textRenderer(displayVal);
+    } else if (this.config.humanFriendly) {
+      displayVal =
+        this._humanFriendlyNumber(displayVal, this.config.humanFriendlyDecimal) +
+        this.config.symbol;
+    } else if (this.config.formatNumber) {
+      displayVal =
+        this._formatNumber((displayVal * 1).toFixed(this.config.decimals)) + this.config.symbol;
+    } else if (this.config.displayRemaining) {
+      displayVal =
+        ((this.config.max - displayVal) * 1).toFixed(this.config.decimals) + this.config.symbol;
+    } else {
+      displayVal = (displayVal * 1).toFixed(this.config.decimals) + this.config.symbol;
+    }
+
+    this.config.value = val * 1;
 
     // Update value display
     if (!this.config.counter && this.canvas.value) {
-      const formattedValue = this._formatValue(displayVal);
-      this.canvas.value.attr({ text: formattedValue });
+      this.canvas.value.attr({ text: displayVal });
     }
 
     // Animation values will be calculated during redraw
+
+    // Remove target line before redrawing level to maintain Z-order
+    let hadTargetLine = false;
+    if (
+      this.config.targetLine !== null &&
+      this.config.targetLine !== undefined &&
+      this.canvas.targetLine
+    ) {
+      this.canvas.targetLine.remove();
+      this.canvas.targetLine = null;
+      hadTargetLine = true;
+    }
 
     // Animate level change with proper color
     if (this.canvas.level) {
       // For now, remove and redraw - later we can add proper animation
       this.canvas.level.remove();
       this._drawLevel();
+    }
+
+    // Redraw target line after level to maintain Z-order
+    if (hadTargetLine) {
+      this._drawTargetLine();
     }
 
     // Animate pointer if enabled

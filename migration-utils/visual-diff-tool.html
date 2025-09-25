@@ -288,14 +288,14 @@
       <div class="gauge-section">
         <div class="gauge-title">Original JustGage (Reference)</div>
         <div class="gauge-container" id="original-container">
-          <div id="gauge-original"></div>
+          <div id="gauge-original" style="width: 400px; height: 320px;"></div>
         </div>
       </div>
 
       <div class="gauge-section">
         <div class="gauge-title">New JustGage (Testing)</div>
         <div class="gauge-container" id="new-container">
-          <div id="gauge-new"></div>
+          <div id="gauge-new" style="width: 400px; height: 320px;"></div>
         </div>
       </div>
     </div>
@@ -304,8 +304,8 @@
       <div class="gauge-section">
         <div class="gauge-title">Overlay Comparison</div>
         <div class="overlay-container" id="overlay-container">
-          <div id="gauge-base"></div>
-          <div id="gauge-overlay" class="overlay-gauge"></div>
+          <div id="gauge-base" style="width: 400px; height: 320px;"></div>
+          <div id="gauge-overlay" class="overlay-gauge" style="width: 400px; height: 320px;"></div>
         </div>
       </div>
     </div>
@@ -350,7 +350,6 @@
 
     // Get current gauge parameters from UI
     function getCurrentGaugeParams() {
-      const showTitle = document.getElementById('show-title').checked;
       const showLabel = document.getElementById('show-label').checked;
       const showMinMax = document.getElementById('show-minmax').checked;
       const showPointer = document.getElementById('show-pointer').checked;
@@ -362,35 +361,33 @@
       const startAnimation = document.getElementById('start-animation').checked;
 
       const params = {
+        // Core values
         value: parseInt(document.getElementById('value-display').textContent),
         min: parseInt(document.getElementById('min-display').textContent),
         max: parseInt(document.getElementById('max-display').textContent),
-        width: parseInt(document.getElementById('width-input').value),
-        height: parseInt(document.getElementById('height-input').value),
+
+        // Don't set dimensions for better compatibility with original gauge
+
+        // Visual settings
         gaugeColor: document.getElementById('gauge-color').value,
-        levelColors: document.getElementById('level-color').value,
-        titleFontSize: parseInt(document.getElementById('title-font-size').value),
-        labelFontSize: parseInt(document.getElementById('label-font-size').value),
+        levelColors: [document.getElementById('level-color').value],
         gaugeWidthScale: parseFloat(document.getElementById('gauge-width-scale').value),
-        showMinMax: showMinMax,
+
+        // Use hideMinMax instead of showMinMax for original compatibility
+        hideMinMax: !showMinMax,
         donut: donutMode,
         showInnerShadow: showInnerShadow,
         noGradient: noGradient,
         reverse: reverse,
-        startAnimationTime: startAnimation ? 700 : 0,
-        startAnimationType: '>',
-        refreshAnimationTime: 700,
-        refreshAnimationType: '>'
+
       };
 
-      if (showTitle) {
-        params.title = document.getElementById('title-input').value;
-      }
-
+      // Only add label if enabled
       if (showLabel) {
         params.label = document.getElementById('label-input').value;
       }
 
+      // Only add pointer if enabled
       if (showPointer) {
         params.pointer = true;
         params.pointerOptions = {
@@ -398,6 +395,7 @@
         };
       }
 
+      // Only add target line if enabled
       if (showTarget) {
         params.targetLine = parseInt(document.getElementById('target-input').value);
       }
@@ -415,12 +413,12 @@
         }
 
 
-        // Create original gauge (RaphaelJS version)
-        const params = getCurrentGaugeParams();
-        console.log('📊 Gauge params:', params);
+        // Create original gauge (RaphaelJS version) - without explicit dimensions
+        const originalParams = getCurrentGaugeParams();
+        console.log('📊 Original gauge params:', originalParams);
         originalGauge = new OldJustGage({
           id: "gauge-original",
-          ...params
+          ...originalParams
         });
         console.log('✅ Original gauge created:', originalGauge);
 
@@ -433,23 +431,34 @@
 
         console.log(JustGage !== NewJustGage ? '✅ Different JustGage classes confirmed' : '❌ JustGage classes are the same!');
 
-        // Create new gauge (modern version)
+        // Create new gauge (modern version) - with explicit dimensions
+        const newParams = {
+          ...getCurrentGaugeParams(),
+          width: parseInt(document.getElementById('width-input').value),
+          height: parseInt(document.getElementById('height-input').value)
+        };
+        console.log('📊 New gauge params:', newParams);
         newGauge = new NewJustGage({
           parentNode: document.getElementById('gauge-new'),
-          ...params
+          ...newParams
         });
         console.log('✅ New gauge created:', newGauge);
 
         // Create base and overlay gauges for overlay mode
-
+        const baseParams = getCurrentGaugeParams();
         baseGauge = new OldJustGage({
           id: 'gauge-base',
-          ...params
+          ...baseParams
         });
 
+        const overlayParams = {
+          ...getCurrentGaugeParams(),
+          width: parseInt(document.getElementById('width-input').value),
+          height: parseInt(document.getElementById('height-input').value)
+        };
         overlayGauge = new NewJustGage({
           parentNode: document.getElementById('gauge-overlay'),
-          ...params
+          ...overlayParams
         });
         console.log('✅ Overlay gauges created');
 
