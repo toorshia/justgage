@@ -11,16 +11,24 @@
 
 [![NPM](https://nodei.co/npm/justgage.png?downloads=true)](https://nodei.co/npm/justgage/)
 
-JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. It is based on Raphaël library for vector drawing.
+JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. **Version 2.0+ features a modern ES6+ implementation with native SVG rendering and zero dependencies.**
+
+> 🚀 **New in v2.0-alpha.1:** Zero dependencies, native SVG APIs, ES6 modules, TypeScript definitions, modular architecture, and significantly smaller bundle size! Migration from RaphaelJS to native browser SVG APIs.
 
 <p align="center"><img src="docs/img/screenshot.gif"/></p>
 
 - [JustGage](#justgage)
   - [Getting Started](#getting-started)
+    - [NPM Installation (Recommended)](#npm-installation-recommended)
+    - [ES6 Module Usage](#es6-module-usage)
+    - [Browser Module Usage](#browser-module-usage)
+    - [Legacy Browser Support (UMD)](#legacy-browser-support-umd)
+    - [CDN Usage](#cdn-usage)
   - [Basic usage](#basic-usage)
   - [Options](#options)
     - [Custom Sectors](#custom-sectors)
     - [Pointer options](#pointer-options)
+    - [TargetLine](#targetline)
   - [Methods](#methods)
     - [Refresh](#refresh)
     - [Update](#update)
@@ -35,34 +43,54 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
 
 ## Getting Started
 
-Installing Justgage is as easy as...
-
-```bash
-bower install justgage-official
-```
-
-or maybe you wish to use NPM...
+### NPM Installation (Recommended)
 
 ```bash
 npm install justgage --save
 ```
 
-- Example **[NPM setup using Browserfy](https://github.com/deezone/justgage-npm-sample)**
+### ES6 Module Usage
 
-or you can always download the CSS and JS files...
+```javascript
+import { JustGage } from 'justgage';
 
-```html
-<!-- Raphael must be included before justgage -->
-<script type="text/javascript" src="path/to/raphael.min.js"></script>
-<script type="text/javascript" src="path/to/justgage.js"></script>
+const gauge = new JustGage({
+    id: 'my-gauge',
+    value: 75,
+    min: 0,
+    max: 100
+});
 ```
 
-or if even don't want to download the files use [cdnjs](https://cdnjs.com/libraries/justgage)
+### Browser Module Usage
 
 ```html
-<!-- Raphael must be included before justgage -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+<script type="module">
+  import { JustGage } from './node_modules/justgage/dist/justgage.esm.js';
+  // Your code here
+</script>
+```
+
+### Legacy Browser Support (UMD)
+
+```html
+<script src="./node_modules/justgage/dist/justgage.umd.js"></script>
+<script>
+  const gauge = new JustGage({
+    id: 'my-gauge',
+    value: 75
+  });
+</script>
+```
+
+### CDN Usage
+
+```html
+<!-- ES Module from CDN -->
+<script type="module">
+  import { JustGage } from 'https://unpkg.com/justgage@2/dist/justgage.esm.js';
+  // Your code here
+</script>
 ```
 
 ## Basic usage

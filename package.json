@@ -1,13 +1,36 @@
 {
-  "name": "justgage",
   "version": "1.7.0",
-  "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.",
-  "main": "index.js",
+  "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. Modern ES6+ implementation with native SVG rendering.",
+  "type": "module",
+  "main": "dist/justgage.cjs",
+  "module": "dist/justgage.esm.js",
+  "browser": "dist/justgage.umd.js",
+  "types": "src/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/justgage.esm.js",
+      "require": "./dist/justgage.cjs",
+      "browser": "./dist/justgage.umd.js",
+      "types": "./src/types/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "!src/**/*.test.js"
+  ],
   "scripts": {
-    "build": "grunt build && cp justgage.js docs/ && cp raphael.min.js docs/ && git add dist/* docs/*",
+    "build": "node esbuild.config.js",
+    "build:old": "grunt build && cp justgage.js docs/ && cp raphael.min.js docs/ && git add dist/* docs/*",
+    "dev": "node esbuild.config.js --watch",
+    "server": "npx http-server -c-1 -p 8000",
+    "build:watch": "node esbuild.config.js --watch",
+    "test": "node --test tests/",
+    "test:watch": "node --test --watch tests/",
+    "lint": "eslint src/ tests/",
+    "lint-fix": "eslint --fix src/ tests/",
     "changelog": "auto-changelog -p && git add CHANGELOG.md",
-    "lint": "eslint --ext .js .",
-    "lint-fix": "eslint --fix --ext .js .",
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
   "repository": {
@@ -53,19 +76,20 @@
     "measure",
     "dashboard",
     "javascript",
-    "plugin"
+    "plugin",
+    "es6",
+    "modern",
+    "zero-dependencies"
   ],
   "author": "Bojan Djuricic <pindjur@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/toorshia/justgage/issues"
   },
-  "dependencies": {
-    "raphael": "^2.3.0"
-  },
   "homepage": "https://github.com/toorshia/justgage",
   "devDependencies": {
     "auto-changelog": "^2.4.0",
+    "esbuild": "^0.19.12",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
@@ -79,6 +103,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify-es": "^3.3.0",
     "grunt-contrib-watch": "^1.1.0",
+    "jsdom": "^27.0.0",
     "matchdep": "^2.0.0",
     "prettier": "^2.8.0",
     "release-it": "^15.5.0"
