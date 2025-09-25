@@ -1,0 +1,62 @@
+name: Setup Development Environment for Copilot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Verify build tools
+      run: |
+        npx grunt --version
+        npx eslint --version
+        
+    - name: Run initial build
+      run: npm run build
+      
+    - name: Run linting
+      run: npm run lint
+      
+    - name: Verify examples directory
+      run: |
+        ls -la docs/examples/
+        echo "Found $(ls docs/examples/*.html | wc -l) example files"
+        
+    - name: Test basic functionality
+      run: |
+        node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Check if main library file exists and has content
+          const libPath = path.join(__dirname, 'justgage.js');
+          if (fs.existsSync(libPath)) {
+            const content = fs.readFileSync(libPath, 'utf8');
+            console.log('✓ justgage.js exists and has', content.length, 'characters');
+          } else {
+            throw new Error('✗ justgage.js not found');
+          }
+          
+          // Check if dist files were created
+          const distPath = path.join(__dirname, 'dist');
+          if (fs.existsSync(distPath)) {
+            const files = fs.readdirSync(distPath);
+            console.log('✓ dist directory contains:', files.join(', '));
+          } else {
+            throw new Error('✗ dist directory not found');
+          }
+        "
