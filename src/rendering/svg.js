@@ -249,25 +249,9 @@ export class SVGRenderer {
   }
 
   /**
-   * Create gauge pointer (triangle path)
+   * Create gauge pointer using path data (removed - now using direct path creation)
+   * Pointers are now created directly using the path() method with original JustGage algorithm
    */
-  pointer(cx, cy, length, width, angle) {
-    const rad = ((angle - 90) * Math.PI) / 180;
-    const tipX = cx + length * Math.cos(rad);
-    const tipY = cy + length * Math.sin(rad);
-
-    const baseRad1 = rad + Math.PI / 2;
-    const baseRad2 = rad - Math.PI / 2;
-    const halfWidth = width / 2;
-
-    const base1X = cx + halfWidth * Math.cos(baseRad1);
-    const base1Y = cy + halfWidth * Math.sin(baseRad1);
-    const base2X = cx + halfWidth * Math.cos(baseRad2);
-    const base2Y = cy + halfWidth * Math.sin(baseRad2);
-
-    const pathData = `M ${tipX} ${tipY} L ${base1X} ${base1Y} L ${base2X} ${base2Y} Z`;
-    return this.path(pathData);
-  }
 
   /**
    * Remove all elements from SVG
@@ -311,6 +295,10 @@ export class SVGElement {
 
       // Handle special attribute mappings
       switch (key) {
+        case 'text':
+          // For SVG text elements, set textContent instead of attribute
+          this.element.textContent = value;
+          break;
         case 'fill':
           this.element.setAttribute('fill', value);
           break;

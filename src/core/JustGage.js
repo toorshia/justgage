@@ -186,6 +186,13 @@ export class JustGage {
       stroke: 'none',
     });
 
+    // Apply donut rotation to background gauge (like original)
+    if (config.donut) {
+      this.canvas.gauge.transform(
+        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
+      );
+    }
+
     // Draw value level
     this._drawLevel();
 
@@ -234,6 +241,13 @@ export class JustGage {
       fill: color,
       stroke: 'none',
     });
+
+    // Apply donut rotation to start from top (like original)
+    if (config.donut) {
+      this.canvas.level.transform(
+        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
+      );
+    }
   }
 
   /**
@@ -320,7 +334,6 @@ export class JustGage {
         'font-size': titleFontSize,
         'font-weight': config.titleFontWeight,
         'text-anchor': 'middle',
-        'dominant-baseline': 'central',
         fill: config.titleFontColor,
       });
     }
@@ -339,7 +352,6 @@ export class JustGage {
       'font-size': valueFontSize,
       'font-weight': 'bold',
       'text-anchor': 'middle',
-      'dominant-baseline': 'central',
       fill: config.valueFontColor,
     });
 
@@ -360,7 +372,6 @@ export class JustGage {
         'font-family': config.labelFontFamily,
         'font-size': labelFontSize,
         'text-anchor': 'middle',
-        'dominant-baseline': 'central',
         fill: config.labelFontColor,
       });
     }
@@ -420,7 +431,6 @@ export class JustGage {
           'font-family': config.labelFontFamily,
           'font-size': minMaxLabelFontSize,
           'text-anchor': 'middle',
-          'dominant-baseline': 'central',
           fill: config.labelFontColor,
         });
 
@@ -428,7 +438,6 @@ export class JustGage {
           'font-family': config.labelFontFamily,
           'font-size': minMaxLabelFontSize,
           'text-anchor': 'middle',
-          'dominant-baseline': 'central',
           fill: config.labelFontColor,
         });
       } else {
@@ -437,7 +446,6 @@ export class JustGage {
           'font-family': config.labelFontFamily,
           'font-size': minMaxLabelFontSize,
           'text-anchor': 'middle',
-          'dominant-baseline': 'central',
           fill: config.labelFontColor,
         });
 
@@ -445,7 +453,6 @@ export class JustGage {
           'font-family': config.labelFontFamily,
           'font-size': minMaxLabelFontSize,
           'text-anchor': 'middle',
-          'dominant-baseline': 'central',
           fill: config.labelFontColor,
         });
       }
@@ -453,35 +460,104 @@ export class JustGage {
   }
 
   /**
-   * Draw gauge pointer
+   * Draw gauge pointer using original JustGage needle algorithm
    * @private
    */
   _drawPointer() {
     const config = this.config;
-    const { cx, cy, outerRadius, widgetW } = this._calculateGaugeGeometry();
+    const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
+    const value = config.value;
+    const min = config.min;
+    const max = config.max;
+    const gws = config.gaugeWidthScale;
+    const donut = config.donut;
 
-    // Calculate pointer angle
-    const range = config.max - config.min;
-    const ratio = (config.value - config.min) / range;
+    // Use original pointer dimension calculations
+    let dlt = (widgetW * 3.5) / 100; // top length
+    let dlb = widgetW / 15; // bottom length
+    let dw = widgetW / 100; // width
 
-    // Handle angle wrapping (e.g., 135° to 45° should be a 270° span)
-    let angleRange = config.endAngle - config.startAngle;
-    if (angleRange <= 0) {
-      angleRange += 360; // Wrap around for crossing 0°
+    if (config.pointerOptions.toplength != null && config.pointerOptions.toplength !== undefined) {
+      dlt = config.pointerOptions.toplength;
+    }
+    if (
+      config.pointerOptions.bottomlength != null &&
+      config.pointerOptions.bottomlength !== undefined
+    ) {
+      dlb = config.pointerOptions.bottomlength;
+    }
+    if (
+      config.pointerOptions.bottomwidth != null &&
+      config.pointerOptions.bottomwidth !== undefined
+    ) {
+      dw = config.pointerOptions.bottomwidth;
     }
 
-    const angle = config.startAngle + ratio * angleRange;
+    let alpha, Ro, Ri, Cy, Xo, Yo, Xi, Yi, Xc, Yc, Xz, Yz, Xa, Ya, Xb, Yb, path;
 
-    // Calculate pointer dimensions using widget-based formulas
-    const topLength = config.pointerOptions.toplength || (widgetW * 3.5) / 100;
-    const pointerLength = outerRadius + topLength;
-    const pointerWidth = config.pointerOptions.bottomwidth || widgetW / 100;
+    if (donut) {
+      alpha = (1 - (2 * (value - min)) / (max - min)) * Math.PI;
+      Ro = widgetW / 2 - widgetW / 30;
+      Ri = Ro - (widgetW / 6.666666666666667) * gws;
 
-    // Draw pointer
-    this.canvas.pointer = this.renderer.pointer(cx, cy, pointerLength, pointerWidth, angle).attr({
+      Cy = widgetH / 2 + dy;
+
+      Xo = widgetW / 2 + dx + Ro * Math.cos(alpha);
+      Yo = widgetH - (widgetH - Cy) - Ro * Math.sin(alpha);
+      Xi = widgetW / 2 + dx + Ri * Math.cos(alpha);
+      Yi = widgetH - (widgetH - Cy) - Ri * Math.sin(alpha);
+
+      Xc = Xo + dlt * Math.cos(alpha);
+      Yc = Yo - dlt * Math.sin(alpha);
+      Xz = Xi - dlb * Math.cos(alpha);
+      Yz = Yi + dlb * Math.sin(alpha);
+
+      Xa = Xz + dw * Math.sin(alpha);
+      Ya = Yz + dw * Math.cos(alpha);
+      Xb = Xz - dw * Math.sin(alpha);
+      Yb = Yz - dw * Math.cos(alpha);
+
+      path = `M${Xa},${Ya} L${Xb},${Yb} L${Xc},${Yc} Z`;
+    } else {
+      alpha = (1 - (value - min) / (max - min)) * Math.PI;
+      Ro = widgetW / 2 - widgetW / 10;
+      Ri = Ro - (widgetW / 6.666666666666667) * gws;
+
+      Cy = widgetH / 1.25 + dy;
+
+      Xo = widgetW / 2 + dx + Ro * Math.cos(alpha);
+      Yo = widgetH - (widgetH - Cy) - Ro * Math.sin(alpha);
+      Xi = widgetW / 2 + dx + Ri * Math.cos(alpha);
+      Yi = widgetH - (widgetH - Cy) - Ri * Math.sin(alpha);
+
+      Xc = Xo + dlt * Math.cos(alpha);
+      Yc = Yo - dlt * Math.sin(alpha);
+      Xz = Xi - dlb * Math.cos(alpha);
+      Yz = Yi + dlb * Math.sin(alpha);
+
+      Xa = Xz + dw * Math.sin(alpha);
+      Ya = Yz + dw * Math.cos(alpha);
+      Xb = Xz - dw * Math.sin(alpha);
+      Yb = Yz - dw * Math.cos(alpha);
+
+      path = `M${Xa},${Ya} L${Xb},${Yb} L${Xc},${Yc} Z`;
+    }
+
+    // Draw pointer using the generated path
+    this.canvas.pointer = this.renderer.path(path).attr({
       fill: config.pointerOptions.color || '#000000',
-      stroke: 'none',
+      stroke: config.pointerOptions.stroke || 'none',
+      'stroke-width': config.pointerOptions.stroke_width || 0,
+      'stroke-linecap': config.pointerOptions.stroke_linecap || 'square',
     });
+
+    // Apply donut rotation if needed
+    if (donut) {
+      const centerX = widgetW / 2 + dx;
+      const centerY = widgetH / 2 + dy;
+      const rotation = config.donutStartAngle || 90;
+      this.canvas.pointer.transform(`rotate(${rotation} ${centerX} ${centerY})`);
+    }
   }
 
   /**

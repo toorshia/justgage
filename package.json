@@ -29,7 +29,7 @@
     "test": "node --test tests/",
     "test:watch": "node --test --watch tests/",
     "lint": "eslint src/ tests/",
-    "lint-fix": "eslint --fix src/ tests/",
+    "lint:fix": "eslint --fix src/ tests/",
     "changelog": "auto-changelog -p && git add CHANGELOG.md",
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
