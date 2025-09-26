@@ -332,6 +332,9 @@ export class SVGElement {
         case 'dominantBaseline':
           this.element.setAttribute('dominant-baseline', value);
           break;
+        case 'filter':
+          this.element.setAttribute('filter', value);
+          break;
         default:
           this.element.setAttribute(key, value);
       }

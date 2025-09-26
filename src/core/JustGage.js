@@ -143,7 +143,10 @@ export class JustGage {
       pointer: null,
     };
 
-    // Generate shadows if enabled
+    // Draw the gauge
+    this._drawGauge();
+
+    // Apply shadows after gauge elements are created
     if (this.config.showInnerShadow) {
       const defs =
         this.renderer.svg.querySelector('defs') ||
@@ -152,9 +155,6 @@ export class JustGage {
         );
       this.generateShadow(this.renderer.svg, defs);
     }
-
-    // Draw the gauge
-    this._drawGauge();
   }
 
   /**
@@ -1124,9 +1124,9 @@ export class JustGage {
 
     // Apply shadow filter if enabled
     if (config.showInnerShadow) {
-      // Apply to gauge background and level elements
-      if (this.canvas.background) {
-        this.canvas.background.attr({ filter: `url(#${shadowId})` });
+      // Apply to gauge background and level elements (matching original implementation)
+      if (this.canvas.gauge) {
+        this.canvas.gauge.attr({ filter: `url(#${shadowId})` });
       }
       if (this.canvas.level) {
         this.canvas.level.attr({ filter: `url(#${shadowId})` });
