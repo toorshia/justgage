@@ -14,7 +14,18 @@ const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
 // Make DOM available globally
 globalThis.document = dom.window.document;
 globalThis.window = dom.window;
-globalThis.navigator = dom.window.navigator;
+
+// Handle navigator property which is read-only in Node.js 22+
+try {
+  globalThis.navigator = dom.window.navigator;
+} catch {
+  // If navigator is read-only, use Object.defineProperty
+  Object.defineProperty(globalThis, 'navigator', {
+    value: dom.window.navigator,
+    writable: true,
+    configurable: true,
+  });
+}
 
 // Add requestAnimationFrame polyfill for Node.js testing
 globalThis.requestAnimationFrame = callback => {
