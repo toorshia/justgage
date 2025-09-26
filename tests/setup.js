@@ -16,6 +16,15 @@ globalThis.document = dom.window.document;
 globalThis.window = dom.window;
 globalThis.navigator = dom.window.navigator;
 
+// Add requestAnimationFrame polyfill for Node.js testing
+globalThis.requestAnimationFrame = callback => {
+  return setTimeout(callback, 16); // ~60fps
+};
+
+globalThis.cancelAnimationFrame = id => {
+  clearTimeout(id);
+};
+
 // Add SVG namespace support
 if (!globalThis.document.createElementNS) {
   globalThis.document.createElementNS = (namespace, tagName) => {
