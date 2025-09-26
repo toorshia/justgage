@@ -591,8 +591,15 @@ export class JustGage {
       targetValue = config.max + config.min - config.targetLine;
     }
 
-    // Use original target line calculation with potentially reversed value
-    const alpha = (1 - (targetValue - config.min) / (config.max - config.min)) * Math.PI;
+    // Calculate angle based on gauge type (matching SVG renderer logic)
+    let alpha;
+    if (config.donut) {
+      // Donut gauges use different angle calculation with 2x factor
+      alpha = (1 - (2 * (targetValue - config.min)) / (config.max - config.min)) * Math.PI;
+    } else {
+      // Standard gauge angle calculation
+      alpha = (1 - (targetValue - config.min) / (config.max - config.min)) * Math.PI;
+    }
 
     let Ro = widgetW / 2 - widgetW / 10;
     let Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
@@ -627,7 +634,7 @@ export class JustGage {
       'stroke-width': config.targetLineWidth,
     });
 
-    // Apply donut rotation if needed (like original)
+    // Apply donut rotation if needed (same as gauge elements)
     if (config.donut && config.donutStartAngle) {
       this.canvas.targetLine.transform(
         `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
