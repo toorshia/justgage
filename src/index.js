@@ -2,12 +2,10 @@
  * JustGage - Modern SVG Gauges
  * Entry point for the library
  *
- * @version 2.0.0
- * @author Bojan Djuricic (@Toorshia)
- * @license MIT
  */
 
 import { JustGage } from './core/JustGage.js';
+import pkgJson from '../package.json' assert { type: 'json' };
 
 // Export the main class
 export { JustGage };
@@ -16,7 +14,7 @@ export { JustGage };
 export default JustGage;
 
 // Version info
-export const VERSION = '2.0.0';
+export const VERSION = pkgJson.version;
 
 // For backward compatibility in browser environments
 if (typeof window !== 'undefined') {

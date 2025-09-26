@@ -2,7 +2,9 @@
 import { build } from 'esbuild';
 import fs from 'fs/promises';
 import path from 'path';
+import pkgJson from './package.json' assert { type: 'json' };
 
+const version = pkgJson.version;
 const distDir = 'dist';
 
 /** @type {import('esbuild').BuildOptions} */
@@ -13,6 +15,28 @@ const baseConfig = {
   target: 'es2020',
   platform: 'neutral',
   mainFields: ['module', 'main'],
+  plugins: [
+    {
+      name: 'resolve-package-json',
+      setup(build) {
+        // when importing 'package.json' we want to provide a custom object like { version: '1.2.3' }
+
+        build.onResolve({ filter: /package\.json$/ }, args => {
+          return {
+            path: args.path,
+            namespace: 'package-json',
+          };
+        });
+
+        build.onLoad({ filter: /.*/, namespace: 'package-json' }, () => {
+          return {
+            contents: JSON.stringify({ version }),
+            loader: 'json',
+          };
+        });
+      },
+    },
+  ],
   external: [], // No external dependencies - everything bundled
   minify: false, // Keep readable for debugging
   keepNames: true,
@@ -26,7 +50,7 @@ const configs = [
     format: 'esm',
     outfile: `${distDir}/justgage.esm.js`,
     banner: {
-      js: '// JustGage v2.0.0-alpha.1 - Modern ES6+ SVG Gauges\n// Zero dependencies, native SVG rendering\n',
+      js: `// JustGage v${version} - Modern ES6+ SVG Gauges\n// Zero dependencies, native SVG rendering\n`,
     },
   },
 
@@ -37,7 +61,7 @@ const configs = [
     outfile: `${distDir}/justgage.cjs`,
     platform: 'node',
     banner: {
-      js: '// JustGage v2.0.0-alpha.1 - CommonJS build\n// Zero dependencies, native SVG rendering\n',
+      js: `// JustGage v${version} - CommonJS build\n// Zero dependencies, native SVG rendering\n`,
     },
   },
 
@@ -49,7 +73,7 @@ const configs = [
     globalName: 'JustGage',
     platform: 'browser',
     banner: {
-      js: '// JustGage v2.0.0-alpha.1 - UMD build\n// Zero dependencies, native SVG rendering\n',
+      js: `// JustGage v${version} - UMD build\n// Zero dependencies, native SVG rendering\n`,
     },
   },
 
@@ -61,7 +85,7 @@ const configs = [
     minify: true,
     keepNames: false,
     banner: {
-      js: '// JustGage v2.0.0-alpha.1 - Minified ES Module\n',
+      js: `// JustGage v${version} - Minified ES Module\n`,
     },
   },
 
@@ -75,14 +99,14 @@ const configs = [
     minify: true,
     keepNames: false,
     banner: {
-      js: '// JustGage v2.0.0-alpha.1 - Minified UMD\n',
+      js: `// JustGage v${version} - Minified UMD\n`,
     },
   },
 ];
 
 // Build all configurations
 async function buildAll(watchMode = false) {
-  console.log('🚀 Building JustGage v2.0 with esbuild...');
+  console.log(`🚀 Building JustGage v${version} with esbuild...`);
 
   if (watchMode) {
     console.log('👀 Watch mode enabled - will rebuild on file changes');
