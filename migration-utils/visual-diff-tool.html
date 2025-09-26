@@ -759,6 +759,11 @@
 
       currentConfig[key] = value;
 
+      // Update value slider range when min/max changes
+      if (key === 'min' || key === 'max') {
+        updateValueSliderRange();
+      }
+
       // Update UI display elements
       updateDisplayValues();
 
@@ -818,6 +823,43 @@
       document.getElementById('shadow-opacity-text').textContent = currentConfig.shadowOpacity;
       document.getElementById('shadow-size-text').textContent = currentConfig.shadowSize;
       document.getElementById('shadow-vertical-offset-text').textContent = currentConfig.shadowVerticalOffset;
+    }
+
+    // Update value slider range when min/max changes
+    function updateValueSliderRange() {
+      const valueSlider = document.getElementById('value-slider');
+      const valueRange = document.getElementById('value-range');
+
+      if (valueSlider) {
+        valueSlider.min = currentConfig.min;
+        valueSlider.max = currentConfig.max;
+
+        // Clamp current value to new range
+        if (currentConfig.value < currentConfig.min) {
+          currentConfig.value = currentConfig.min;
+          valueSlider.value = currentConfig.min;
+        } else if (currentConfig.value > currentConfig.max) {
+          currentConfig.value = currentConfig.max;
+          valueSlider.value = currentConfig.max;
+        }
+      }
+
+      if (valueRange) {
+        valueRange.min = currentConfig.min;
+        valueRange.max = currentConfig.max;
+
+        // Clamp current value to new range
+        if (currentConfig.value < currentConfig.min) {
+          currentConfig.value = currentConfig.min;
+          valueRange.value = currentConfig.min;
+        } else if (currentConfig.value > currentConfig.max) {
+          currentConfig.value = currentConfig.max;
+          valueRange.value = currentConfig.max;
+        }
+      }
+
+      // Update display values after range change
+      updateDisplayValues();
     }
 
     // Load configuration presets
@@ -943,6 +985,7 @@
 
       // Update UI controls to match preset
       syncUIWithConfig();
+      updateValueSliderRange();
       setTimeout(() => recreateGauges(), 100);
     };
 

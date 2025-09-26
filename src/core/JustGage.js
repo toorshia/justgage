@@ -9,7 +9,8 @@ import { createConfig } from './config.js';
 import { SVGRenderer } from '../rendering/svg.js';
 import { isNumber } from '../utils/helpers.js';
 import { isHexColor, getColor } from '../utils/colors.js';
-import { humanFriendlyNumber, formatNumber } from '../utils/formatters.js';
+import { formatNumber, humanFriendlyNumber } from '../utils/formatters.js';
+import { GaugeAnimator } from './GaugeAnimator.js';
 
 /**
  * JustGage - Modern ES6+ implementation for creating animated SVG dashboard gauges.
@@ -143,6 +144,9 @@ export class JustGage {
       pointer: null,
     };
 
+    // Initialize animator
+    this.animator = new GaugeAnimator();
+
     // Draw the gauge
     this._drawGauge();
 
@@ -155,6 +159,9 @@ export class JustGage {
         );
       this.generateShadow(this.renderer.svg, defs);
     }
+
+    // Start initial animation
+    this._startInitialAnimation();
   }
 
   /**
@@ -193,8 +200,8 @@ export class JustGage {
       );
     }
 
-    // Draw value level
-    this._drawLevel();
+    // Draw value level (start from minimum for animation)
+    this._drawLevel(config.min);
 
     // Draw labels
     this._drawLabels();
@@ -213,21 +220,25 @@ export class JustGage {
   /**
    * Draw gauge level (filled arc)
    * @private
+   * @param {number} [animateValue] - If provided, draws level at this value instead of config.value
    */
-  _drawLevel() {
+  _drawLevel(animateValue) {
     const config = this.config;
+
+    // Use provided animate value or config value
+    const targetValue = animateValue !== undefined ? animateValue : config.value;
 
     // Use consistent geometry calculations
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
     // Calculate reversed value if needed (same as original implementation)
-    let displayValue = config.value;
+    let displayValue = targetValue;
     if (config.reverse) {
-      displayValue = config.max + config.min - config.value;
+      displayValue = config.max + config.min - targetValue;
     }
 
     // Get level color using original value (not reversed)
-    const color = this._getLevelColor(config.value);
+    const color = this._getLevelColor(targetValue);
 
     // Draw level arc using original path generation with potentially reversed value
     const levelPath = this.renderer.createGaugePath(
@@ -243,16 +254,25 @@ export class JustGage {
       config.differential
     );
 
-    this.canvas.level = this.renderer.path(levelPath).attr({
-      fill: color,
-      stroke: 'none',
-    });
+    if (this.canvas.level) {
+      // Update existing level
+      this.canvas.level.attr({
+        d: levelPath,
+        fill: color,
+      });
+    } else {
+      // Create new level
+      this.canvas.level = this.renderer.path(levelPath).attr({
+        fill: color,
+        stroke: 'none',
+      });
 
-    // Apply donut rotation to start from top (like original)
-    if (config.donut) {
-      this.canvas.level.transform(
-        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
-      );
+      // Apply donut rotation to start from top (like original)
+      if (config.donut) {
+        this.canvas.level.transform(
+          `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
+        );
+      }
     }
   }
 
@@ -344,8 +364,7 @@ export class JustGage {
       });
     }
 
-    // Value - use original positioning formula with proper offsets
-    const displayValue = this._formatValue(config.value);
+    // Calculate value position (needed for label positioning even if value is hidden)
     const valueX = dx + widgetW / 2;
     const valueY = config.donut
       ? config.label
@@ -353,13 +372,18 @@ export class JustGage {
         : dy + widgetH / 1.7
       : dy + widgetH / 1.275;
 
-    this.canvas.value = this.renderer.text(valueX, valueY, displayValue).attr({
-      'font-family': config.valueFontFamily,
-      'font-size': valueFontSize,
-      'font-weight': 'bold',
-      'text-anchor': 'middle',
-      fill: config.valueFontColor,
-    });
+    // Value - only draw if not hidden
+    if (!config.hideValue) {
+      const displayValue = this._formatValue(config.value);
+
+      this.canvas.value = this.renderer.text(valueX, valueY, displayValue).attr({
+        'font-family': config.valueFontFamily,
+        'font-size': valueFontSize,
+        'font-weight': 'bold',
+        'text-anchor': 'middle',
+        fill: config.valueFontColor,
+      });
+    }
 
     // Calculate label font size (used by both main label and min/max positioning)
     const labelFontSize = config.donut
@@ -738,9 +762,9 @@ export class JustGage {
         if (this.config.minTxt) {
           minText = this.config.minTxt;
         } else if (this.config.humanFriendly) {
-          minText = this._humanFriendlyNumber(this.config.min, this.config.humanFriendlyDecimal);
+          minText = humanFriendlyNumber(this.config.min, this.config.humanFriendlyDecimal);
         } else if (this.config.formatNumber) {
-          minText = this._formatNumber(this.config.min);
+          minText = formatNumber(this.config.min);
         }
 
         this.canvas.min.attr({ text: minText });
@@ -757,9 +781,9 @@ export class JustGage {
         if (this.config.maxTxt) {
           maxText = this.config.maxTxt;
         } else if (this.config.humanFriendly) {
-          maxText = this._humanFriendlyNumber(this.config.max, this.config.humanFriendlyDecimal);
+          maxText = humanFriendlyNumber(this.config.max, this.config.humanFriendlyDecimal);
         } else if (this.config.formatNumber) {
-          maxText = this._formatNumber(this.config.max);
+          maxText = formatNumber(this.config.max);
         }
 
         this.canvas.max.attr({ text: maxText });
@@ -781,11 +805,10 @@ export class JustGage {
       displayVal = this.config.textRenderer(displayVal);
     } else if (this.config.humanFriendly) {
       displayVal =
-        this._humanFriendlyNumber(displayVal, this.config.humanFriendlyDecimal) +
-        this.config.symbol;
+        humanFriendlyNumber(displayVal, this.config.humanFriendlyDecimal) + this.config.symbol;
     } else if (this.config.formatNumber) {
       displayVal =
-        this._formatNumber((displayVal * 1).toFixed(this.config.decimals)) + this.config.symbol;
+        formatNumber((displayVal * 1).toFixed(this.config.decimals)) + this.config.symbol;
     } else if (this.config.displayRemaining) {
       displayVal =
         ((this.config.max - displayVal) * 1).toFixed(this.config.decimals) + this.config.symbol;
@@ -796,7 +819,7 @@ export class JustGage {
     this.config.value = val * 1;
 
     // Update value display
-    if (!this.config.counter && this.canvas.value) {
+    if (!this.config.counter && !this.config.hideValue && this.canvas.value) {
       this.canvas.value.attr({ text: displayVal });
     }
 
@@ -814,30 +837,38 @@ export class JustGage {
       hadTargetLine = true;
     }
 
-    // Animate level change with proper color
-    if (this.canvas.level) {
-      // For now, remove and redraw - later we can add proper animation
-      this.canvas.level.remove();
-      this._drawLevel();
-    }
+    // Store current value to animate from
+    const currentValue = this._getCurrentDisplayValue();
 
-    // Redraw target line after level to maintain Z-order
-    if (hadTargetLine) {
-      this._drawTargetLine();
-    }
+    // Animate level change with proper animation using new animator
+    this.animator.animate({
+      fromValue: currentValue,
+      toValue: this.config.value,
+      duration: this.config.refreshAnimationTime,
+      easing: this.config.refreshAnimationType,
+      onUpdate: newValue => {
+        this._drawLevel(newValue);
+        if (this.config.pointer) {
+          this._updatePointer(newValue);
+        }
+      },
+      onCounterUpdate: this.config.counter
+        ? newValue => {
+            this._updateCounterText(newValue);
+          }
+        : null,
+      onComplete: () => {
+        // Redraw target line after animation completes
+        if (hadTargetLine) {
+          this._drawTargetLine();
+        }
 
-    // Animate pointer if enabled
-    if (this.config.pointer && this.canvas.pointer) {
-      this.canvas.pointer.remove();
-      this._drawPointer();
-    }
-
-    // Call animation end callback if provided
-    if (this.config.onAnimationEnd && typeof this.config.onAnimationEnd === 'function') {
-      setTimeout(() => {
-        this.config.onAnimationEnd.call(this);
-      }, this.config.refreshAnimationTime);
-    }
+        // Call animation end callback if provided
+        if (this.config.onAnimationEnd && typeof this.config.onAnimationEnd === 'function') {
+          this.config.onAnimationEnd.call(this);
+        }
+      },
+    });
   }
 
   /**
@@ -986,6 +1017,11 @@ export class JustGage {
    * Destroy the gauge and clean up resources
    */
   destroy() {
+    // Cancel any running animations
+    if (this.animator) {
+      this.animator.cancel();
+    }
+
     // Clean up SVG renderer
     if (this.renderer) {
       this.renderer.remove();
@@ -1006,6 +1042,7 @@ export class JustGage {
     this.config = null;
     this.events = {};
     this.renderer = null;
+    this.animator = null;
     this.canvas = null;
   }
 
@@ -1141,5 +1178,96 @@ export class JustGage {
     }
 
     return shadowId;
+  }
+
+  /**
+   * Start initial gauge animation
+   * @private
+   */
+  _startInitialAnimation() {
+    const config = this.config;
+
+    if (config.startAnimationTime <= 0) {
+      // No animation, just draw final state
+      this._drawLevel(config.value);
+      if (config.pointer) {
+        this._drawPointer();
+      }
+      if (config.onAnimationEnd) {
+        config.onAnimationEnd();
+      }
+      return;
+    }
+
+    // Start animation from min to target value using new animator
+    this.animator.animate({
+      fromValue: config.min,
+      toValue: config.value,
+      duration: config.startAnimationTime,
+      easing: config.startAnimationType,
+      onUpdate: currentValue => {
+        this._drawLevel(currentValue);
+        if (config.pointer) {
+          this._updatePointer(currentValue);
+        }
+      },
+      onCounterUpdate: config.counter
+        ? currentValue => {
+            this._updateCounterText(currentValue);
+          }
+        : null,
+      onComplete: config.onAnimationEnd,
+    });
+  }
+
+  /**
+   * Update pointer position during animation
+   * @private
+   */
+  _updatePointer(value) {
+    if (this.canvas.pointer) {
+      this.canvas.pointer.remove();
+    }
+
+    // Temporarily update config value for pointer calculation
+    const originalValue = this.config.value;
+    this.config.value = value;
+    this._drawPointer();
+    this.config.value = originalValue;
+  }
+
+  /**
+   * Update counter text during animation
+   * @private
+   */
+  _updateCounterText(value) {
+    const config = this.config;
+    let displayValue = value;
+
+    // Apply text formatting like original
+    if (config.textRenderer && config.textRenderer(displayValue) !== false) {
+      displayValue = config.textRenderer(displayValue);
+    } else if (config.humanFriendly) {
+      displayValue = humanFriendlyNumber(displayValue, config.humanFriendlyDecimal) + config.symbol;
+    } else if (config.formatNumber) {
+      displayValue = formatNumber(displayValue) + config.symbol;
+    } else if (config.displayRemaining) {
+      displayValue = ((config.max - displayValue) * 1).toFixed(config.decimals) + config.symbol;
+    } else {
+      displayValue = (displayValue * 1).toFixed(config.decimals) + config.symbol;
+    }
+
+    if (this.canvas.value && !this.config.hideValue) {
+      this.canvas.value.attr({ text: displayValue });
+    }
+  }
+
+  /**
+   * Get current display value for animation starting point
+   * @private
+   */
+  _getCurrentDisplayValue() {
+    // Try to extract current value from level path or use stored value
+    return this.config.value || this.config.min;
   }
 }
