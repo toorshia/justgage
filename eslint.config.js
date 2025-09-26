@@ -7,7 +7,7 @@ export default [
   // Base configuration
   js.configs.recommended,
   prettier,
-  
+
   // Global configuration
   {
     languageOptions: {
@@ -18,11 +18,11 @@ export default [
         ...globals.node,
       },
     },
-    
+
     plugins: {
       prettier: prettierPlugin,
     },
-    
+
     rules: {
       'no-var': 'error',
       'prefer-const': 'error',
@@ -33,7 +33,7 @@ export default [
       'prettier/prettier': 'error',
     },
   },
-  
+
   // Ignore patterns
   {
     ignores: [
