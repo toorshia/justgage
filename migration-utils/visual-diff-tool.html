@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JustGage Visual Diff Tool</title>
+  <title>JustGage Visual Diff Tool - Enhanced</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,6 +39,7 @@
       display: inline-block;
       border: 2px solid #ddd;
       background: #fafafa;
+      transition: all 0.3s ease;
     }
 
     .overlay-container {
@@ -80,19 +81,125 @@
       background: #ff6600;
     }
 
-    .slider-group {
-      margin: 10px;
-      display: inline-block;
+    .configuration-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+      max-height: 500px;
+      overflow-y: auto;
     }
 
-    .slider-group label {
-      display: block;
-      margin-bottom: 5px;
+    .config-section {
+      margin-bottom: 20px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      padding: 15px;
+    }
+
+    .config-section h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      border-bottom: 2px solid #007cba;
+      padding-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .config-section.collapsed .config-content {
+      display: none;
+    }
+
+    .config-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group label {
       font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
     }
 
-    .slider-group input[type="range"] {
-      width: 150px;
+    .input-group input,
+    .input-group select {
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+
+    .input-group input[type="range"] {
+      width: 100%;
+    }
+
+    .color-input {
+      width: 50px;
+      height: 30px;
+      padding: 0;
+      border: none;
+      cursor: pointer;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .size-controls {
+      background: #fffacd;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .size-controls h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+
+    .size-button {
+      margin: 5px;
+      padding: 10px 15px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .size-button:hover {
+      background: #218838;
+    }
+
+    .preset-buttons {
+      background: #e8f4fd;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .preset-button {
+      margin: 5px;
+      padding: 8px 12px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .preset-button:hover {
+      background: #545b62;
     }
 
     .analysis-panel {
@@ -156,131 +263,370 @@
     <button id="difference" onclick="setMode('difference')">Difference Highlight</button>
 
     <div style="margin: 15px 0;">
-      <div class="slider-group">
+      <div class="input-group" style="display: inline-block; margin: 0 10px;">
         <label>New Gauge Opacity:</label>
         <input type="range" id="opacity-slider" min="0" max="100" value="50" oninput="adjustOpacity(this.value)">
         <span id="opacity-value">50%</span>
       </div>
 
-      <div class="slider-group">
+      <div class="input-group" style="display: inline-block; margin: 0 10px;">
         <label>Test Value:</label>
         <input type="range" id="value-slider" min="0" max="100" value="67" oninput="updateValue(this.value)">
         <span id="value-display">67</span>
       </div>
+    </div>
+  </div>
 
-      <div class="slider-group">
-        <label>Min Value:</label>
-        <input type="range" id="min-slider" min="-50" max="50" value="0" oninput="updateRange()">
-        <span id="min-display">0</span>
-      </div>
+  <!-- Size Testing Controls -->
+  <div class="size-controls">
+    <h3>📏 Responsive Testing Controls</h3>
+    <p>Test relativeGaugeSize setting by changing container dimensions:</p>
+    <button class="size-button" onclick="resizeContainers(0.5)">50% Size</button>
+    <button class="size-button" onclick="resizeContainers(0.75)">75% Size</button>
+    <button class="size-button" onclick="resizeContainers(1.0)">100% Size</button>
+    <button class="size-button" onclick="resizeContainers(1.25)">125% Size</button>
+    <button class="size-button" onclick="resizeContainers(1.5)">150% Size</button>
+    <button class="size-button" onclick="animateResize()">🔄 Animate Resize</button>
+  </div>
 
-      <div class="slider-group">
-        <label>Max Value:</label>
-        <input type="range" id="max-slider" min="50" max="200" value="100" oninput="updateRange()">
-        <span id="max-display">100</span>
+  <!-- Configuration Presets -->
+  <div class="preset-buttons">
+    <h3>⚡ Quick Presets</h3>
+    <button class="preset-button" onclick="loadPreset('default')">Default</button>
+    <button class="preset-button" onclick="loadPreset('donut')">Donut</button>
+    <button class="preset-button" onclick="loadPreset('pointer')">Pointer</button>
+    <button class="preset-button" onclick="loadPreset('differential')">Differential</button>
+    <button class="preset-button" onclick="loadPreset('custom-sectors')">Custom Sectors</button>
+    <button class="preset-button" onclick="loadPreset('minimal')">Minimal</button>
+    <button class="preset-button" onclick="loadPreset('advanced')">Advanced</button>
+  </div>
+
+  <!-- Comprehensive Configuration Panel -->
+  <div class="configuration-panel">
+    <h2>🎛️ Complete Configuration Panel</h2>
+
+    <!-- Basic Values -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">📊 Basic Values</h3>
+      <div class="config-content">
+        <div class="input-group">
+          <label>Value:</label>
+          <input type="range" id="value-range" min="0" max="100" value="67"
+            oninput="updateConfigValue('value', this.value)">
+          <span id="value-text">67</span>
+        </div>
+        <div class="input-group">
+          <label>Min:</label>
+          <input type="number" id="min-input" value="0" onchange="updateConfigValue('min', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Max:</label>
+          <input type="number" id="max-input" value="100" onchange="updateConfigValue('max', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Decimals:</label>
+          <input type="number" id="decimals-input" value="0" min="0" max="5"
+            onchange="updateConfigValue('decimals', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Symbol:</label>
+          <input type="text" id="symbol-input" value="" onchange="updateConfigValue('symbol', this.value)">
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="reverse-checkbox" onchange="updateConfigValue('reverse', this.checked)">
+          <label>Reverse</label>
+        </div>
       </div>
     </div>
 
-    <h4>Gauge Configuration</h4>
-    <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px;">
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-title" checked onchange="updateConfig()"> Title
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-label" checked onchange="updateConfig()"> Units Label
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-minmax" checked onchange="updateConfig()"> Min/Max Labels
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-pointer" onchange="updateConfig()"> Pointer
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-target" onchange="updateConfig()"> Target Line
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="donut-mode" onchange="updateConfig()"> Donut Mode
-      </label>
-    </div>
-
-    <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 15px;">
-      <div>
-        <label>Title:</label>
-        <input type="text" id="title-input" value="Test Gauge" onchange="updateConfig()" style="width: 100px;">
-      </div>
-      <div>
-        <label>Units:</label>
-        <input type="text" id="label-input" value="units" onchange="updateConfig()" style="width: 80px;">
-      </div>
-      <div>
-        <label>Target:</label>
-        <input type="number" id="target-input" value="75" min="0" max="100" onchange="updateConfig()"
-          style="width: 60px;">
-      </div>
-      <div>
-        <label>Width:</label>
-        <input type="number" id="width-input" value="400" min="200" max="600" onchange="updateConfig()"
-          style="width: 60px;">
-      </div>
-      <div>
-        <label>Height:</label>
-        <input type="number" id="height-input" value="320" min="150" max="500" onchange="updateConfig()"
-          style="width: 60px;">
+    <!-- Dimensions -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">📐 Dimensions</h3>
+      <div class="config-content">
+        <div class="input-group">
+          <label>Width:</label>
+          <input type="number" id="width-input" value="400" min="100" max="800"
+            onchange="updateConfigValue('width', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Height:</label>
+          <input type="number" id="height-input" value="320" min="100" max="600"
+            onchange="updateConfigValue('height', this.value)">
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="relative-size-checkbox"
+            onchange="updateConfigValue('relativeGaugeSize', this.checked)">
+          <label>Relative Gauge Size</label>
+        </div>
+        <div class="input-group">
+          <label>Gauge Width Scale:</label>
+          <input type="range" id="gauge-width-scale" min="0.5" max="2" step="0.1" value="1.0"
+            oninput="updateConfigValue('gaugeWidthScale', this.value)">
+          <span id="gauge-width-scale-text">1.0</span>
+        </div>
       </div>
     </div>
 
-    <h4>Advanced Configuration</h4>
-    <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 15px;">
-      <div>
-        <label>Gauge Color:</label>
-        <input type="color" id="gauge-color" value="#e0e0e0" onchange="updateConfig()" style="width: 60px;">
-      </div>
-      <div>
-        <label>Level Color:</label>
-        <input type="color" id="level-color" value="#ff6600" onchange="updateConfig()" style="width: 60px;">
-      </div>
-      <div>
-        <label>Pointer Color:</label>
-        <input type="color" id="pointer-color" value="#8e2de2" onchange="updateConfig()" style="width: 60px;">
-      </div>
-      <div>
-        <label>Title Font Size:</label>
-        <input type="number" id="title-font-size" value="24" min="10" max="40" onchange="updateConfig()"
-          style="width: 60px;">
-      </div>
-      <div>
-        <label>Label Font Size:</label>
-        <input type="number" id="label-font-size" value="11" min="8" max="20" onchange="updateConfig()"
-          style="width: 60px;">
-      </div>
-      <div>
-        <label>Gauge Width Scale:</label>
-        <input type="number" id="gauge-width-scale" value="1" min="0.5" max="2" step="0.1" onchange="updateConfig()"
-          style="width: 60px;">
+    <!-- Colors -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">🎨 Colors</h3>
+      <div class="config-content">
+        <div class="input-group">
+          <label>Gauge Color:</label>
+          <input type="color" class="color-input" id="gauge-color" value="#edebeb"
+            onchange="updateConfigValue('gaugeColor', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Value Font Color:</label>
+          <input type="color" class="color-input" id="value-font-color" value="#010101"
+            onchange="updateConfigValue('valueFontColor', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Label Font Color:</label>
+          <input type="color" class="color-input" id="label-font-color" value="#b3b3b3"
+            onchange="updateConfigValue('labelFontColor', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Level Colors:</label>
+          <select id="level-colors-preset" onchange="updateLevelColors(this.value)">
+            <option value="default">Default (Green-Yellow-Red)</option>
+            <option value="blue">Blue Gradient</option>
+            <option value="rainbow">Rainbow</option>
+            <option value="single">Single Color</option>
+          </select>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="no-gradient-checkbox" onchange="updateConfigValue('noGradient', this.checked)">
+          <label>No Gradient</label>
+        </div>
       </div>
     </div>
 
-    <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px;">
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="show-inner-shadow" onchange="updateConfig()"> Inner Shadow
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="no-gradient" onchange="updateConfig()"> No Gradient
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="reverse" onchange="updateConfig()"> Reverse
-      </label>
-      <label style="display: flex; align-items: center; gap: 5px;">
-        <input type="checkbox" id="start-animation" checked onchange="updateConfig()"> Start Animation
-      </label>
+    <!-- Labels and Text -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">📝 Labels and Text</h3>
+      <div class="config-content">
+        <div class="input-group">
+          <label>Title:</label>
+          <input type="text" id="title-input" value="" onchange="updateConfigValue('title', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Label:</label>
+          <input type="text" id="label-input" value="units" onchange="updateConfigValue('label', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Min Text:</label>
+          <input type="text" id="min-txt-input" value="" onchange="updateConfigValue('minTxt', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Max Text:</label>
+          <input type="text" id="max-txt-input" value="" onchange="updateConfigValue('maxTxt', this.value)">
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="hide-value-checkbox" onchange="updateConfigValue('hideValue', this.checked)">
+          <label>Hide Value</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="hide-min-max-checkbox" onchange="updateConfigValue('hideMinMax', this.checked)">
+          <label>Hide Min/Max</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="human-friendly-checkbox"
+            onchange="updateConfigValue('humanFriendly', this.checked)">
+          <label>Human Friendly Numbers</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="format-number-checkbox" onchange="updateConfigValue('formatNumber', this.checked)">
+          <label>Format Numbers</label>
+        </div>
+      </div>
     </div>
 
-    <div style="margin: 15px 0;">
-      <button onclick="toggleGrid()">Toggle Grid</button>
-      <button onclick="analyzePositions()">Analyze Positions</button>
-      <button onclick="exportComparison()">Export Analysis</button>
-      <button onclick="resetToDefaults()">Reset to Defaults</button>
+    <!-- Gauge Types -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">⭕ Gauge Types</h3>
+      <div class="config-content">
+        <div class="checkbox-group">
+          <input type="checkbox" id="donut-checkbox" onchange="updateConfigValue('donut', this.checked)">
+          <label>Donut Mode</label>
+        </div>
+        <div class="input-group">
+          <label>Donut Start Angle:</label>
+          <input type="range" id="donut-start-angle" min="0" max="360" value="90"
+            oninput="updateConfigValue('donutStartAngle', this.value)">
+          <span id="donut-start-angle-text">90°</span>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="differential-checkbox" onchange="updateConfigValue('differential', this.checked)">
+          <label>Differential</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="display-remaining-checkbox"
+            onchange="updateConfigValue('displayRemaining', this.checked)">
+          <label>Display Remaining</label>
+        </div>
+      </div>
     </div>
+
+    <!-- Pointer -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">👉 Pointer</h3>
+      <div class="config-content">
+        <div class="checkbox-group">
+          <input type="checkbox" id="pointer-checkbox" onchange="updateConfigValue('pointer', this.checked)">
+          <label>Show Pointer</label>
+        </div>
+        <div class="input-group">
+          <label>Pointer Color:</label>
+          <input type="color" class="color-input" id="pointer-color" value="#8e2de2"
+            onchange="updatePointerOption('color', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Top Length:</label>
+          <input type="number" id="pointer-top-length" value="14"
+            onchange="updatePointerOption('toplength', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Bottom Length:</label>
+          <input type="number" id="pointer-bottom-length" value="27"
+            onchange="updatePointerOption('bottomlength', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Bottom Width:</label>
+          <input type="number" id="pointer-bottom-width" value="4"
+            onchange="updatePointerOption('bottomwidth', this.value)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Line -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">🎯 Target Line</h3>
+      <div class="config-content">
+        <div class="checkbox-group">
+          <input type="checkbox" id="target-line-checkbox" onchange="toggleTargetLine(this.checked)">
+          <label>Show Target Line</label>
+        </div>
+        <div class="input-group">
+          <label>Target Value:</label>
+          <input type="number" id="target-line-value" value="75" onchange="updateConfigValue('targetLine', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Target Color:</label>
+          <input type="color" class="color-input" id="target-line-color" value="#000000"
+            onchange="updateConfigValue('targetLineColor', this.value)">
+        </div>
+        <div class="input-group">
+          <label>Target Width:</label>
+          <input type="range" id="target-line-width" min="0.5" max="5" step="0.5" value="1.5"
+            oninput="updateConfigValue('targetLineWidth', this.value)">
+          <span id="target-line-width-text">1.5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animation -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">🎬 Animation</h3>
+      <div class="config-content">
+        <div class="input-group">
+          <label>Start Animation Time:</label>
+          <input type="range" id="start-animation-time" min="0" max="3000" value="700"
+            oninput="updateConfigValue('startAnimationTime', this.value)">
+          <span id="start-animation-time-text">700ms</span>
+        </div>
+        <div class="input-group">
+          <label>Start Animation Type:</label>
+          <select id="start-animation-type" onchange="updateConfigValue('startAnimationType', this.value)">
+            <option value="linear">Linear</option>
+            <option value=">" selected>Ease Out</option>
+            <option value="<">Ease In</option>
+            <option value="<>">Ease In-Out</option>
+            <option value="bounce">Bounce</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Refresh Animation Time:</label>
+          <input type="range" id="refresh-animation-time" min="0" max="3000" value="700"
+            oninput="updateConfigValue('refreshAnimationTime', this.value)">
+          <span id="refresh-animation-time-text">700ms</span>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="counter-checkbox" onchange="updateConfigValue('counter', this.checked)">
+          <label>Counter Animation</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shadow -->
+    <div class="config-section">
+      <h3 onclick="toggleSection(this)">🌚 Shadow</h3>
+      <div class="config-content">
+        <div class="checkbox-group">
+          <input type="checkbox" id="show-inner-shadow-checkbox"
+            onchange="updateConfigValue('showInnerShadow', this.checked)">
+          <label>Show Inner Shadow</label>
+        </div>
+        <div class="input-group">
+          <label>Shadow Opacity:</label>
+          <input type="range" id="shadow-opacity" min="0" max="1" step="0.1" value="0.2"
+            oninput="updateConfigValue('shadowOpacity', this.value)">
+          <span id="shadow-opacity-text">0.2</span>
+        </div>
+        <div class="input-group">
+          <label>Shadow Size:</label>
+          <input type="range" id="shadow-size" min="0" max="20" value="5"
+            oninput="updateConfigValue('shadowSize', this.value)">
+          <span id="shadow-size-text">5</span>
+        </div>
+        <div class="input-group">
+          <label>Shadow Vertical Offset:</label>
+          <input type="range" id="shadow-vertical-offset" min="0" max="20" value="3"
+            oninput="updateConfigValue('shadowVerticalOffset', this.value)">
+          <span id="shadow-vertical-offset-text">3</span>
+        </div>
+      </div>
+    </div>
+  </div>>
+  </div>
+  <div>
+    <label>Title Font Size:</label>
+    <input type="number" id="title-font-size" value="24" min="10" max="40" onchange="updateConfig()"
+      style="width: 60px;">
+  </div>
+  <div>
+    <label>Label Font Size:</label>
+    <input type="number" id="label-font-size" value="11" min="8" max="20" onchange="updateConfig()"
+      style="width: 60px;">
+  </div>
+  <div>
+    <label>Gauge Width Scale:</label>
+    <input type="number" id="gauge-width-scale" value="1" min="0.5" max="2" step="0.1" onchange="updateConfig()"
+      style="width: 60px;">
+  </div>
+  </div>
+
+  <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px;">
+    <label style="display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="show-inner-shadow" onchange="updateConfig()"> Inner Shadow
+    </label>
+    <label style="display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="no-gradient" onchange="updateConfig()"> No Gradient
+    </label>
+    <label style="display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="reverse" onchange="updateConfig()"> Reverse
+    </label>
+    <label style="display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="start-animation" checked onchange="updateConfig()"> Start Animation
+    </label>
+  </div>
+
+  <div style="margin: 15px 0;">
+    <button onclick="toggleGrid()">Toggle Grid</button>
+    <button onclick="analyzePositions()">Analyze Positions</button>
+    <button onclick="exportComparison()">Export Analysis</button>
+    <button onclick="resetToDefaults()">Reset to Defaults</button>
+  </div>
   </div>
 
   <div id="comparison-area">
@@ -348,60 +694,321 @@
       }
     };
 
-    // Get current gauge parameters from UI
+    // Configuration state
+    let currentConfig = {
+      value: 67,
+      min: 0,
+      max: 100,
+      decimals: 0,
+      symbol: '',
+      reverse: false,
+      width: 400,
+      height: 320,
+      relativeGaugeSize: false,
+      gaugeWidthScale: 1.0,
+      gaugeColor: '#edebeb',
+      valueFontColor: '#010101',
+      labelFontColor: '#b3b3b3',
+      levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
+      noGradient: false,
+      title: '',
+      label: 'units',
+      minTxt: '',
+      maxTxt: '',
+      hideValue: false,
+      hideMinMax: false,
+      humanFriendly: false,
+      formatNumber: false,
+      donut: false,
+      donutStartAngle: 90,
+      differential: false,
+      displayRemaining: false,
+      pointer: false,
+      pointerOptions: {
+        color: '#8e2de2',
+        toplength: 14,
+        bottomlength: 27,
+        bottomwidth: 4
+      },
+      targetLine: null,
+      targetLineColor: '#000000',
+      targetLineWidth: 1.5,
+      startAnimationTime: 700,
+      startAnimationType: '>',
+      refreshAnimationTime: 700,
+      counter: false,
+      showInnerShadow: false,
+      shadowOpacity: 0.2,
+      shadowSize: 5,
+      shadowVerticalOffset: 3
+    };
+
+    // Get current gauge parameters from configuration
     function getCurrentGaugeParams() {
-      const showLabel = document.getElementById('show-label').checked;
-      const showMinMax = document.getElementById('show-minmax').checked;
-      const showPointer = document.getElementById('show-pointer').checked;
-      const showTarget = document.getElementById('show-target').checked;
-      const donutMode = document.getElementById('donut-mode').checked;
-      const showInnerShadow = document.getElementById('show-inner-shadow').checked;
-      const noGradient = document.getElementById('no-gradient').checked;
-      const reverse = document.getElementById('reverse').checked;
-      const startAnimation = document.getElementById('start-animation').checked;
+      return { ...currentConfig };
+    }
 
-      const params = {
-        // Core values
-        value: parseInt(document.getElementById('value-display').textContent),
-        min: parseInt(document.getElementById('min-display').textContent),
-        max: parseInt(document.getElementById('max-display').textContent),
+    // Update configuration value
+    window.updateConfigValue = function (key, value) {
+      // Handle type conversion
+      if (typeof currentConfig[key] === 'number') {
+        value = parseFloat(value);
+      } else if (typeof currentConfig[key] === 'boolean') {
+        value = Boolean(value);
+      }
 
-        // Don't set dimensions for better compatibility with original gauge
+      currentConfig[key] = value;
 
-        // Visual settings
-        gaugeColor: document.getElementById('gauge-color').value,
-        levelColors: [document.getElementById('level-color').value],
-        gaugeWidthScale: parseFloat(document.getElementById('gauge-width-scale').value),
+      // Update UI display elements
+      updateDisplayValues();
 
-        // Use hideMinMax instead of showMinMax for original compatibility
-        hideMinMax: !showMinMax,
-        donut: donutMode,
-        showInnerShadow: showInnerShadow,
-        noGradient: noGradient,
-        reverse: reverse,
+      // Recreate gauges with new configuration
+      setTimeout(() => recreateGauges(), 100);
+    };
 
+    // Update pointer options
+    window.updatePointerOption = function (key, value) {
+      if (!currentConfig.pointerOptions) {
+        currentConfig.pointerOptions = {};
+      }
+      currentConfig.pointerOptions[key] = parseFloat(value) || value;
+      setTimeout(() => recreateGauges(), 100);
+    };
+
+    // Toggle target line
+    window.toggleTargetLine = function (enabled) {
+      if (enabled) {
+        currentConfig.targetLine = parseFloat(document.getElementById('target-line-value').value);
+      } else {
+        currentConfig.targetLine = null;
+      }
+      setTimeout(() => recreateGauges(), 100);
+    };
+
+    // Update level colors based on preset
+    window.updateLevelColors = function (preset) {
+      switch (preset) {
+        case 'blue':
+          currentConfig.levelColors = ['#0066cc', '#0099ff', '#00ccff'];
+          break;
+        case 'rainbow':
+          currentConfig.levelColors = ['#ff0000', '#ff6600', '#ffcc00', '#66ff00', '#00ff66', '#0066ff'];
+          break;
+        case 'single':
+          currentConfig.levelColors = ['#ff6600'];
+          break;
+        default:
+          currentConfig.levelColors = ['#a9d70b', '#f9c802', '#ff0000'];
+      }
+      setTimeout(() => recreateGauges(), 100);
+    };
+
+    // Update display values in UI
+    function updateDisplayValues() {
+      document.getElementById('value-text').textContent = currentConfig.value;
+      document.getElementById('value-range').value = currentConfig.value;
+      document.getElementById('value-display').textContent = currentConfig.value;
+      document.getElementById('value-slider').value = currentConfig.value;
+
+      document.getElementById('gauge-width-scale-text').textContent = currentConfig.gaugeWidthScale;
+      document.getElementById('donut-start-angle-text').textContent = currentConfig.donutStartAngle + '°';
+      document.getElementById('target-line-width-text').textContent = currentConfig.targetLineWidth;
+      document.getElementById('start-animation-time-text').textContent = currentConfig.startAnimationTime + 'ms';
+      document.getElementById('refresh-animation-time-text').textContent = currentConfig.refreshAnimationTime + 'ms';
+      document.getElementById('shadow-opacity-text').textContent = currentConfig.shadowOpacity;
+      document.getElementById('shadow-size-text').textContent = currentConfig.shadowSize;
+      document.getElementById('shadow-vertical-offset-text').textContent = currentConfig.shadowVerticalOffset;
+    }
+
+    // Load configuration presets
+    window.loadPreset = function (preset) {
+      switch (preset) {
+        case 'donut':
+          Object.assign(currentConfig, {
+            donut: true,
+            donutStartAngle: 90,
+            hideMinMax: true,
+            value: 75,
+            label: 'Progress',
+            levelColors: ['#00ff66', '#ffcc00', '#ff3300']
+          });
+          break;
+
+        case 'pointer':
+          Object.assign(currentConfig, {
+            pointer: true,
+            donut: false,
+            value: 60,
+            label: 'Speed',
+            pointerOptions: {
+              color: '#8e2de2',
+              toplength: 20,
+              bottomlength: 30,
+              bottomwidth: 6
+            }
+          });
+          break;
+
+        case 'differential':
+          Object.assign(currentConfig, {
+            differential: true,
+            min: -50,
+            max: 50,
+            value: 25,
+            label: 'Differential',
+            levelColors: ['#ff0000', '#ffff00', '#00ff00']
+          });
+          break;
+
+        case 'custom-sectors':
+          Object.assign(currentConfig, {
+            noGradient: true,
+            levelColors: ['#ff0000', '#ff6600', '#ffcc00', '#66ff00', '#00ff66'],
+            value: 80,
+            label: 'Custom'
+          });
+          break;
+
+        case 'minimal':
+          Object.assign(currentConfig, {
+            hideMinMax: true,
+            title: '',
+            label: '',
+            showInnerShadow: false,
+            levelColors: ['#999999']
+          });
+          break;
+
+        case 'advanced':
+          Object.assign(currentConfig, {
+            pointer: true,
+            targetLine: 75,
+            showInnerShadow: true,
+            counter: true,
+            humanFriendly: true,
+            title: 'Advanced Gauge',
+            label: 'Performance'
+          });
+          break;
+
+        default: // 'default'
+          currentConfig = {
+            value: 67,
+            min: 0,
+            max: 100,
+            decimals: 0,
+            symbol: '',
+            reverse: false,
+            width: 400,
+            height: 320,
+            relativeGaugeSize: false,
+            gaugeWidthScale: 1.0,
+            gaugeColor: '#edebeb',
+            valueFontColor: '#010101',
+            labelFontColor: '#b3b3b3',
+            levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
+            noGradient: false,
+            title: '',
+            label: 'units',
+            minTxt: '',
+            maxTxt: '',
+            hideValue: false,
+            hideMinMax: false,
+            humanFriendly: false,
+            formatNumber: false,
+            donut: false,
+            donutStartAngle: 90,
+            differential: false,
+            displayRemaining: false,
+            pointer: false,
+            pointerOptions: {
+              color: '#8e2de2',
+              toplength: 14,
+              bottomlength: 27,
+              bottomwidth: 4
+            },
+            targetLine: null,
+            targetLineColor: '#000000',
+            targetLineWidth: 1.5,
+            startAnimationTime: 700,
+            startAnimationType: '>',
+            refreshAnimationTime: 700,
+            counter: false,
+            showInnerShadow: false,
+            shadowOpacity: 0.2,
+            shadowSize: 5,
+            shadowVerticalOffset: 3
+          };
+      }
+
+      // Update UI controls to match preset
+      syncUIWithConfig();
+      setTimeout(() => recreateGauges(), 100);
+    };
+
+    // Sync UI controls with current configuration
+    function syncUIWithConfig() {
+      // Update all input elements to match current config
+      Object.keys(currentConfig).forEach(key => {
+        const element = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase() + '-input') ||
+          document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase() + '-checkbox') ||
+          document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+
+        if (element) {
+          if (element.type === 'checkbox') {
+            element.checked = currentConfig[key];
+          } else if (element.type === 'color') {
+            element.value = currentConfig[key];
+          } else {
+            element.value = currentConfig[key];
+          }
+        }
+      });
+
+      updateDisplayValues();
+    }
+
+    // Resize containers for responsive testing
+    window.resizeContainers = function (scale) {
+      const containers = document.querySelectorAll('.gauge-container');
+      containers.forEach(container => {
+        const baseWidth = currentConfig.width;
+        const baseHeight = currentConfig.height;
+
+        container.style.width = (baseWidth * scale) + 'px';
+        container.style.height = (baseHeight * scale) + 'px';
+        container.style.transform = `scale(${scale})`;
+        container.style.transformOrigin = 'top left';
+      });
+
+      console.log(`Resized containers to ${(scale * 100)}% scale`);
+    };
+
+    // Animate resize for testing
+    window.animateResize = function () {
+      let scale = 0.5;
+      const direction = 1;
+
+      const animate = () => {
+        resizeContainers(scale);
+        scale += 0.05;
+
+        if (scale <= 1.5) {
+          setTimeout(animate, 200);
+        } else {
+          // Reset to normal
+          setTimeout(() => resizeContainers(1.0), 500);
+        }
       };
 
-      // Only add label if enabled
-      if (showLabel) {
-        params.label = document.getElementById('label-input').value;
-      }
+      animate();
+    };
 
-      // Only add pointer if enabled
-      if (showPointer) {
-        params.pointer = true;
-        params.pointerOptions = {
-          color: document.getElementById('pointer-color').value
-        };
-      }
-
-      // Only add target line if enabled
-      if (showTarget) {
-        params.targetLine = parseInt(document.getElementById('target-input').value);
-      }
-
-      return params;
-    }        // Initialize gauges
+    // Toggle configuration sections
+    window.toggleSection = function (header) {
+      const section = header.parentElement;
+      section.classList.toggle('collapsed');
+    };        // Initialize gauges
     async function initializeGauges() {
       console.log('Initializing gauges for visual comparison...');
 
@@ -429,7 +1036,7 @@
           console.log('✅ New JustGage implementation imported');
         }
 
-        console.log(JustGage !== NewJustGage ? '✅ Different JustGage classes confirmed' : '❌ JustGage classes are the same!');
+        console.log(OldJustGage !== NewJustGage ? '✅ Different JustGage classes confirmed' : '❌ JustGage classes are the same!');
 
         // Create new gauge (modern version) - with explicit dimensions
         const newParams = {
@@ -502,19 +1109,30 @@
       console.log(`Switched to ${mode} mode`);
     };
 
-    // Range update
-    window.updateRange = function () {
-      const minVal = document.getElementById('min-slider').value;
-      const maxVal = document.getElementById('max-slider').value;
+    // Update value from slider
+    window.updateValue = function (value) {
+      currentConfig.value = parseInt(value);
+      updateDisplayValues();
 
-      document.getElementById('min-display').textContent = minVal;
-      document.getElementById('max-display').textContent = maxVal;
+      // Update gauges if they exist
+      if (originalGauge && originalGauge.refresh) {
+        originalGauge.refresh(currentConfig.value);
+      }
+      if (newGauge && newGauge.refresh) {
+        newGauge.refresh(currentConfig.value);
+      }
+      if (baseGauge && baseGauge.refresh) {
+        baseGauge.refresh(currentConfig.value);
+      }
+      if (overlayGauge && overlayGauge.refresh) {
+        overlayGauge.refresh(currentConfig.value);
+      }
 
-      // Recreate gauges with new range
-      recreateGauges();
+      // Update analysis
+      setTimeout(() => analyzePositions(), 500);
     };
 
-    // Configuration update
+    // Configuration update (legacy function for compatibility)
     window.updateConfig = async function () {
       console.log('🔄 Updating gauge configuration...');
       await recreateGauges();
@@ -852,8 +1470,41 @@
       }
     });
 
+    // Adjust overlay opacity
+    window.adjustOpacity = function (value) {
+      const overlayGauge = document.getElementById('gauge-overlay');
+      if (overlayGauge) {
+        overlayGauge.style.opacity = value / 100;
+      }
+      document.getElementById('opacity-value').textContent = value + '%';
+    };
+
+    // Toggle grid overlay
+    window.toggleGrid = function () {
+      showGrid = !showGrid;
+
+      const containers = document.querySelectorAll('.gauge-container');
+      containers.forEach(container => {
+        const existingGrid = container.querySelector('.grid-overlay');
+        if (existingGrid) {
+          existingGrid.remove();
+        }
+
+        if (showGrid) {
+          const grid = createGrid(400, 320);
+          grid.classList.add('grid-overlay');
+          container.appendChild(grid);
+        }
+      });
+
+      console.log(showGrid ? 'Grid enabled' : 'Grid disabled');
+    };
+
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', () => {
+      // Sync UI with initial configuration
+      syncUIWithConfig();
+
       setTimeout(async () => {
         try {
           await initializeGauges();
