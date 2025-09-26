@@ -211,7 +211,7 @@ export class JustGage {
   }
 
   /**
-   * Draw the value level indicator
+   * Draw gauge level (filled arc)
    * @private
    */
   _drawLevel() {
@@ -220,12 +220,18 @@ export class JustGage {
     // Use consistent geometry calculations
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
-    // Get level color
+    // Calculate reversed value if needed (same as original implementation)
+    let displayValue = config.value;
+    if (config.reverse) {
+      displayValue = config.max + config.min - config.value;
+    }
+
+    // Get level color using original value (not reversed)
     const color = this._getLevelColor(config.value);
 
-    // Draw level arc using original path generation
+    // Draw level arc using original path generation with potentially reversed value
     const levelPath = this.renderer.createGaugePath(
-      config.value,
+      displayValue,
       config.min,
       config.max,
       widgetW,
@@ -466,7 +472,13 @@ export class JustGage {
   _drawPointer() {
     const config = this.config;
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
-    const value = config.value;
+
+    // Calculate reversed value if needed (same as original implementation)
+    let value = config.value;
+    if (config.reverse) {
+      value = config.max + config.min - config.value;
+    }
+
     const min = config.min;
     const max = config.max;
     const gws = config.gaugeWidthScale;
@@ -573,8 +585,14 @@ export class JustGage {
 
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
-    // Use original target line calculation
-    const alpha = (1 - (config.targetLine - config.min) / (config.max - config.min)) * Math.PI;
+    // Calculate reversed target value if needed (same as original implementation)
+    let targetValue = config.targetLine;
+    if (config.reverse) {
+      targetValue = config.max + config.min - config.targetLine;
+    }
+
+    // Use original target line calculation with potentially reversed value
+    const alpha = (1 - (targetValue - config.min) / (config.max - config.min)) * Math.PI;
 
     let Ro = widgetW / 2 - widgetW / 10;
     let Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
