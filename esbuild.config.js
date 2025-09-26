@@ -2,7 +2,7 @@
 import { build } from 'esbuild';
 import fs from 'fs/promises';
 import path from 'path';
-import pkgJson from './package.json' assert { type: 'json' };
+import pkgJson from './package.json' with { type: 'json' };
 
 const version = pkgJson.version;
 const distDir = 'dist';

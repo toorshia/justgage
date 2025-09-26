@@ -5,7 +5,7 @@
  */
 
 import { JustGage } from './core/JustGage.js';
-import pkgJson from '../package.json' assert { type: 'json' };
+import pkgJson from '../package.json' with { type: 'json' };
 
 // Export the main class
 export { JustGage };
