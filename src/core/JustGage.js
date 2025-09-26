@@ -350,8 +350,8 @@ export class JustGage {
         ? widgetH / 5.4
         : 18
       : widgetH / 6.5 > config.valueMinFontSize
-      ? widgetH / 6.5
-      : config.valueMinFontSize;
+        ? widgetH / 6.5
+        : config.valueMinFontSize;
 
     // Title
     if (config.title) {
@@ -391,8 +391,8 @@ export class JustGage {
         ? widgetH / 16
         : 10
       : widgetH / 16 > config.labelMinFontSize
-      ? widgetH / 16
-      : config.labelMinFontSize;
+        ? widgetH / 16
+        : config.labelMinFontSize;
 
     // Main label (units like %, km/h, etc.)
     if (config.label) {
@@ -453,8 +453,8 @@ export class JustGage {
           ? widgetH / 16
           : 10
         : widgetH / 16 > config.minLabelMinFontSize
-        ? widgetH / 16
-        : config.minLabelMinFontSize;
+          ? widgetH / 16
+          : config.minLabelMinFontSize;
 
       if (!config.reverse) {
         this.canvas.min = this.renderer.text(minX, minY, minText).attr({
