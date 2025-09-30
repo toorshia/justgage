@@ -1,6 +1,6 @@
 # JustGage
 
-<p align="center"><img src="docs/img/logo.png"/></p>
+<p align="center"><img src="docs/public/logo.png"/></p>
 
 [![NPM Version](https://img.shields.io/npm/v/justgage.svg)](https://www.npmjs.com/package/justgage)
 [![Downloads](https://img.shields.io/npm/dm/justgage.svg)](https://www.npmjs.com/package/justgage)
