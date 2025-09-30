@@ -144,8 +144,6 @@ export declare class JustGage {
   readonly config: Required<JustGageConfig>;
   /** Container element */
   readonly node: HTMLElement | null;
-  /** Event listeners */
-  readonly events: Record<string, Function[]>;
 
   /**
    * Create a new gauge
@@ -185,19 +183,9 @@ export declare class JustGage {
    */
   getConfig(): Required<JustGageConfig>;
 
-  /**
-   * Add event listener
-   * @param eventName - Event name
-   * @param callback - Event callback
-   */
-  on(eventName: string, callback: Function): void;
 
-  /**
-   * Remove event listener
-   * @param eventName - Event name
-   * @param callback - Specific callback to remove (optional)
-   */
-  off(eventName: string, callback?: Function): void;
+
+
 }
 
 export default JustGage;

@@ -14,7 +14,6 @@ import { GaugeAnimator } from './GaugeAnimator.js';
  * - Full backward compatibility with v1.x
  * - Custom sectors and pointer support
  * - Responsive design
- * - Event system for interactions
  *
  * @class JustGage
  * @example
@@ -49,8 +48,6 @@ export class JustGage {
    * @throws {Error} When min >= max
    */
   constructor(config) {
-    this.events = {};
-
     // Validate required container
     if (!config) {
       throw new Error('JustGage: Configuration object is required');
@@ -970,15 +967,9 @@ export class JustGage {
       this.node.innerHTML = '';
     }
 
-    // Clean up event listeners
-    for (const event in this.events) {
-      delete this.events[event];
-    }
-
     // Clear references
     this.node = null;
     this.config = null;
-    this.events = {};
     this.renderer = null;
     this.animator = null;
     this.canvas = null;
@@ -998,54 +989,6 @@ export class JustGage {
    */
   getConfig() {
     return { ...this.config };
-  }
-
-  /**
-   * Add event listener
-   * @param {string} eventName - Event name
-   * @param {Function} callback - Event callback
-   */
-  on(eventName, callback) {
-    if (!this.events[eventName]) {
-      this.events[eventName] = [];
-    }
-    this.events[eventName].push(callback);
-  }
-
-  /**
-   * Remove event listener
-   * @param {string} eventName - Event name
-   * @param {Function} [callback] - Specific callback to remove
-   */
-  off(eventName, callback) {
-    if (!this.events[eventName]) return;
-
-    if (callback) {
-      const index = this.events[eventName].indexOf(callback);
-      if (index > -1) {
-        this.events[eventName].splice(index, 1);
-      }
-    } else {
-      this.events[eventName] = [];
-    }
-  }
-
-  /**
-   * Emit event
-   * @param {string} eventName - Event name
-   * @param {...any} args - Event arguments
-   * @private
-   */
-  _emit(eventName, ...args) {
-    if (this.events[eventName]) {
-      this.events[eventName].forEach(callback => {
-        try {
-          callback.apply(this, args);
-        } catch (error) {
-          console.error(`JustGage: Error in ${eventName} event handler:`, error); // eslint-disable-line no-console
-        }
-      });
-    }
   }
 
   /**
