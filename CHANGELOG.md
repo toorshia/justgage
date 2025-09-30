@@ -1,4 +1,8 @@
-### Changelog
+# Changelog
+
+# [2.0.0-beta.0](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0-beta.0) (2025-09-30)
+
+##
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
