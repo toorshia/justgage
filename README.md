@@ -17,6 +17,8 @@
 
 JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. **Version 2.0+ features a modern ES6+ implementation with native SVG rendering and zero dependencies.**
 
+Live Demo & Documentation Site: [Demo](https://toorshia.github.io/justgage)
+
 > 🚀 **New in v2.0-alpha.1:** Zero dependencies, native SVG APIs, ES6 modules, TypeScript definitions, modular architecture, and significantly smaller bundle size! Migration from RaphaelJS to native browser SVG APIs.
 
 - [JustGage](#justgage)
@@ -27,7 +29,6 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
     - [Legacy Browser Support (UMD)](#legacy-browser-support-umd)
     - [CDN Usage](#cdn-usage)
   - [Basic usage](#basic-usage)
-  - [Documentation](#documentation)
   - [Changelog](#changelog)
   - [Contributing](#contributing)
     - [Development Quick Start](#development-quick-start)
@@ -112,10 +113,6 @@ setInterval(() => {
   gauge.refresh(Math.random() * 100);
 }, 5000);
 ```
-
-## Documentation
-
-Click [here](https://toorshia.github.io/justgage) to see docs and playground
 
 ## Changelog
 
