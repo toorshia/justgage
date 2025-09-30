@@ -8,10 +8,10 @@
   "types": "src/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/justgage.esm.js",
-      "require": "./dist/justgage.cjs",
+      "types": "./src/types/index.d.ts",
       "browser": "./dist/justgage.umd.js",
-      "types": "./src/types/index.d.ts"
+      "import": "./dist/justgage.esm.js",
+      "require": "./dist/justgage.cjs"
     },
     "./package.json": "./package.json"
   },
