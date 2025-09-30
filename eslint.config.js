@@ -36,13 +36,6 @@ export default [
 
   // Ignore patterns
   {
-    ignores: [
-      'dist/',
-      'docs/',
-      'node_modules/',
-      '*.min.js',
-      'justgage.js', // Legacy file
-      'raphael.min.js', // Legacy dependency
-    ],
+    ignores: ['dist/', 'docs/', 'node_modules/'],
   },
 ];

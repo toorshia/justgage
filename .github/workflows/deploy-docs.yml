@@ -3,10 +3,10 @@ name: Deploy Documentation to GitHub Pages
 on:
   push:
     branches: [main, master]
-    paths: ["docs-new/**"]
+    paths: ["docs/**"]
   pull_request:
     branches: [main, master]
-    paths: ["docs-new/**"]
+    paths: ["docs/**"]
   workflow_dispatch:
 
 permissions:
@@ -28,18 +28,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "npm"
-          cache-dependency-path: "docs-new/package-lock.json"
+          cache-dependency-path: "docs/package-lock.json"
 
       - name: Install dependencies
         run: |
-          cd docs-new
+          cd docs
           npm ci
 
       - name: Build documentation
         run: |
-          cd docs-new
+          cd docs
           npm run build
 
       - name: Setup Pages
@@ -48,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "docs-new/dist"
+          path: "docs/dist"
 
   deploy:
     environment:
