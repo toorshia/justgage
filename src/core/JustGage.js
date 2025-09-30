@@ -1,10 +1,3 @@
-/**
- * @file JustGage - Modern ES6+ implementation of animated SVG gauges
- * @version 1.7.0
- * @author Bojan Djuricic <pindjur@gmail.com>
- * @license MIT
- */
-
 import { createConfig } from './config.js';
 import { SVGRenderer } from '../rendering/svg.js';
 import { isNumber } from '../utils/helpers.js';
@@ -49,31 +42,7 @@ export class JustGage {
   /**
    * Create a new gauge instance
    *
-   * @param {object} config - Configuration options for the gauge
-   * @param {string} [config.id] - DOM element ID to render gauge (required if parentNode not provided)
-   * @param {HTMLElement} [config.parentNode] - DOM element to render gauge (required if id not provided)
-   * @param {number} [config.value=0] - Current gauge value
-   * @param {number} [config.min=0] - Minimum gauge value
-   * @param {number} [config.max=100] - Maximum gauge value
-   * @param {string} [config.title=''] - Gauge title text
-   * @param {string} [config.label=''] - Gauge label text
-   * @param {boolean} [config.reverse=false] - Reverse the gauge direction
-   * @param {number} [config.decimals=0] - Number of decimal places for value display
-   * @param {string|Array<string>} [config.levelColors=['#a9d70b', '#f9c802', '#ff0000']] - Colors for gauge levels
-   * @param {number} [config.startAngle=135] - Starting angle in degrees
-   * @param {number} [config.endAngle=45] - Ending angle in degrees
-   * @param {boolean} [config.pointer=false] - Show pointer instead of level fill
-   * @param {object} [config.pointerOptions={}] - Pointer configuration options
-   * @param {Array<object>} [config.customSectors=[]] - Custom color sectors
-   * @param {number} [config.width=400] - Gauge width in pixels
-   * @param {number} [config.height=320] - Gauge height in pixels
-   * @param {string} [config.gaugeColor='#edebeb'] - Background gauge color
-   * @param {number} [config.gaugeWidthScale=1.0] - Gauge width scale factor
-   * @param {boolean} [config.donut=false] - Create donut-style gauge
-   * @param {boolean} [config.counter=false] - Enable counter animation
-   * @param {string} [config.symbol=''] - Symbol to display with value
-   * @param {function} [config.textRenderer] - Custom text rendering function
-   * @param {function} [config.onAnimationEnd] - Animation end callback
+   * @param {import('../types/index.d.ts').JustGageConfig} config - Configuration options for the gauge
    * @throws {Error} When no configuration object is provided
    * @throws {Error} When neither id nor parentNode is provided
    * @throws {Error} When specified DOM element is not found
@@ -152,12 +121,7 @@ export class JustGage {
 
     // Apply shadows after gauge elements are created
     if (this.config.showInnerShadow) {
-      const defs =
-        this.renderer.svg.querySelector('defs') ||
-        this.renderer.svg.appendChild(
-          document.createElementNS('http://www.w3.org/2000/svg', 'defs')
-        );
-      this.generateShadow(this.renderer.svg, defs);
+      this._initializeShadow();
     }
 
     // Start initial animation
@@ -1111,73 +1075,29 @@ export class JustGage {
   }
 
   /**
-   * Generate shadow filter for inner shadow effect
-   * @param {SVGElement} svg - SVG element
-   * @param {SVGElement} defs - Defs element for filters
+   * Initialize shadow effects using SVGRenderer
+   * @private
    */
-  generateShadow(svg, defs) {
+  _initializeShadow() {
     const config = this.config;
     const shadowId = 'inner-shadow-' + (config.id || config.classId);
 
-    // Create filter element
-    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-    filter.setAttribute('id', shadowId);
-    defs.appendChild(filter);
+    // Create shadow filter using renderer
+    this.renderer.createShadowFilter(shadowId, {
+      verticalOffset: config.shadowVerticalOffset,
+      size: config.shadowSize,
+      opacity: config.shadowOpacity,
+    });
 
-    // Create offset for shadow
-    const feOffset = document.createElementNS('http://www.w3.org/2000/svg', 'feOffset');
-    feOffset.setAttribute('dx', 0);
-    feOffset.setAttribute('dy', config.shadowVerticalOffset);
-    filter.appendChild(feOffset);
+    // Apply shadow to gauge elements
+    const elementsToShadow = [];
+    if (this.canvas.gauge) elementsToShadow.push(this.canvas.gauge);
+    if (this.canvas.level) elementsToShadow.push(this.canvas.level);
 
-    // Create blur effect
-    const feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-    feGaussianBlur.setAttribute('result', 'offset-blur');
-    feGaussianBlur.setAttribute('stdDeviation', config.shadowSize);
-    filter.appendChild(feGaussianBlur);
+    this.renderer.applyShadowToElements(shadowId, elementsToShadow);
 
-    // Create composite for inverse
-    const feComposite1 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
-    feComposite1.setAttribute('operator', 'out');
-    feComposite1.setAttribute('in', 'SourceGraphic');
-    feComposite1.setAttribute('in2', 'offset-blur');
-    feComposite1.setAttribute('result', 'inverse');
-    filter.appendChild(feComposite1);
-
-    // Create flood for shadow color
-    const feFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
-    feFlood.setAttribute('flood-color', 'black');
-    feFlood.setAttribute('flood-opacity', config.shadowOpacity);
-    feFlood.setAttribute('result', 'color');
-    filter.appendChild(feFlood);
-
-    // Create composite for shadow
-    const feComposite2 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
-    feComposite2.setAttribute('operator', 'in');
-    feComposite2.setAttribute('in', 'color');
-    feComposite2.setAttribute('in2', 'inverse');
-    feComposite2.setAttribute('result', 'shadow');
-    filter.appendChild(feComposite2);
-
-    // Create final composite
-    const feComposite3 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
-    feComposite3.setAttribute('operator', 'over');
-    feComposite3.setAttribute('in', 'shadow');
-    feComposite3.setAttribute('in2', 'SourceGraphic');
-    filter.appendChild(feComposite3);
-
-    // Apply shadow filter if enabled
-    if (config.showInnerShadow) {
-      // Apply to gauge background and level elements (matching original implementation)
-      if (this.canvas.gauge) {
-        this.canvas.gauge.attr({ filter: `url(#${shadowId})` });
-      }
-      if (this.canvas.level) {
-        this.canvas.level.attr({ filter: `url(#${shadowId})` });
-      }
-    }
-
-    return shadowId;
+    // Store shadow ID for later use
+    this.shadowId = shadowId;
   }
 
   /**

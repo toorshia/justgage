@@ -1,9 +1,4 @@
 /**
- * @file GaugeAnimator - Handles all gauge animations
- * @version 1.7.0
- */
-
-/**
  * Animation manager for JustGage
  * Handles smooth animations for gauge elements using requestAnimationFrame
  */

@@ -272,6 +272,112 @@ export class SVGRenderer {
     }
     this.elements.clear();
   }
+
+  /**
+   * Create or get defs element for filters and gradients
+   * @returns {SVGElement} The defs element
+   */
+  getDefs() {
+    let defs = this.svg.querySelector('defs');
+    if (!defs) {
+      defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      this.svg.appendChild(defs);
+    }
+    return defs;
+  }
+
+  /**
+   * Generate shadow filter for inner shadow effect
+   * @param {string} shadowId - Unique ID for the shadow filter
+   * @param {object} shadowConfig - Shadow configuration options
+   * @param {number} shadowConfig.verticalOffset - Vertical offset for shadow
+   * @param {number} shadowConfig.size - Blur size for shadow
+   * @param {number} shadowConfig.opacity - Shadow opacity (0-1)
+   * @returns {string} The shadow filter ID
+   */
+  createShadowFilter(shadowId, shadowConfig) {
+    const defs = this.getDefs();
+
+    // Remove existing filter if it exists
+    const existingFilter = defs.querySelector(`#${shadowId}`);
+    if (existingFilter) {
+      existingFilter.remove();
+    }
+
+    // Create filter element
+    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    filter.setAttribute('id', shadowId);
+    defs.appendChild(filter);
+
+    // Create offset for shadow
+    const feOffset = document.createElementNS('http://www.w3.org/2000/svg', 'feOffset');
+    feOffset.setAttribute('dx', 0);
+    feOffset.setAttribute('dy', shadowConfig.verticalOffset || 0);
+    filter.appendChild(feOffset);
+
+    // Create blur effect
+    const feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+    feGaussianBlur.setAttribute('result', 'offset-blur');
+    feGaussianBlur.setAttribute('stdDeviation', shadowConfig.size || 0);
+    filter.appendChild(feGaussianBlur);
+
+    // Create composite for inverse
+    const feComposite1 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    feComposite1.setAttribute('operator', 'out');
+    feComposite1.setAttribute('in', 'SourceGraphic');
+    feComposite1.setAttribute('in2', 'offset-blur');
+    feComposite1.setAttribute('result', 'inverse');
+    filter.appendChild(feComposite1);
+
+    // Create flood for shadow color
+    const feFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
+    feFlood.setAttribute('flood-color', 'black');
+    feFlood.setAttribute('flood-opacity', shadowConfig.opacity || 0.5);
+    feFlood.setAttribute('result', 'color');
+    filter.appendChild(feFlood);
+
+    // Create composite for shadow
+    const feComposite2 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    feComposite2.setAttribute('operator', 'in');
+    feComposite2.setAttribute('in', 'color');
+    feComposite2.setAttribute('in2', 'inverse');
+    feComposite2.setAttribute('result', 'shadow');
+    filter.appendChild(feComposite2);
+
+    // Create final composite
+    const feComposite3 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    feComposite3.setAttribute('operator', 'over');
+    feComposite3.setAttribute('in', 'shadow');
+    feComposite3.setAttribute('in2', 'SourceGraphic');
+    filter.appendChild(feComposite3);
+
+    return shadowId;
+  }
+
+  /**
+   * Apply shadow filter to elements
+   * @param {string} shadowId - Shadow filter ID
+   * @param {SVGElement[]} elements - Elements to apply shadow to
+   */
+  applyShadowToElements(shadowId, elements) {
+    elements.forEach(element => {
+      if (element && element.attr) {
+        element.attr({ filter: `url(#${shadowId})` });
+      }
+    });
+  }
+
+  /**
+   * Remove shadow filter from elements
+   * @param {SVGElement[]} elements - Elements to remove shadow from
+   */
+  removeShadowFromElements(elements) {
+    elements.forEach(element => {
+      if (element && element.attr) {
+        element.attr({ filter: 'none' });
+      }
+    });
+  }
 }
 
 /**
@@ -344,44 +450,6 @@ export class SVGElement {
   }
 
   /**
-   * Animate element (simplified version)
-   */
-  animate(attrs, duration = 500, easing = 'ease') {
-    const element = this.element;
-
-    // Create CSS transition
-    const transitions = [];
-    Object.keys(attrs).forEach(key => {
-      let property = key;
-      if (key === 'strokeWidth') property = 'stroke-width';
-      if (key === 'fontSize') property = 'font-size';
-      transitions.push(`${property} ${duration}ms ${easing}`);
-    });
-
-    element.style.transition = transitions.join(', ');
-
-    // Apply new attributes after a brief delay
-    setTimeout(() => {
-      this.attr(attrs);
-    }, 10);
-
-    // Clean up transition after animation
-    setTimeout(() => {
-      element.style.transition = '';
-    }, duration + 10);
-
-    return this;
-  }
-
-  /**
-   * Transform element
-   */
-  transform(transformString) {
-    this.element.setAttribute('transform', transformString);
-    return this;
-  }
-
-  /**
    * Remove element from DOM
    */
   remove() {
@@ -415,6 +483,18 @@ export class SVGElement {
       return this.element.textContent;
     }
     this.element.textContent = content;
+    return this;
+  }
+
+  /**
+   * Apply transform to element
+   * @param {string} transform - Transform string (e.g., 'rotate(90 50 50)')
+   */
+  transform(transform) {
+    if (transform === undefined) {
+      return this.element.getAttribute('transform');
+    }
+    this.element.setAttribute('transform', transform);
     return this;
   }
 }
