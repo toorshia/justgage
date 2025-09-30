@@ -7,7 +7,7 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/justgage.svg)](https://bundlephobia.com/package/justgage)
 
 [![Deploy Docs](https://github.com/toorshia/justgage/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/toorshia/justgage/actions/workflows/deploy-docs.yml)
-[![Tests](https://img.shields.io/github/actions/workflow/status/toorshia/justgage/build.yml?label=tests)](https://github.com/toorshia/justgage/actions/workflows/build.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/toorshia/justgage/build.yml?label=tests)](https://github.com/toorshia/justgage/actions/workflows/ci.yml)
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/mit-license.php)
@@ -18,8 +18,6 @@
 JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. **Version 2.0+ features a modern ES6+ implementation with native SVG rendering and zero dependencies.**
 
 > 🚀 **New in v2.0-alpha.1:** Zero dependencies, native SVG APIs, ES6 modules, TypeScript definitions, modular architecture, and significantly smaller bundle size! Migration from RaphaelJS to native browser SVG APIs.
-
-<p align="center"><img src="docs/img/screenshot.gif"/></p>
 
 - [JustGage](#justgage)
   - [Getting Started](#getting-started)

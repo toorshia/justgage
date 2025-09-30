@@ -17,7 +17,7 @@ JustGage is a handy JavaScript plugin for generating and animating nice & clean 
 - **Module System**: ES6 modules with UMD build
 - **SVG**: Native SVG APIs (no external dependencies)
 - **Build Tool**: ESBuild for fast compilation
-- **Testing**: Vitest for unit testing
+- **Testing**: Node.js native test runner with jsdom for DOM testing
 
 ### Legacy Reference (v1.x)
 
@@ -57,7 +57,7 @@ JustGage is a handy JavaScript plugin for generating and animating nice & clean 
 ```
 /src/                 # Modern v2.0+ implementation
 /docs/public/         # Contains legacy v1.x reference (justgage.js)
-/docs/            # Vue 3 + Vuetify 3 documentation site
+/docs/               # Vue 3 + Vuetify 3 documentation site
 /migration-utils/     # Tools for v1.x to v2.0+ migration
 /tests/               # Test suites
 /dist/                # Built distribution files
@@ -210,7 +210,7 @@ chore(build): update ESBuild configuration for TypeScript
 
 1. **Check legacy implementation** in `/docs/public/justgage.js` for feature reference
 2. **Maintain API compatibility** where possible
-3. **Update documentation** in Vue 3 site
+3. **Update documentation** in Vue 3 site (located in `/docs/`)
 4. **Add playground examples** for new features
 5. **Write migration guides** for breaking changes
 6. **Follow conventional commits** for all changes
@@ -270,14 +270,12 @@ JustGage is a popular gauge visualization library with the following characteris
 ### Key Commands
 
 - **Build**: `npm run build` - Modern esbuild process creating ESM, CJS, and UMD formats
-- **Build Legacy**: `npm run build:old` - Legacy Grunt build process for v1.x compatibility
-- **Development**: `npm run dev` - Development server with watch mode
+- **Build Watch**: `npm run build:watch` - Build in watch mode using Node.js --watch-path=./src
 - **Test**: `npm run test` - Node.js native test runner
 - **Test Watch**: `npm run test:watch` - Tests in watch mode
 - **Lint**: `npm run lint` - ESLint validation on src/ and tests/
-- **Lint Fix**: `npm run lint-fix` - Auto-fix ESLint issues
-- **Format**: `npm run format` - Prettier code formatting
-- **Release**: `npm run release` - Automated release process using release-it
+- **Lint Fix**: `npm run lint:fix` - Auto-fix ESLint issues
+- **Release**: `npm run release` - Automated release process with conventional changelog
 
 ### Build Process Details
 
@@ -399,7 +397,7 @@ The `npm run build` command:
 - Uses semantic versioning (currently v1.7.0)
 - Major version bump from v1.x due to architectural changes
 - Automated with release-it tool
-- Changelog auto-generated from commits
+- Changelog generated using conventional commits with @release-it/conventional-changelog
 - Breaking changes from v1.x: ES6+ modules, native SVG (no RaphaelJS)
 
 ### Breaking Changes Protocol
@@ -422,8 +420,7 @@ The `npm run build` command:
 - **jsdom**: DOM environment for Node.js testing (SVG support)
 - **Node.js Test Runner**: Native Node.js testing (no external framework)
 - **release-it**: Automated release management with GitHub integration
-- **auto-changelog**: Automated changelog generation
-- **Grunt**: Legacy build system (maintained for v1.x compatibility)
+- **@release-it/conventional-changelog**: Conventional changelog generation
 
 ## Modernization Status (v2.0)
 
