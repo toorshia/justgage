@@ -188,24 +188,6 @@
                     color="primary"
                     @update:model-value="debouncedUpdateGauges"
                   />
-
-                  <v-text-field
-                    v-model="config.title"
-                    label="Title"
-                    variant="outlined"
-                    density="compact"
-                    @input="debouncedUpdateGauges"
-                    class="mb-3"
-                  />
-
-                  <v-text-field
-                    v-model="config.label"
-                    label="Label"
-                    variant="outlined"
-                    density="compact"
-                    @input="updateExistingGauges"
-                    class="mb-3"
-                  />
                 </v-expansion-panel-text>
               </v-expansion-panel>
 
@@ -295,6 +277,17 @@
                     />
                   </div>
 
+                  <div class="mb-3">
+                    <label class="text-body-2 mb-2 d-block">Title Font Color</label>
+                    <input
+                      type="color"
+                      v-model="config.titleFontColor"
+                      @input="debouncedUpdateGauges"
+                      class="mb-2"
+                      style="width: 50px; height: 30px; border: none; cursor: pointer"
+                    />
+                  </div>
+
                   <!-- Level Colors -->
                   <div class="mb-4">
                     <h4 class="mb-2">Level Colors</h4>
@@ -346,6 +339,83 @@
                   Labels and Text
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
+                  <!-- Basic Text Fields -->
+                  <v-text-field
+                    v-model="config.title"
+                    label="Title"
+                    variant="outlined"
+                    density="compact"
+                    @input="debouncedUpdateGauges"
+                    class="mb-3"
+                  />
+
+                  <v-text-field
+                    v-model="config.label"
+                    label="Label"
+                    variant="outlined"
+                    density="compact"
+                    @input="updateExistingGauges"
+                    class="mb-3"
+                  />
+
+                  <!-- Title Styling -->
+                  <div class="mb-4">
+                    <v-select
+                      v-model="config.titleFontFamily"
+                      :items="[
+                        'Arial',
+                        'Helvetica',
+                        'Times New Roman',
+                        'Courier New',
+                        'Verdana',
+                        'Georgia',
+                        'Comic Sans MS',
+                        'Impact',
+                        'Trebuchet MS',
+                        'Arial Black',
+                      ]"
+                      label="Title Font Family"
+                      variant="outlined"
+                      density="compact"
+                      @update:model-value="debouncedUpdateGauges"
+                      class="mb-3"
+                    />
+
+                    <v-select
+                      v-model="config.titleFontWeight"
+                      :items="[
+                        'normal',
+                        'bold',
+                        'lighter',
+                        'bolder',
+                        '100',
+                        '200',
+                        '300',
+                        '400',
+                        '500',
+                        '600',
+                        '700',
+                        '800',
+                        '900',
+                      ]"
+                      label="Title Font Weight"
+                      variant="outlined"
+                      density="compact"
+                      @update:model-value="debouncedUpdateGauges"
+                      class="mb-3"
+                    />
+
+                    <v-select
+                      v-model="config.titlePosition"
+                      :items="['above', 'below']"
+                      label="Title Position"
+                      variant="outlined"
+                      density="compact"
+                      @update:model-value="debouncedUpdateGauges"
+                      class="mb-3"
+                    />
+                  </div>
+
                   <v-text-field
                     v-model="config.minTxt"
                     label="Min Text Override"
@@ -792,6 +862,10 @@ const config = reactive({
 
   // Labels and Text
   title: '',
+  titleFontColor: '#010101',
+  titleFontFamily: 'Arial',
+  titleFontWeight: 'bold',
+  titlePosition: 'above',
   label: 'units',
   minTxt: '',
   maxTxt: '',

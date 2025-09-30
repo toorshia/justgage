@@ -31,10 +31,12 @@ import { GaugeAnimator } from './GaugeAnimator.js';
  *   id: 'color-gauge',
  *   value: 60,
  *   levelColors: ['#green', '#yellow', '#red'],
- *   customSectors: [
- *     { lo: 0, hi: 50, color: '#green' },
- *     { lo: 50, hi: 100, color: '#red' }
- *   ]
+ *   customSectors: {
+ *     ranges: [
+ *       { lo: 0, hi: 50, color: '#green' },
+ *       { lo: 50, hi: 100, color: '#red' }
+ *     ]
+ *   }
  * });
  */
 export class JustGage {
@@ -89,13 +91,19 @@ export class JustGage {
       width = '100%';
       height = '100%';
 
-      // Set viewBox dimensions based on gauge type (matching legacy behavior)
+      // Set viewBox dimensions based on gauge type and title presence (matching legacy behavior)
       if (this.config.donut) {
         viewBoxWidth = 200;
         viewBoxHeight = 200;
+        if (this.config.title.length > 0) {
+          viewBoxHeight = 150;
+        }
       } else {
         viewBoxWidth = 200;
         viewBoxHeight = 100;
+        if (this.config.title.length > 0) {
+          viewBoxHeight = 150;
+        }
       }
     } else {
       // Use fixed dimensions like current implementation
@@ -270,10 +278,12 @@ export class JustGage {
       h = config.height;
     }
 
-    // Calculate widget dimensions and offsets like in _drawLabels
+    // Title space is handled through viewBox adjustments
+
+    // Calculate widget dimensions using legacy logic with title adjustments
     let widgetW, widgetH, dx, dy;
     if (config.donut) {
-      if (w > h) {
+      if (h > w) {
         widgetH = h;
         widgetW = widgetH;
       } else if (w < h) {
@@ -286,24 +296,40 @@ export class JustGage {
       dx = (w - widgetW) / 2;
       dy = (h - widgetH) / 2;
     } else {
-      // For regular gauges, use original formula
+      // For regular gauges, use legacy formula with title adjustments
       if (w > h) {
+        // landscape
         widgetH = h;
         widgetW = widgetH * 2;
+        if (config.title.length > 0) {
+          widgetW = widgetH * 1.25;
+        }
         if (widgetW > w) {
           const aspect = widgetW / w;
           widgetW = widgetW / aspect;
           widgetH = widgetH / aspect;
         }
       } else if (w < h) {
+        // portrait
         widgetW = w;
         widgetH = widgetW / 2;
+        if (config.title.length > 0) {
+          widgetH = widgetW / 1.25;
+        }
       } else {
+        // square
         widgetW = w;
-        widgetH = widgetW / 2;
+        widgetH = widgetW * 0.5;
+        if (config.title.length > 0) {
+          widgetH = widgetW * 0.75;
+        }
       }
       dx = (w - widgetW) / 2;
       dy = (h - widgetH) / 2;
+      if (config.titlePosition === 'below') {
+        // shift whole thing up to make room for title below
+        dy -= widgetH / 6.4;
+      }
     }
 
     // Calculate center point using widget positioning
@@ -326,7 +352,8 @@ export class JustGage {
    * @private
    */
   _calculateFontSizes(widgetH, config) {
-    const titleFontSize = Math.max(widgetH / 16, 10);
+    const titleFontSize =
+      widgetH / 8 > config.titleMinFontSize ? widgetH / 10 : config.titleMinFontSize;
 
     const valueFontSize = config.donut
       ? widgetH / 6.4 > 16
@@ -387,14 +414,22 @@ export class JustGage {
     const config = this.config;
 
     // Use consistent geometry calculations
-    const { cx, cy, widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
+    const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
     // Calculate all font sizes
     const fontSizes = this._calculateFontSizes(widgetH, config);
 
-    // Title
+    // Title - position using legacy-compatible positioning logic
     if (config.title) {
-      this.canvas.title = this.renderer.text(cx, cy - widgetH / 16, config.title).attr({
+      const titleX = dx + widgetW / 2;
+      let titleY;
+      if (config.donut) {
+        titleY = dy + widgetH / 11; // Legacy donut title positioning
+      } else {
+        titleY = dy + (config.titlePosition === 'below' ? widgetH * 1.07 : widgetH / 6.4);
+      }
+
+      this.canvas.title = this.renderer.text(titleX, titleY, config.title).attr({
         'font-family': config.titleFontFamily,
         'font-size': fontSizes.title,
         'font-weight': config.titleFontWeight,
@@ -971,6 +1006,39 @@ export class JustGage {
         if (this.canvas.value) {
           const displayValue = this._formatValue(this.config.value);
           this.canvas.value.attr({ text: displayValue });
+        }
+        break;
+
+      case 'title':
+        this.config.title = val;
+        if (this.canvas.title) {
+          this.canvas.title.attr({ text: val || '' });
+        } else if (val) {
+          // Create title if it doesn't exist and value is provided
+          const geometry = this._calculateGaugeGeometry();
+          const fontSizes = this._calculateFontSizes(geometry.widgetH, this.config);
+
+          // Use title positioning from geometry calculations
+          const { titleX, titleY } = geometry;
+
+          this.canvas.title = this.renderer.text(titleX, titleY, val).attr({
+            'font-family': this.config.titleFontFamily,
+            'font-size': fontSizes.title,
+            'font-weight': this.config.titleFontWeight,
+            'text-anchor': 'middle',
+            fill: this.config.titleFontColor,
+          });
+        }
+        break;
+
+      case 'titleFontColor':
+        if (!isHexColor(val)) {
+          console.warn('JustGage: titleFontColor must be a valid hex color'); // eslint-disable-line no-console
+          return;
+        }
+        this.config.titleFontColor = val;
+        if (this.canvas.title) {
+          this.canvas.title.attr({ fill: val });
         }
         break;
 

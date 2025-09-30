@@ -38,6 +38,7 @@ export const DEFAULT_CONFIG = {
   labelMinFontSize: 10,
   minLabelMinFontSize: 10,
   maxLabelMinFontSize: 10,
+  titleMinFontSize: 10,
   hideValue: false,
   hideMinMax: false,
   showMinMax: true,
@@ -71,11 +72,9 @@ export const DEFAULT_CONFIG = {
   title: '',
   titleFontColor: '#999999',
   titleFontFamily: 'Arial',
-  titleFontSize: 20,
-  titleFontWeight: 'normal',
-  valueFontSize: 40,
+  titleFontWeight: 'bold',
+  titlePosition: 'above', // above|below
   valueFontWeight: 'normal',
-  labelFontSize: 14,
   labelFontWeight: 'normal',
 };
 
@@ -95,6 +94,7 @@ export function createConfig(config, dataset = {}) {
     config = extend({}, defaults, restConfig);
   }
 
+  /** @type {import('../types/index.d.ts').JustGageConfig} */
   const processedConfig = {
     // Generate unique class ID for styling
     classId: uuid(),
@@ -153,6 +153,12 @@ export function createConfig(config, dataset = {}) {
       config,
       dataset,
       DEFAULT_CONFIG.maxLabelMinFontSize
+    ),
+    titleMinFontSize: kvLookup(
+      'titleMinFontSize',
+      config,
+      dataset,
+      DEFAULT_CONFIG.titleMinFontSize
     ),
 
     // Gauge appearance
@@ -240,15 +246,13 @@ export function createConfig(config, dataset = {}) {
     title: kvLookup('title', config, dataset, DEFAULT_CONFIG.title),
     titleFontColor: kvLookup('titleFontColor', config, dataset, DEFAULT_CONFIG.titleFontColor),
     titleFontFamily: kvLookup('titleFontFamily', config, dataset, DEFAULT_CONFIG.titleFontFamily),
-    titleFontSize: kvLookup('titleFontSize', config, dataset, DEFAULT_CONFIG.titleFontSize),
     titleFontWeight: kvLookup('titleFontWeight', config, dataset, DEFAULT_CONFIG.titleFontWeight),
+    titlePosition: kvLookup('titlePosition', config, dataset, DEFAULT_CONFIG.titlePosition),
 
     // Value font configuration
-    valueFontSize: kvLookup('valueFontSize', config, dataset, DEFAULT_CONFIG.valueFontSize),
     valueFontWeight: kvLookup('valueFontWeight', config, dataset, DEFAULT_CONFIG.valueFontWeight),
 
     // Label font configuration
-    labelFontSize: kvLookup('labelFontSize', config, dataset, DEFAULT_CONFIG.labelFontSize),
     labelFontWeight: kvLookup('labelFontWeight', config, dataset, DEFAULT_CONFIG.labelFontWeight),
 
     // Gauge angles

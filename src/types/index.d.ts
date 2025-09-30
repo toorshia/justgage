@@ -23,42 +23,34 @@ export interface JustGageConfig {
   width?: number;
   /** Gauge height */
   height?: number;
-  /** Value text color */
-  valueFontColor?: string;
-  /** Value font family */
-  valueFontFamily?: string;
-  /** Symbol to show next to value */
-  symbol?: string;
-  /** Number of decimal places */
-  decimals?: number;
-  /** Animate number changes */
-  counter?: boolean;
-  /** Hide the value text */
-  hideValue?: boolean;
-  /** Hide min/max labels */
-  hideMinMax?: boolean;
   /** Gauge width scale factor */
   gaugeWidthScale?: number;
   /** Gauge background color */
   gaugeColor?: string;
   /** Label text */
   label?: string;
+  /** Value text color */
+  valueFontColor?: string;
+  /** Value font family */
+  valueFontFamily?: string;
+  /** Value font weight */
+  valueFontWeight?: string;
   /** Label text color */
   labelFontColor?: string;
   /** Label font family */
   labelFontFamily?: string;
+  /** Label font weight */
+  labelFontWeight?: string;
+  /** Symbol to show next to value */
+  symbol?: string;
   /** Shadow opacity (0-1) */
   shadowOpacity?: number;
   /** Shadow size */
   shadowSize?: number;
   /** Shadow vertical offset */
   shadowVerticalOffset?: number;
-  /** Show inner shadow */
-  showInnerShadow?: boolean;
   /** Level colors array */
   levelColors?: string[];
-  /** Disable color gradient */
-  noGradient?: boolean;
   /** Initial animation duration (ms) */
   startAnimationTime?: number;
   /** Initial animation type */
@@ -67,57 +59,86 @@ export interface JustGageConfig {
   refreshAnimationTime?: number;
   /** Refresh animation type */
   refreshAnimationType?: string;
-  /** Show as donut gauge */
-  donut?: boolean;
   /** Donut start angle */
   donutStartAngle?: number;
-  /** Differential gauge (fill from center) */
-  differential?: boolean;
-  /** Whether gauge size should follow container element size changes (responsive scaling) */
-  relativeGaugeSize?: boolean;
+  /** Minimum font sizes */
+  valueMinFontSize?: number;
+  labelMinFontSize?: number;
+  minLabelMinFontSize?: number;
+  maxLabelMinFontSize?: number;
+  titleMinFontSize?: number;
+  /** Hide the value text */
+  hideValue?: boolean;
+  /** Hide min/max labels */
+  hideMinMax?: boolean;
+  /** Show min/max labels */
+  showMinMax?: boolean;
+  /** Show inner shadow */
+  showInnerShadow?: boolean;
   /** Human-friendly number formatting */
   humanFriendly?: boolean;
   /** Human-friendly decimal places */
   humanFriendlyDecimal?: number;
-  /** Format numbers with commas */
-  formatNumber?: boolean;
-  /** Display remaining value to reach max */
-  displayRemaining?: boolean;
+  /** Disable color gradient */
+  noGradient?: boolean;
+  /** Show as donut gauge */
+  donut?: boolean;
+  /** Differential gauge (fill from center) */
+  differential?: boolean;
+  /** Whether gauge size should follow container element size changes (responsive scaling) */
+  relativeGaugeSize?: boolean;
+  /** Animate number changes */
+  counter?: boolean;
+  /** Number of decimal places */
+  decimals?: number;
   /** Custom sectors configuration */
   customSectors?: JustGageCustomSectors;
+  /** Format numbers with commas */
+  formatNumber?: boolean;
   /** Show pointer */
   pointer?: boolean;
   /** Pointer configuration */
   pointerOptions?: JustGagePointerOptions;
+  /** Display remaining value to reach max */
+  displayRemaining?: boolean;
   /** Target line value */
   targetLine?: number | null;
   /** Target line color */
   targetLineColor?: string;
   /** Target line width */
   targetLineWidth?: number;
-  /** Minimum font sizes */
-  valueMinFontSize?: number;
-  labelMinFontSize?: number;
-  minLabelMinFontSize?: number;
-  maxLabelMinFontSize?: number;
   /** Text rendering function */
   textRenderer?: ((value: number) => string | false) | null;
   /** Animation end callback */
   onAnimationEnd?: (() => void) | null;
   /** Default configuration to merge */
   defaults?: Partial<JustGageConfig>;
+  /** Gauge start angle */
+  startAngle?: number;
+  /** Gauge end angle */
+  endAngle?: number;
+  /** Title text */
+  title?: string;
+  /** Title font color */
+  titleFontColor?: string;
+  /** Title font family */
+  titleFontFamily?: string;
+  /** Title font weight */
+  titleFontWeight?: string;
+  /** Title position relative to gauge */
+  titlePosition?: 'above' | 'below';
 }
 
 export interface JustGageCustomSectors {
-  /** Whether lo/hi values are percentages */
+  /** Whether lo/hi values are percentages (default: false, values are absolute) */
   percents?: boolean;
-  /** Color ranges */
+  /** Array of color ranges - when value falls within a range, use that range's color */
   ranges?: Array<{
-    /** Low value */
+    /** Low value (inclusive) */
     lo: number;
-    /** High value */
+    /** High value (inclusive) */
     hi: number;
-    /** Color for this range */
+    /** Color for this range (hex color string) */
     color: string;
   }>;
 }
