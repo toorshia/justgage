@@ -72,9 +72,6 @@ export class JustGage {
     this.config = createConfig(config, dataset);
     this.originalValue = config.value ?? -1;
 
-    // Cache for geometry calculations
-    this._geometryCache = null;
-
     // Initialize gauge
     this._initializeGauge();
   }
@@ -233,23 +230,11 @@ export class JustGage {
   }
 
   /**
-   * Invalidate the geometry cache when config changes
-   * @private
-   */
-  _invalidateGeometryCache() {
-    this._geometryCache = null;
-  }
-
-  /**
    * Calculate consistent gauge geometry for both arc and text positioning
    * Uses caching to avoid redundant calculations
    * @private
    */
   _calculateGaugeGeometry() {
-    // Return cached result if available
-    if (this._geometryCache) {
-      return this._geometryCache;
-    }
     const config = this.config;
     const w = config.width;
     const h = config.height;
@@ -299,9 +284,7 @@ export class JustGage {
     const gaugeWidthScale = config.gaugeWidthScale || 1.0;
     const innerRadius = outerRadius - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
-    // Cache the result
-    this._geometryCache = { cx, cy, outerRadius, innerRadius, widgetW, widgetH, dx, dy };
-    return this._geometryCache;
+    return { cx, cy, outerRadius, innerRadius, widgetW, widgetH, dx, dy };
   }
 
   /**
@@ -795,11 +778,6 @@ export class JustGage {
     }
 
     this.config.value = val * 1;
-
-    // Invalidate geometry cache if min/max changed
-    if (isNumber(min) || isNumber(max)) {
-      this._invalidateGeometryCache();
-    }
 
     // Update value display
     if (!this.config.counter && !this.config.hideValue && this.canvas.value) {
