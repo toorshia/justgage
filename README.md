@@ -38,6 +38,9 @@ JustGage is a handy JavaScript plugin for generating and animating nice &amp; cl
   - [Examples](#examples)
   - [Changelog](#changelog)
     - [BREAKING CHANGES](#breaking-changes)
+  - [Contributing](#contributing)
+    - [Development Quick Start](#development-quick-start)
+    - [Important: Legacy Reference](#important-legacy-reference)
   - [License](#license)
   - [Author](#author)
 
@@ -55,10 +58,10 @@ npm install justgage --save
 import { JustGage } from 'justgage';
 
 const gauge = new JustGage({
-    id: 'my-gauge',
-    value: 75,
-    min: 0,
-    max: 100
+  id: 'my-gauge',
+  value: 75,
+  min: 0,
+  max: 100,
 });
 ```
 
@@ -78,7 +81,7 @@ const gauge = new JustGage({
 <script>
   const gauge = new JustGage({
     id: 'my-gauge',
-    value: 75
+    value: 75,
   });
 </script>
 ```
@@ -104,21 +107,19 @@ const gauge = new JustGage({
 **JS**
 
 ```js
-
 var gauge = new JustGage({
-            id: "gauge", // the id of the html element
-            value: 50,
-            min: 0,
-            max: 100,
-            decimals: 2,
-            gaugeWidthScale: 0.6
-        });
+  id: 'gauge', // the id of the html element
+  value: 50,
+  min: 0,
+  max: 100,
+  decimals: 2,
+  gaugeWidthScale: 0.6,
+});
 
 // update the value randomly
 setInterval(() => {
   gauge.refresh(Math.random() * 100);
-}, 5000)
-
+}, 5000);
 ```
 
 ## Options
@@ -151,9 +152,9 @@ setInterval(() => {
 | shadowVerticalOffset | `3`                                 | How much shadow is offset from top                                                                              |
 | levelColors          | `["#a9d70b", "#f9c802", "#ff0000"]` | Colors of indicator, from lower to upper, in RGB format                                                         |
 | startAnimationTime   | `700`                               | Length of initial animation in milliseconds                                                                     |
-| startAnimationType   | `>`                                 | Type of initial animation (linear, >, <,  <>, bounce)                                                           |
+| startAnimationType   | `>`                                 | Type of initial animation (linear, >, <, <>, bounce)                                                            |
 | refreshAnimationTime | `700`                               | Length of refresh animation in milliseconds                                                                     |
-| refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <,  <>, bounce)                                                           |
+| refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <, <>, bounce)                                                            |
 | donutStartAngle      | `90`                                | Angle to start from when in donut mode                                                                          |
 | valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                                                  |
 | labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                                                        |
@@ -164,8 +165,8 @@ setInterval(() => {
 | showInnerShadow      | `false`                             | Show inner shadow                                                                                               |
 | humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)                             |
 | noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                                                  |
-| donut                | `false`                             | Show donut gauge                  
-| differential         | `false`                             | Gauge will fill starting from the center, rather than from the min value                                       |
+| donut                | `false`                             | Show donut gauge                                                                                                |
+| differential         | `false`                             | Gauge will fill starting from the center, rather than from the min value                                        |
 | relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                                              |
 | counter              | `false`                             | Animate text value number change                                                                                |
 | decimals             | `0`                                 | Number of digits after floating point                                                                           |
@@ -174,9 +175,9 @@ setInterval(() => {
 | pointer              | `false`                             | Show value pointer                                                                                              |
 | pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                                                          |
 | displayRemaining     | `false`                             | Replace display number with the value remaining to reach max value                                              |
-| targetLine           | `null`                              | Value Target line will display                               |
-| targetLineColor      | `"#000000"`                         | Color of Target Line                                        |
-| targetLineWidth      | `1.5`                               | Width of Target Line                                         |
+| targetLine           | `null`                              | Value Target line will display                                                                                  |
+| targetLineColor      | `"#000000"`                         | Color of Target Line                                                                                            |
+| targetLineWidth      | `1.5`                               | Width of Target Line                                                                                            |
 
 ### Custom Sectors
 
@@ -220,21 +221,19 @@ Example:
 
 ```js
 var gauge = new JustGage({
-            id: "gauge-targetLine", 
-            value: 50,
-            min: 0,
-            max: 100,
-            decimals: 2,
-            gaugeWidthScale: 0.6,
-    		targetLine: 50,
-    		targetLineColour: "#000",
-    		targetLineWidth: 4
-        });
+  id: 'gauge-targetLine',
+  value: 50,
+  min: 0,
+  max: 100,
+  decimals: 2,
+  gaugeWidthScale: 0.6,
+  targetLine: 50,
+  targetLineColour: '#000',
+  targetLineWidth: 4,
+});
 ```
 
 <p align="center"><img src="docs/img/TargetLine_Example.png"/></p>
-
-
 
 ## Methods
 
@@ -261,16 +260,16 @@ vs
 const options = {
   valueFontColor: '#ff0000',
   labelFontColor: '#ff0000',
-}
-gauge.update(options)
+};
+gauge.update(options);
 ```
 
 #### Update Options
 
-| Name                 | Description                                 |
-| -------------------- | ------------------------------------------- |
-| valueFontColor       | HEX color for gauge value text              |
-| labelFontColor       | HEX color for gauge min, max and label text |
+| Name           | Description                                 |
+| -------------- | ------------------------------------------- |
+| valueFontColor | HEX color for gauge value text              |
+| labelFontColor | HEX color for gauge min, max and label text |
 
 ### Destroy
 
@@ -298,6 +297,45 @@ Or [here](CHANGELOG_OLD.md) you can find the old changelog (up to version 1.2.9)
   - `customSectors` expects an object and not an array (percent support, check docs for more info)
 - 1.2.6
   - Removed `title` feature
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+
+- Development setup and workflow
+- Code standards and conventions
+- Testing requirements
+- Commit message format (Conventional Commits)
+- Pull request process
+
+### Development Quick Start
+
+```bash
+# Clone and setup
+git clone https://github.com/toorshia/justgage.git
+cd justgage
+npm install
+
+# Development
+npm run build          # Build all distributions
+npm test              # Run tests
+npm run lint          # Check code quality
+
+# Documentation site
+cd docs
+npm install
+npm run dev           # Start development server
+```
+
+### Important: Legacy Reference
+
+When working on features or fixes, always check `/docs/public/justgage.js` for the v1.x reference implementation (1728 lines). This file defines the expected behavior and API compatibility for migration from legacy versions.
+
+For more detailed information, see:
+
+- [GitHub Copilot Instructions](.github/copilot-instructions.md)
+- [Development Instructions](.copilot/instructions.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
 
 ## License
 
