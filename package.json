@@ -9,8 +9,8 @@
   "exports": {
     ".": {
       "types": "./src/types/index.d.ts",
-      "browser": "./dist/justgage.umd.js",
       "import": "./dist/justgage.esm.js",
+      "browser": "./dist/justgage.umd.js",
       "require": "./dist/justgage.cjs"
     },
     "./package.json": "./package.json"

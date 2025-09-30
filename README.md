@@ -126,60 +126,72 @@ setInterval(() => {
 
 ## Options
 
-| Name                 | Default                             | Description                                                                                                     |
-| -------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| id                   | (required)                          | The HTML container element `id`                                                                                 |
-| value                | `0`                                 | Value Gauge is showing                                                                                          |
-| parentNode           | `null`                              | The HTML container element object. Used if `id` is not present                                                  |
-| defaults             | `false`                             | Defaults parameters to use globally for gauge objects                                                           |
-| width                | `null`                              | The Gauge width in pixels (Integer)                                                                             |
-| height               | `null`                              | The Gauge height in pixels                                                                                      |
-| valueFontColor       | `#010101`                           | Color of label showing current value                                                                            |
-| valueFontFamily      | `Arial`                             | Font of label showing current value                                                                             |
-| symbol               | `''`                                | Special symbol to show next to value                                                                            |
-| min                  | `0`                                 | Min value                                                                                                       |
-| minTxt               | `false`                             | Min value text, overrides `min` if specified                                                                    |
-| max                  | `100`                               | Max value                                                                                                       |
-| maxTxt               | `false`                             | Max value text, overrides `max` if specified                                                                    |
-| reverse              | `false`                             | Reverse min and max                                                                                             |
-| humanFriendlyDecimal | `0`                                 | Number of decimal places for our human friendly number to contain                                               |
-| textRenderer         | `null`                              | Function applied before redering text `(value) => value` return `false` to format value based on config options |
-| onAnimationEnd       | `null`                              | Function applied after animation is done                                                                        |
-| gaugeWidthScale      | `1.0`                               | Width of the gauge element                                                                                      |
-| gaugeColor           | `#edebeb`                           | Background color of gauge element                                                                               |
-| label                | `''`                                | Text to show below value                                                                                        |
-| labelFontColor       | `#b3b3b3`                           | Color of label showing label under value                                                                        |
-| shadowOpacity        | `0.2`                               | Shadow opacity 0 ~ 1                                                                                            |
-| shadowSize           | `5`                                 | Inner shadow size                                                                                               |
-| shadowVerticalOffset | `3`                                 | How much shadow is offset from top                                                                              |
-| levelColors          | `["#a9d70b", "#f9c802", "#ff0000"]` | Colors of indicator, from lower to upper, in RGB format                                                         |
-| startAnimationTime   | `700`                               | Length of initial animation in milliseconds                                                                     |
-| startAnimationType   | `>`                                 | Type of initial animation (linear, >, <, <>, bounce)                                                            |
-| refreshAnimationTime | `700`                               | Length of refresh animation in milliseconds                                                                     |
-| refreshAnimationType | `>`                                 | Type of refresh animation (linear, >, <, <>, bounce)                                                            |
-| donutStartAngle      | `90`                                | Angle to start from when in donut mode                                                                          |
-| valueMinFontSize     | `16`                                | Absolute minimum font size for the value label                                                                  |
-| labelMinFontSize     | `10`                                | Absolute minimum font size for the label                                                                        |
-| minLabelMinFontSize  | `10`                                | Absolute minimum font size for the min label                                                                    |
-| maxLabelMinFontSize  | `10`                                | Absolute minimum font size for the man label                                                                    |
-| hideValue            | `false`                             | Hide value text                                                                                                 |
-| hideMinMax           | `false`                             | Hide min/max text                                                                                               |
-| showInnerShadow      | `false`                             | Show inner shadow                                                                                               |
-| humanFriendly        | `false`                             | convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)                             |
-| noGradient           | `false`                             | Whether to use gradual color change for value, or sector-based                                                  |
-| donut                | `false`                             | Show donut gauge                                                                                                |
-| differential         | `false`                             | Gauge will fill starting from the center, rather than from the min value                                        |
-| relativeGaugeSize    | `false`                             | Whether gauge size should follow changes in container element size                                              |
-| counter              | `false`                             | Animate text value number change                                                                                |
-| decimals             | `0`                                 | Number of digits after floating point                                                                           |
-| customSectors        | `{}`                                | Custom sectors colors. Expects an [object](#Custom-Sectors)                                                     |
-| formatNumber         | `false`                             | Formats numbers with commas where appropriate                                                                   |
-| pointer              | `false`                             | Show value pointer                                                                                              |
-| pointerOptions       | `{}`                                | Pointer options. Expects an [object](#Pointer-options)                                                          |
-| displayRemaining     | `false`                             | Replace display number with the value remaining to reach max value                                              |
-| targetLine           | `null`                              | Value Target line will display                                                                                  |
-| targetLineColor      | `"#000000"`                         | Color of Target Line                                                                                            |
-| targetLineWidth      | `1.5`                               | Width of Target Line                                                                                            |
+| Name                   | Type      | Default                             | Description                                                                                                     |
+| ---------------------- | --------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| id                     | string    | (required)                          | Container element ID                                                                                            |
+| parentNode             | HTMLElement | `null`                            | Container element object. Used if `id` is not present                                                          |
+| value                  | number    | `0`                                 | Current gauge value                                                                                             |
+| min                    | number    | `0`                                 | Minimum value                                                                                                   |
+| max                    | number    | `100`                               | Maximum value                                                                                                   |
+| minTxt                 | string\|false | `false`                         | Min value text override                                                                                         |
+| maxTxt                 | string\|false | `false`                         | Max value text override                                                                                         |
+| reverse                | boolean   | `false`                             | Reverse min and max positions                                                                                   |
+| width                  | number    | `null`                              | Gauge width in pixels                                                                                           |
+| height                 | number    | `null`                              | Gauge height in pixels                                                                                          |
+| gaugeWidthScale        | number    | `1.0`                               | Width scale factor of the gauge element                                                                         |
+| gaugeColor             | string    | `#edebeb`                           | Background color of gauge element                                                                               |
+| label                  | string    | `''`                                | Text to show below value                                                                                        |
+| valueFontColor         | string    | `#010101`                           | Color of value text                                                                                             |
+| valueFontFamily        | string    | `Arial`                             | Font family of value text                                                                                       |
+| valueFontWeight        | string    | `normal`                            | Font weight of value text                                                                                       |
+| labelFontColor         | string    | `#b3b3b3`                           | Color of label text                                                                                             |
+| labelFontFamily        | string    | `Arial`                             | Font family of label text                                                                                       |
+| labelFontWeight        | string    | `normal`                            | Font weight of label text                                                                                       |
+| symbol                 | string    | `''`                                | Special symbol to show next to value                                                                            |
+| shadowOpacity          | number    | `0.2`                               | Shadow opacity (0-1)                                                                                            |
+| shadowSize             | number    | `5`                                 | Inner shadow size                                                                                               |
+| shadowVerticalOffset   | number    | `3`                                 | Shadow vertical offset from top                                                                                 |
+| levelColors            | string[]  | `["#a9d70b", "#f9c802", "#ff0000"]` | Colors of indicator, from lower to upper                                                                        |
+| startAnimationTime     | number    | `700`                               | Length of initial animation in milliseconds                                                                     |
+| startAnimationType     | string    | `>`                                 | Type of initial animation (linear, >, <, <>, bounce)                                                            |
+| refreshAnimationTime   | number    | `700`                               | Length of refresh animation in milliseconds                                                                     |
+| refreshAnimationType   | string    | `>`                                 | Type of refresh animation (linear, >, <, <>, bounce)                                                            |
+| donutStartAngle        | number    | `90`                                | Angle to start from when in donut mode                                                                          |
+| valueMinFontSize       | number    | `16`                                | Absolute minimum font size for the value label                                                                  |
+| labelMinFontSize       | number    | `10`                                | Absolute minimum font size for the label                                                                        |
+| minLabelMinFontSize    | number    | `10`                                | Absolute minimum font size for the min label                                                                    |
+| maxLabelMinFontSize    | number    | `10`                                | Absolute minimum font size for the max label                                                                    |
+| titleMinFontSize       | number    | `10`                                | Absolute minimum font size for the title                                                                        |
+| hideValue              | boolean   | `false`                             | Hide value text                                                                                                 |
+| hideMinMax             | boolean   | `false`                             | Hide min/max text                                                                                               |
+| showMinMax             | boolean   | `true`                              | Show min/max labels                                                                                             |
+| showInnerShadow        | boolean   | `false`                             | Show inner shadow                                                                                               |
+| humanFriendly          | boolean   | `false`                             | Convert large numbers to human friendly format (e.g. 1234567 -> 1.23M)                                        |
+| humanFriendlyDecimal   | number    | `0`                                 | Number of decimal places for human friendly numbers                                                             |
+| noGradient             | boolean   | `false`                             | Whether to use gradual color change for value, or sector-based                                                  |
+| donut                  | boolean   | `false`                             | Show donut gauge                                                                                                |
+| differential           | boolean   | `false`                             | Gauge will fill starting from the center, rather than from the min value                                        |
+| relativeGaugeSize      | boolean   | `false`                             | Whether gauge size should follow changes in container element size                                              |
+| counter                | boolean   | `false`                             | Animate text value number change                                                                                |
+| decimals               | number    | `0`                                 | Number of digits after floating point                                                                           |
+| customSectors          | object    | `{}`                                | Custom sectors colors. Expects an [object](#custom-sectors)                                                     |
+| formatNumber           | boolean   | `false`                             | Formats numbers with commas where appropriate                                                                   |
+| pointer                | boolean   | `false`                             | Show value pointer                                                                                              |
+| pointerOptions         | object    | `{}`                                | Pointer options. Expects an [object](#pointer-options)                                                          |
+| displayRemaining       | boolean   | `false`                             | Replace display number with the value remaining to reach max value                                              |
+| targetLine             | number\|null | `null`                           | Value where target line will display                                                                            |
+| targetLineColor        | string    | `#000000`                           | Color of target line                                                                                            |
+| targetLineWidth        | number    | `1.5`                               | Width of target line                                                                                            |
+| textRenderer           | function\|null | `null`                        | Function applied before rendering text `(value) => value` return `false` to format value based on config options |
+| onAnimationEnd         | function\|null | `null`                        | Function applied after animation is done                                                                        |
+| defaults               | object    | `{}`                                | Default configuration to merge                                                                                  |
+| startAngle             | number    | `135`                               | Gauge start angle                                                                                               |
+| endAngle               | number    | `45`                                | Gauge end angle                                                                                                 |
+| title                  | string    | `''`                                | Title text                                                                                                      |
+| titleFontColor         | string    | `#999999`                           | Title font color                                                                                                |
+| titleFontFamily        | string    | `Arial`                             | Title font family                                                                                               |
+| titleFontWeight        | string    | `normal`                            | Title font weight                                                                                               |
+| titlePosition          | string    | `above`                             | Title position relative to gauge ('above' or 'below')                                                          |
 
 ### Custom Sectors
 
