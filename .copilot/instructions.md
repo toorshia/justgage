@@ -16,29 +16,46 @@
 
 ### Common Tasks
 
+#### 🚨 CRITICAL: Documentation Synchronization First
+
+**BEFORE making ANY changes to configuration options or API methods:**
+
+When adding/modifying/removing ANY configuration option, you MUST update ALL THREE sources:
+
+1. **`src/types/index.d.ts`** - TypeScript interface definitions
+2. **`README.md`** - Configuration options table
+3. **`docs/src/views/DocsView.vue`** - `configOptions` array
+
+**Failure to keep these synchronized breaks TypeScript compilation, user documentation, and the interactive documentation site.**
+
 #### Adding New Features
 
-1. Check `/docs/public/justgage.js` for v1.x reference behavior
-2. Implement in `/src/` using modern ES6+ patterns
-3. Add TypeScript types
-4. Update documentation in `/docs/`
-5. Add playground example
-6. Write tests
+1. **FIRST**: If adding config options, update TypeScript types, README.md, and DocsView.vue
+2. Check `/docs/public/justgage.js` for v1.x reference behavior
+3. Implement in `/src/` using modern ES6+ patterns
+4. Update configuration in `src/core/config.js` with defaults
+5. Write unit tests in `tests/unit/`
+6. Add playground example
+7. **VERIFY**: All three documentation sources are synchronized
 
 #### Bug Fixes
 
 1. Reproduce issue in playground (`/docs/src/views/PlaygroundView.vue`)
 2. Check legacy behavior in `/docs/public/justgage.js`
 3. Fix in `/src/` while maintaining API compatibility
-4. Update tests
-5. Verify fix in documentation site
+4. **If fix affects config/API**: Update TypeScript types, README.md, and DocsView.vue
+5. Update tests
+6. Verify fix in documentation site
+7. **VERIFY**: Documentation remains synchronized
 
 #### Documentation Updates
 
 - **Site**: `/docs/` (Vue 3 + Vuetify 3)
 - **Playground**: `/docs/src/views/PlaygroundView.vue`
 - **API Docs**: `/docs/src/views/DocsView.vue`
+- **README**: Options table must match TypeScript definitions exactly
 - **Examples**: Include both v1.x and v2.0+ code samples
+- **Triple-Sync Rule**: Always update types, README, and DocsView together
 
 ### Code Patterns
 

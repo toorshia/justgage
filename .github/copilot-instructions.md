@@ -1,5 +1,24 @@
 # Copilot Instructions for JustGage
 
+## 🚨 CRITICAL: Documentation Synchronization Requirement
+
+**BEFORE making ANY changes to configuration options or API methods, read this:**
+
+JustGage uses a **triple-synchronized documentation system**. When you change ANYTHING related to configuration options or API methods, you MUST update these THREE files simultaneously:
+
+1. **`src/types/index.d.ts`** - TypeScript interface definitions
+2. **`README.md`** - Configuration options table
+3. **`docs/src/views/DocsView.vue`** - `configOptions` array
+
+**Failure to keep these synchronized will break:**
+
+- TypeScript compilation
+- User documentation
+- Interactive documentation site
+- Developer experience
+
+**See the "Configuration Management & Documentation Maintenance" section below for detailed protocols.**
+
 ## Project Overview
 
 JustGage is a handy JavaScript plugin for generating and animating nice & clean dashboard gauges. This repository contains:
@@ -367,6 +386,63 @@ The `npm run build` command:
 - Take screenshots for visual regression checks
 - Compare legacy with modern implementation in playground
 
+## Configuration Management & Documentation Maintenance
+
+### The Three-Source Documentation System
+
+JustGage uses a **triple-synchronized documentation system** that MUST be kept in perfect alignment:
+
+1. **`src/types/index.d.ts`** - Source of truth for TypeScript definitions
+2. **`README.md`** - User-facing configuration reference
+3. **`docs/src/views/DocsView.vue`** - Interactive documentation site
+
+### Configuration Change Protocol
+
+**NEVER add, modify, or remove configuration options without updating ALL THREE sources:**
+
+```bash
+# Example workflow for adding new option 'newOption'
+1. Add to src/core/config.js:        newOption: 'defaultValue'
+2. Add to src/types/index.d.ts:      newOption?: string;
+3. Add to README.md options table:   | newOption | string | 'defaultValue' | Description |
+4. Add to DocsView configOptions:    { name: 'newOption', type: 'string', default: "'defaultValue'", description: 'Description' }
+```
+
+### Validation Checklist
+
+Before committing ANY configuration-related changes:
+
+- [ ] TypeScript interface matches exactly with config.js options
+- [ ] README.md table has correct types, defaults, and descriptions
+- [ ] DocsView.vue configOptions array is complete and accurate
+- [ ] All option names are identical across all three sources
+- [ ] All type annotations are consistent
+- [ ] All default values match between config.js and documentation
+
+### Common Documentation Errors to Avoid
+
+❌ **Don't do:**
+
+- Add config option without updating TypeScript types
+- Update README.md without updating DocsView.vue
+- Use different option names between sources
+- Mismatched default values between config.js and docs
+- Inconsistent type annotations (string vs 'string')
+
+✅ **Always do:**
+
+- Update all three sources in the same commit
+- Verify type consistency across all sources
+- Test documentation site after changes
+- Run build to catch TypeScript errors
+
+### Documentation Site Architecture
+
+- **`docs/src/views/DocsView.vue`** contains the `configOptions` array
+- Each option object requires: `{ name, type, default, description }`
+- Types should match TypeScript notation (e.g., 'string|boolean', 'number[]')
+- Defaults should be valid JavaScript/JSON strings (e.g., "'string'", '{}', '[]')
+
 ## Documentation Guidelines
 
 ### Code Documentation
@@ -380,6 +456,7 @@ The `npm run build` command:
 - Keep options table up-to-date with all configuration parameters
 - Update examples when adding new features
 - Maintain accurate installation instructions
+- **CRITICAL**: Always synchronize with TypeScript definitions and DocsView
 
 ### Examples
 
@@ -459,27 +536,52 @@ The `npm run build` command:
 
 ## Common Task Guidelines
 
+### CRITICAL: Documentation Synchronization
+
+**ALWAYS maintain synchronization between these files when making ANY configuration or API changes:**
+
+1. **`src/types/index.d.ts`** - TypeScript interface definitions
+2. **`README.md`** - Options table with all configuration parameters
+3. **`docs/src/views/DocsView.vue`** - `configOptions` array in documentation site
+
+**When adding/modifying/removing ANY configuration option:**
+
+- ✅ Update `JustGageConfig` interface in `src/types/index.d.ts`
+- ✅ Update the options table in `README.md` with correct type, default, and description
+- ✅ Update the `configOptions` array in `docs/src/views/DocsView.vue`
+- ✅ Verify all three sources have identical option names, types, and descriptions
+
+**When adding/modifying methods:**
+
+- ✅ Update class methods in `src/types/index.d.ts`
+- ✅ Update Methods section in `README.md`
+- ✅ Update `methods` array in `docs/src/views/DocsView.vue`
+
 ### Adding New Features (v2.x)
 
 1. Add feature to appropriate module in `src/` directory
 2. Update configuration in `src/core/config.js` with sensible defaults
-3. Add TypeScript definitions in `src/types/index.d.ts`
-4. Write unit tests in `tests/unit/`
-5. Update README.md options table
-6. Create modern example using ES6 imports
-7. Ensure ESLint compliance (`npm run lint`)
-8. Test across different gauge configurations
-9. Verify build outputs (`npm run build`)
+3. **MANDATORY: Update TypeScript definitions in `src/types/index.d.ts`**
+4. **MANDATORY: Update README.md options table with new configuration options**
+5. **MANDATORY: Update `configOptions` array in `docs/src/views/DocsView.vue`**
+6. Write unit tests in `tests/unit/`
+7. Create modern example using ES6 imports
+8. Ensure ESLint compliance (`npm run lint`)
+9. Test across different gauge configurations
+10. Verify build outputs (`npm run build`)
+11. **VERIFY: All three documentation sources are synchronized**
 
 ### Bug Fixes (v2.x)
 
 1. Identify root cause in `src/` modules (not legacy `justgage.js`)
 2. Create unit test reproducing the issue
 3. Fix in appropriate module (core, rendering, utils)
-4. Ensure fix works for all build outputs (ESM, CJS, UMD)
-5. Test with both modern and legacy examples
-6. Run full test suite (`npm run test`)
-7. Run build and lint process
+4. **If fix affects configuration options or methods: Update TypeScript types, README.md, and DocsView.vue**
+5. Ensure fix works for all build outputs (ESM, CJS, UMD)
+6. Test with both modern and legacy examples
+7. Run full test suite (`npm run test`)
+8. Run build and lint process
+9. **VERIFY: Documentation remains synchronized after changes**
 
 ### Legacy Support (v1.x)
 

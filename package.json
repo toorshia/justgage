@@ -1,6 +1,6 @@
 {
   "version": "1.7.0",
-  "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. Modern ES6+ implementation with native SVG rendering.",
+  "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. Modern ES6+ implementation with native SVG rendering (v2.0 modernized by robertsLando).",
   "type": "module",
   "main": "dist/justgage.cjs",
   "module": "dist/justgage.esm.js",
@@ -81,7 +81,26 @@
     "zero-dependencies"
   ],
   "author": "Bojan Djuricic <pindjur@gmail.com>",
+  "maintainers": [
+    {
+      "name": "Bojan Djuricic",
+      "email": "pindjur@gmail.com",
+      "url": "https://github.com/toorshia"
+    },
+    {
+      "name": "Daniel Sorridi (robertsLando)",
+      "email": "daniel.sorridi@gmail.com",
+      "url": "https://github.com/robertsLando",
+      "role": "v2.0 Modernization & Maintenance"
+    }
+  ],
   "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/toorshia/justgage/blob/master/LICENSE"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/toorshia/justgage/issues"
   },
