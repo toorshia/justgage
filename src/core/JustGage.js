@@ -1045,6 +1045,8 @@ export class JustGage {
     let fromValue;
     if (config.differential) {
       fromValue = (config.max + config.min) / 2; // Start from middle for differential
+    } else if (config.reverse) {
+      fromValue = config.max; // Start from max for reverse gauges
     } else {
       fromValue = config.min; // Start from min for regular gauges
     }
