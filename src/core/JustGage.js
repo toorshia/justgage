@@ -146,7 +146,7 @@ export class JustGage {
       dy,
       config.gaugeWidthScale || 1.0,
       config.donut,
-      config.differential
+      false // this is relevant only for level drawing
     );
 
     this.canvas.gauge = this.renderer.path(gaugePath).attr({
