@@ -22,23 +22,16 @@
   ],
   "scripts": {
     "build": "node esbuild.config.js",
-    "build:old": "grunt build && cp justgage.js docs/ && cp raphael.min.js docs/ && git add dist/* docs/*",
-    "dev": "node esbuild.config.js --watch",
-    "server": "npx http-server -c-1 -p 8000",
-    "build:watch": "node esbuild.config.js --watch",
+    "build:watch": "node --watch-path=./src esbuild.config.js",
     "test": "node --test tests/**/*.test.js",
     "test:watch": "node --test --watch tests/**/*.test.js",
     "lint": "eslint src/ tests/",
     "lint:fix": "eslint --fix src/ tests/",
-    "changelog": "auto-changelog -p && git add CHANGELOG.md",
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/toorshia/justgage.git"
-  },
-  "auto-changelog": {
-    "commitLimit": false
   },
   "release-it": {
     "github": {
@@ -52,15 +45,21 @@
     },
     "hooks": {
       "before:init": [
-        "npm run lint"
+        "npm run lint",
+        "npm test"
       ],
       "after:bump": [
-        "npm run build",
-        "npm run changelog"
+        "npm run build"
       ]
     },
     "npm": {
       "publish": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
     }
   },
   "keywords": [
@@ -88,21 +87,14 @@
   },
   "homepage": "https://github.com/toorshia/justgage",
   "devDependencies": {
-    "auto-changelog": "^2.4.0",
-    "esbuild": "^0.19.12",
+    "@release-it/conventional-changelog": "^10.0.1",
+    "esbuild": "^0.25.10",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "globals": "^16.4.0",
-    "grunt": "^1.5.3",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-concat": "^2.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify-es": "^3.3.0",
-    "grunt-contrib-watch": "^1.1.0",
     "jsdom": "^27.0.0",
-    "matchdep": "^2.0.0",
     "prettier": "^3.6.2",
-    "release-it": "^15.5.0"
+    "release-it": "^19.0.5"
   }
 }
