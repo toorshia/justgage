@@ -5,6 +5,11 @@
 import { kvLookup, uuid, extend, isUndefined } from '../utils/helpers.js';
 
 /**
+ * Gauge geometry constants
+ */
+export const GAUGE_WIDTH_DIVISOR = 20 / 3; // 6.666666666666667 - divisor for calculating inner radius
+
+/**
  * Default configuration values
  */
 export const DEFAULT_CONFIG = {

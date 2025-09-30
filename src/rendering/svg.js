@@ -13,12 +13,11 @@ const createSVGElement = tagName => {
 };
 
 /**
- * SVGRenderer - Native SVG rendering class for creating gauge graphics
- *
- * @class SVGRenderer
- * @description Provides a RaphaelJS-compatible API using native browser SVG APIs.
- * Handles creation and manipulation of SVG elements for gauge rendering.
+ * SVG Renderer for JustGage - Modern implementation using native SVG APIs
+ * Replaces RaphaelJS dependency from v1.x
  */
+
+import { GAUGE_WIDTH_DIVISOR } from '../core/config.js';
 export class SVGRenderer {
   /**
    * Create a new SVG renderer instance
@@ -187,7 +186,7 @@ export class SVGRenderer {
     if (donut) {
       alpha = (1 - (2 * (value - min)) / (max - min)) * Math.PI;
       Ro = widgetW / 2 - widgetW / 30;
-      Ri = Ro - (widgetW / 6.666666666666667) * gaugeWidthScale;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
       Cx = widgetW / 2 + dx;
       Cy = widgetH / 2 + dy;
@@ -212,7 +211,7 @@ export class SVGRenderer {
     } else if (isDiff) {
       alpha = (1 - (value - min) / (max - min)) * Math.PI;
       Ro = widgetW / 2 - widgetW / 10;
-      Ri = Ro - (widgetW / 6.666666666666667) * gaugeWidthScale;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
       Cx = widgetW / 2 + dx;
       Cy = widgetH / 1.25 + dy;
@@ -236,7 +235,7 @@ export class SVGRenderer {
       // Standard gauge
       alpha = (1 - (value - min) / (max - min)) * Math.PI;
       Ro = widgetW / 2 - widgetW / 10;
-      Ri = Ro - (widgetW / 6.666666666666667) * gaugeWidthScale;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
       Cx = widgetW / 2 + dx;
       Cy = widgetH / 1.25 + dy;

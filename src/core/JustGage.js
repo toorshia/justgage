@@ -1,4 +1,4 @@
-import { createConfig } from './config.js';
+import { createConfig, GAUGE_WIDTH_DIVISOR } from './config.js';
 import { SVGRenderer } from '../rendering/svg.js';
 import { isNumber } from '../utils/helpers.js';
 import { isHexColor, getColor } from '../utils/colors.js';
@@ -292,7 +292,7 @@ export class JustGage {
     // Calculate radii using widget width (not canvas width)
     const outerRadius = config.donut ? widgetW / 2 - widgetW / 30 : widgetW / 2 - widgetW / 10;
     const gaugeWidthScale = config.gaugeWidthScale || 1.0;
-    const innerRadius = outerRadius - (widgetW / 6.666666666666667) * gaugeWidthScale;
+    const innerRadius = outerRadius - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
     return { cx, cy, outerRadius, innerRadius, widgetW, widgetH, dx, dy };
   }
@@ -387,9 +387,9 @@ export class JustGage {
       }
 
       // Original positioning: based on widget width and scale with offsets
-      const minX = dx + widgetW / 10 + ((widgetW / 6.666666666666667) * gaugeWidthScale) / 2;
+      const minX = dx + widgetW / 10 + ((widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale) / 2;
       const maxX =
-        dx + widgetW - widgetW / 10 - ((widgetW / 6.666666666666667) * gaugeWidthScale) / 2;
+        dx + widgetW - widgetW / 10 - ((widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale) / 2;
       const minY = minMaxLabelY;
       const maxY = minMaxLabelY; // Determine min text based on configuration
       let minText = config.min;
@@ -498,7 +498,7 @@ export class JustGage {
     if (donut) {
       alpha = (1 - (2 * (value - min)) / (max - min)) * Math.PI;
       Ro = widgetW / 2 - widgetW / 30;
-      Ri = Ro - (widgetW / 6.666666666666667) * gws;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gws;
 
       Cy = widgetH / 2 + dy;
 
@@ -521,7 +521,7 @@ export class JustGage {
     } else {
       alpha = (1 - (value - min) / (max - min)) * Math.PI;
       Ro = widgetW / 2 - widgetW / 10;
-      Ri = Ro - (widgetW / 6.666666666666667) * gws;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gws;
 
       Cy = widgetH / 1.25 + dy;
 
@@ -590,12 +590,12 @@ export class JustGage {
     }
 
     let Ro = widgetW / 2 - widgetW / 10;
-    let Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
+    let Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * config.gaugeWidthScale;
     let Cx, Cy, Xo, Yo, Xi, Yi;
 
     if (config.donut) {
       Ro = widgetW / 2 - widgetW / 30;
-      Ri = Ro - (widgetW / 6.666666666666667) * config.gaugeWidthScale;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * config.gaugeWidthScale;
 
       Cx = widgetW / 2 + dx;
       Cy = widgetH / 2 + dy;
@@ -948,32 +948,6 @@ export class JustGage {
 
       default:
         console.warn(`JustGage: "${option}" is not a supported update setting`); // eslint-disable-line no-console
-    }
-  }
-
-  /**
-   * Update visual elements
-   * @private
-   */
-  _updateVisuals() {
-    if (!this.canvas || !this.renderer) return;
-
-    // Update value level
-    if (this.canvas.level) {
-      this.canvas.level.remove();
-    }
-    this._drawLevel();
-
-    // Update value text
-    if (this.canvas.value) {
-      const displayValue = this._formatValue(this.config.value);
-      this.canvas.value.text(displayValue);
-    }
-
-    // Update pointer if enabled
-    if (this.config.pointer && this.canvas.pointer) {
-      this.canvas.pointer.remove();
-      this._drawPointer();
     }
   }
 
