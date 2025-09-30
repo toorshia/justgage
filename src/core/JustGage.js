@@ -720,6 +720,9 @@ export class JustGage {
       throw new Error('JustGage: refresh() requires a numeric value');
     }
 
+    // Store current value to animate from
+    const currentValue = this._getCurrentDisplayValue();
+
     // Store original value for display formatting (before clamping)
     const originalVal = val;
 
@@ -799,9 +802,6 @@ export class JustGage {
       this.canvas.targetLine = null;
       hadTargetLine = true;
     }
-
-    // Store current value to animate from
-    const currentValue = this._getCurrentDisplayValue();
 
     // Animate level change with proper animation using new animator
     this.animator.animate({
