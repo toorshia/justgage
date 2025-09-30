@@ -80,17 +80,25 @@ export class GaugeAnimator {
 
   /**
    * Apply easing function to progress
+   * Ref: https://github.com/DmitryBaranovskiy/raphael/blob/master/raphael.js#L4161
    * @private
    */
   _applyEasing(progress, easing) {
     switch (easing) {
       case 'linear':
+      case '-':
         return progress;
       case '>':
-        return progress ** 1.7;
+      case 'easeOut':
+      case 'ease-out':
+        return Math.pow(progress, 0.48);
       case '<':
-        return progress ** 0.48;
+      case 'easeIn':
+      case 'ease-in':
+        return Math.pow(progress, 1.7);
       case '<>':
+      case 'easeInOut':
+      case 'ease-in-out':
         return progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
       case 'bounce':
         return this._bounceEasing(progress);
@@ -98,12 +106,14 @@ export class GaugeAnimator {
         return (
           Math.pow(2, -10 * progress) * Math.sin(((progress - 0.075) * (2 * Math.PI)) / 0.3) + 1
         );
-      case 'backIn': {
+      case 'backIn':
+      case 'back-in': {
         const c1 = 1.70158;
         const c3 = c1 + 1;
         return c3 * progress * progress * progress - c1 * progress * progress;
       }
-      case 'backOut': {
+      case 'backOut':
+      case 'back-out': {
         const c2 = 1.70158;
         const c4 = c2 + 1;
         return 1 + c4 * Math.pow(progress - 1, 3) + c2 * Math.pow(progress - 1, 2);
