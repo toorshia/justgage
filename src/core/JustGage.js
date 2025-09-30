@@ -157,8 +157,10 @@ export class JustGage {
     // Apply donut rotation to background gauge (like original)
     this._applyDonutRotation(this.canvas.gauge, config, widgetW, widgetH, dx, dy);
 
-    // Draw value level (start from minimum for animation)
-    this._drawLevel(config.min);
+    // Draw value level (start from appropriate value for animation)
+    // Differential gauges start from middle (0), regular gauges from min
+    const startValue = config.differential ? (config.max + config.min) / 2 : config.min;
+    this._drawLevel(startValue);
 
     // Draw labels
     this._drawLabels();
@@ -1036,9 +1038,20 @@ export class JustGage {
       return;
     }
 
-    // Start animation from min to target value using new animator
+    // Determine starting value based on gauge type:
+    // - Differential gauges start from middle
+    // - Regular gauges start from min
+    // - Reverse changes the direction but uses same starting logic
+    let fromValue;
+    if (config.differential) {
+      fromValue = (config.max + config.min) / 2; // Start from middle for differential
+    } else {
+      fromValue = config.min; // Start from min for regular gauges
+    }
+
+    // Start animation from appropriate starting value to target value
     this.animator.animate({
-      fromValue: config.min,
+      fromValue: fromValue,
       toValue: config.value,
       duration: config.startAnimationTime,
       easing: config.startAnimationType,
