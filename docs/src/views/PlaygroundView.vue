@@ -835,12 +835,14 @@ const config = reactive({
 });
 
 const animationTypes = [
-  { title: 'Linear', value: '-' },
+  { title: 'Linear', value: 'linear' },
   { title: 'Ease In', value: '<' },
   { title: 'Ease Out', value: '>' },
   { title: 'Ease In Out', value: '<>' },
   { title: 'Bounce', value: 'bounce' },
   { title: 'Elastic', value: 'elastic' },
+  { title: 'Back In', value: 'backIn' },
+  { title: 'Back Out', value: 'backOut' },
 ];
 
 // Formatted config for display

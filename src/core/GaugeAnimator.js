@@ -87,13 +87,27 @@ export class GaugeAnimator {
       case 'linear':
         return progress;
       case '>':
-        return progress * progress;
+        return progress ** 1.7;
       case '<':
-        return 1 - (1 - progress) * (1 - progress);
+        return progress ** 0.48;
       case '<>':
         return progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
       case 'bounce':
         return this._bounceEasing(progress);
+      case 'elastic':
+        return (
+          Math.pow(2, -10 * progress) * Math.sin(((progress - 0.075) * (2 * Math.PI)) / 0.3) + 1
+        );
+      case 'backIn': {
+        const c1 = 1.70158;
+        const c3 = c1 + 1;
+        return c3 * progress * progress * progress - c1 * progress * progress;
+      }
+      case 'backOut': {
+        const c2 = 1.70158;
+        const c4 = c2 + 1;
+        return 1 + c4 * Math.pow(progress - 1, 3) + c2 * Math.pow(progress - 1, 2);
+      }
       default:
         return progress;
     }

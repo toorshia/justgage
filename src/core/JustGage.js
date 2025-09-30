@@ -197,7 +197,7 @@ export class JustGage {
     }
 
     // Get level color using original value (not reversed)
-    const color = this._getLevelColor(targetValue);
+    const color = this._getLevelColor(config.value);
 
     // Draw level arc using original path generation with potentially reversed value
     const levelPath = this.renderer.createGaugePath(

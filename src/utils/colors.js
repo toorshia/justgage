@@ -73,7 +73,7 @@ export function getColor(val, pct, col, noGradient, custSec) {
       if (noGradient) {
         return `rgb(${[colors[j].color.r, colors[j].color.g, colors[j].color.b].join(',')})`;
       } else {
-        lower = colors[j - 1];
+        lower = colors[j - 1] || colors[0];
         upper = colors[j];
         range = upper.pct - lower.pct;
         rangePct = (pct - lower.pct) / range;
