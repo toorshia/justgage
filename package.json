@@ -1,4 +1,5 @@
 {
+  "name": "justgage",
   "version": "1.7.0",
   "description": "JustGage is a handy JavaScript plugin for generating and animating nice & clean gauges. Modern ES6+ implementation with native SVG rendering (v2.0 modernized by robertsLando).",
   "type": "module",
