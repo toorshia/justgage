@@ -72,6 +72,9 @@ export class JustGage {
     this.config = createConfig(config, dataset);
     this.originalValue = config.value ?? -1;
 
+    // Cache for geometry calculations
+    this._geometryCache = null;
+
     // Initialize gauge
     this._initializeGauge();
   }
@@ -155,11 +158,7 @@ export class JustGage {
     });
 
     // Apply donut rotation to background gauge (like original)
-    if (config.donut) {
-      this.canvas.gauge.transform(
-        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
-      );
-    }
+    this._applyDonutRotation(this.canvas.gauge, config, widgetW, widgetH, dx, dy);
 
     // Draw value level (start from minimum for animation)
     this._drawLevel(config.min);
@@ -229,19 +228,28 @@ export class JustGage {
       });
 
       // Apply donut rotation to start from top (like original)
-      if (config.donut) {
-        this.canvas.level.transform(
-          `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
-        );
-      }
+      this._applyDonutRotation(this.canvas.level, config, widgetW, widgetH, dx, dy);
     }
   }
 
   /**
+   * Invalidate the geometry cache when config changes
+   * @private
+   */
+  _invalidateGeometryCache() {
+    this._geometryCache = null;
+  }
+
+  /**
    * Calculate consistent gauge geometry for both arc and text positioning
+   * Uses caching to avoid redundant calculations
    * @private
    */
   _calculateGaugeGeometry() {
+    // Return cached result if available
+    if (this._geometryCache) {
+      return this._geometryCache;
+    }
     const config = this.config;
     const w = config.width;
     const h = config.height;
@@ -291,7 +299,70 @@ export class JustGage {
     const gaugeWidthScale = config.gaugeWidthScale || 1.0;
     const innerRadius = outerRadius - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
-    return { cx, cy, outerRadius, innerRadius, widgetW, widgetH, dx, dy };
+    // Cache the result
+    this._geometryCache = { cx, cy, outerRadius, innerRadius, widgetW, widgetH, dx, dy };
+    return this._geometryCache;
+  }
+
+  /**
+   * Calculate font sizes for different text elements
+   * @param {number} widgetH - Widget height
+   * @param {object} config - Configuration object
+   * @returns {object} Object containing all calculated font sizes
+   * @private
+   */
+  _calculateFontSizes(widgetH, config) {
+    const titleFontSize = Math.max(widgetH / 16, 10);
+
+    const valueFontSize = config.donut
+      ? widgetH / 6.4 > 16
+        ? widgetH / 5.4
+        : 18
+      : widgetH / 6.5 > config.valueMinFontSize
+        ? widgetH / 6.5
+        : config.valueMinFontSize;
+
+    const labelFontSize = config.donut
+      ? widgetH / 16 > 10
+        ? widgetH / 16
+        : 10
+      : widgetH / 16 > config.labelMinFontSize
+        ? widgetH / 16
+        : config.labelMinFontSize;
+
+    const minMaxLabelFontSize = config.donut
+      ? widgetH / 16 > 10
+        ? widgetH / 16
+        : 10
+      : widgetH / 16 > config.minLabelMinFontSize
+        ? widgetH / 16
+        : config.minLabelMinFontSize;
+
+    return {
+      title: titleFontSize,
+      value: valueFontSize,
+      label: labelFontSize,
+      minMax: minMaxLabelFontSize,
+    };
+  }
+
+  /**
+   * Apply donut rotation to an element if donut mode is enabled
+   * @param {object} element - SVG element to rotate
+   * @param {object} config - Configuration object
+   * @param {number} widgetW - Widget width
+   * @param {number} widgetH - Widget height
+   * @param {number} dx - X offset
+   * @param {number} dy - Y offset
+   * @private
+   */
+  _applyDonutRotation(element, config, widgetW, widgetH, dx, dy, rotationOverride = null) {
+    if (config.donut) {
+      const centerX = widgetW / 2 + dx;
+      const centerY = widgetH / 2 + dy;
+      const rotation = rotationOverride || config.donutStartAngle || 90;
+      element.transform(`rotate(${rotation} ${centerX} ${centerY})`);
+    }
   }
 
   /**
@@ -304,21 +375,14 @@ export class JustGage {
     // Use consistent geometry calculations
     const { cx, cy, widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
-    // Calculate proportional font sizes using original formulas
-    const titleFontSize = Math.max(widgetH / 16, 10);
-    const valueFontSize = config.donut
-      ? widgetH / 6.4 > 16
-        ? widgetH / 5.4
-        : 18
-      : widgetH / 6.5 > config.valueMinFontSize
-        ? widgetH / 6.5
-        : config.valueMinFontSize;
+    // Calculate all font sizes
+    const fontSizes = this._calculateFontSizes(widgetH, config);
 
     // Title
     if (config.title) {
       this.canvas.title = this.renderer.text(cx, cy - widgetH / 16, config.title).attr({
         'font-family': config.titleFontFamily,
-        'font-size': titleFontSize,
+        'font-size': fontSizes.title,
         'font-weight': config.titleFontWeight,
         'text-anchor': 'middle',
         fill: config.titleFontColor,
@@ -339,29 +403,20 @@ export class JustGage {
 
       this.canvas.value = this.renderer.text(valueX, valueY, displayValue).attr({
         'font-family': config.valueFontFamily,
-        'font-size': valueFontSize,
+        'font-size': fontSizes.value,
         'font-weight': 'bold',
         'text-anchor': 'middle',
         fill: config.valueFontColor,
       });
     }
 
-    // Calculate label font size (used by both main label and min/max positioning)
-    const labelFontSize = config.donut
-      ? widgetH / 16 > 10
-        ? widgetH / 16
-        : 10
-      : widgetH / 16 > config.labelMinFontSize
-        ? widgetH / 16
-        : config.labelMinFontSize;
-
     // Main label (units like %, km/h, etc.)
     if (config.label) {
-      const labelY = config.donut ? valueY + labelFontSize : valueY + valueFontSize / 2 + 5;
+      const labelY = config.donut ? valueY + fontSizes.label : valueY + fontSizes.value / 2 + 5;
 
       this.canvas.label = this.renderer.text(valueX, labelY, config.label).attr({
         'font-family': config.labelFontFamily,
-        'font-size': labelFontSize,
+        'font-size': fontSizes.label,
         'text-anchor': 'middle',
         fill: config.labelFontColor,
       });
@@ -377,10 +432,10 @@ export class JustGage {
       // For regular: labelY = valueY + valueFontSize / 2 + 5
       let minMaxLabelY;
       if (config.donut) {
-        minMaxLabelY = valueY + labelFontSize;
+        minMaxLabelY = valueY + fontSizes.label;
       } else {
         // Use original formula exactly as in original JustGage
-        minMaxLabelY = valueY + valueFontSize / 2 + 5;
+        minMaxLabelY = valueY + fontSizes.value / 2 + 5;
       }
 
       // Original positioning: based on widget width and scale with offsets
@@ -388,46 +443,22 @@ export class JustGage {
       const maxX =
         dx + widgetW - widgetW / 10 - ((widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale) / 2;
       const minY = minMaxLabelY;
-      const maxY = minMaxLabelY; // Determine min text based on configuration
-      let minText = config.min;
-      if (config.minTxt) {
-        minText = config.minTxt;
-      } else if (config.humanFriendly) {
-        minText = this._humanFriendlyNumber(config.min, config.humanFriendlyDecimal);
-      } else if (config.formatNumber) {
-        minText = this._formatNumber(config.min);
-      }
-
-      // Determine max text based on configuration
-      let maxText = config.max;
-      if (config.maxTxt) {
-        maxText = config.maxTxt;
-      } else if (config.humanFriendly) {
-        maxText = this._humanFriendlyNumber(config.max, config.humanFriendlyDecimal);
-      } else if (config.formatNumber) {
-        maxText = this._formatNumber(config.max);
-      }
-
-      // Calculate proportional min/max label font size
-      const minMaxLabelFontSize = config.donut
-        ? widgetH / 16 > 10
-          ? widgetH / 16
-          : 10
-        : widgetH / 16 > config.minLabelMinFontSize
-          ? widgetH / 16
-          : config.minLabelMinFontSize;
+      const maxY = minMaxLabelY;
+      // Determine min and max text using utility function
+      const minText = this._formatDisplayText(config.min, config, 'min');
+      const maxText = this._formatDisplayText(config.max, config, 'max');
 
       if (!config.reverse) {
         this.canvas.min = this.renderer.text(minX, minY, minText).attr({
           'font-family': config.labelFontFamily,
-          'font-size': minMaxLabelFontSize,
+          'font-size': fontSizes.minMax,
           'text-anchor': 'middle',
           fill: config.labelFontColor,
         });
 
         this.canvas.max = this.renderer.text(maxX, maxY, maxText).attr({
           'font-family': config.labelFontFamily,
-          'font-size': minMaxLabelFontSize,
+          'font-size': fontSizes.minMax,
           'text-anchor': 'middle',
           fill: config.labelFontColor,
         });
@@ -435,14 +466,14 @@ export class JustGage {
         // Reverse positions for reversed gauge
         this.canvas.min = this.renderer.text(maxX, maxY, minText).attr({
           'font-family': config.labelFontFamily,
-          'font-size': minMaxLabelFontSize,
+          'font-size': fontSizes.minMax,
           'text-anchor': 'middle',
           fill: config.labelFontColor,
         });
 
         this.canvas.max = this.renderer.text(minX, minY, maxText).attr({
           'font-family': config.labelFontFamily,
-          'font-size': minMaxLabelFontSize,
+          'font-size': fontSizes.minMax,
           'text-anchor': 'middle',
           fill: config.labelFontColor,
         });
@@ -549,12 +580,15 @@ export class JustGage {
     });
 
     // Apply donut rotation if needed
-    if (donut) {
-      const centerX = widgetW / 2 + dx;
-      const centerY = widgetH / 2 + dy;
-      const rotation = config.donutStartAngle || 90;
-      this.canvas.pointer.transform(`rotate(${rotation} ${centerX} ${centerY})`);
-    }
+    this._applyDonutRotation(
+      this.canvas.pointer,
+      config,
+      widgetW,
+      widgetH,
+      dx,
+      dy,
+      config.donutStartAngle || 90
+    );
   }
 
   /**
@@ -620,11 +654,7 @@ export class JustGage {
     });
 
     // Apply donut rotation if needed (same as gauge elements)
-    if (config.donut && config.donutStartAngle) {
-      this.canvas.targetLine.transform(
-        `rotate(${config.donutStartAngle} ${widgetW / 2 + dx} ${widgetH / 2 + dy})`
-      );
-    }
+    this._applyDonutRotation(this.canvas.targetLine, config, widgetW, widgetH, dx, dy);
   }
 
   /**
@@ -641,53 +671,56 @@ export class JustGage {
   }
 
   /**
+   * Format text for display based on configuration
+   * @param {number} value - The numeric value to format
+   * @param {object} config - Configuration object
+   * @param {string} textType - Type of text ('min', 'max', 'value')
+   * @returns {string} Formatted text
+   * @private
+   */
+  _formatDisplayText(value, config, textType = 'value') {
+    // Handle custom text overrides first
+    if (textType === 'min' && config.minTxt) {
+      return config.minTxt;
+    }
+    if (textType === 'max' && config.maxTxt) {
+      return config.maxTxt;
+    }
+
+    // Apply formatting based on configuration
+    if (config.humanFriendly) {
+      return (
+        humanFriendlyNumber(value, config.humanFriendlyDecimal) +
+        (textType === 'value' ? config.symbol : '')
+      );
+    } else if (config.formatNumber) {
+      const formatted = formatNumber(
+        textType === 'value' ? (value * 1).toFixed(config.decimals) : value
+      );
+      return formatted + (textType === 'value' ? config.symbol : '');
+    } else if (textType === 'value' && config.displayRemaining) {
+      return ((config.max - value) * 1).toFixed(config.decimals) + config.symbol;
+    } else {
+      const formatted = textType === 'value' ? (value * 1).toFixed(config.decimals) : value;
+      return formatted + (textType === 'value' ? config.symbol : '');
+    }
+  }
+
+  /**
    * Format value for display
    * @private
    */
   _formatValue(value) {
     const config = this.config;
-    let displayVal = value;
 
     if (config.textRenderer && typeof config.textRenderer === 'function') {
-      const renderedValue = config.textRenderer(displayVal);
+      const renderedValue = config.textRenderer(value);
       if (renderedValue !== false) {
         return renderedValue;
       }
     }
 
-    if (config.humanFriendly) {
-      displayVal =
-        this._humanFriendlyNumber(displayVal, config.humanFriendlyDecimal) + config.symbol;
-    } else if (config.formatNumber) {
-      displayVal = this._formatNumber((displayVal * 1).toFixed(config.decimals)) + config.symbol;
-    } else if (config.displayRemaining) {
-      displayVal = ((config.max - displayVal) * 1).toFixed(config.decimals) + config.symbol;
-    } else {
-      displayVal = (displayVal * 1).toFixed(config.decimals) + config.symbol;
-    }
-
-    return displayVal;
-  }
-
-  /**
-   * Convert large numbers to human friendly format (e.g. 1234567 -> 1.23M)
-   * @param {number} n - Number to format
-   * @param {number} d - Decimal places
-   * @returns {string} Human friendly number
-   * @private
-   */
-  _humanFriendlyNumber(n, d) {
-    return humanFriendlyNumber(n, d);
-  }
-
-  /**
-   * Format number with commas
-   * @param {string|number} x - Number to format
-   * @returns {string} Formatted number
-   * @private
-   */
-  _formatNumber(x) {
-    return formatNumber(x);
+    return this._formatDisplayText(value, config, 'value');
   }
 
   /**
@@ -719,15 +752,7 @@ export class JustGage {
 
       // Update min text display
       if (this.canvas.min) {
-        let minText = this.config.min;
-        if (this.config.minTxt) {
-          minText = this.config.minTxt;
-        } else if (this.config.humanFriendly) {
-          minText = humanFriendlyNumber(this.config.min, this.config.humanFriendlyDecimal);
-        } else if (this.config.formatNumber) {
-          minText = formatNumber(this.config.min);
-        }
-
+        const minText = this._formatDisplayText(this.config.min, this.config, 'min');
         this.canvas.min.attr({ text: minText });
       }
     }
@@ -738,15 +763,7 @@ export class JustGage {
 
       // Update max text display
       if (this.canvas.max) {
-        let maxText = this.config.max;
-        if (this.config.maxTxt) {
-          maxText = this.config.maxTxt;
-        } else if (this.config.humanFriendly) {
-          maxText = humanFriendlyNumber(this.config.max, this.config.humanFriendlyDecimal);
-        } else if (this.config.formatNumber) {
-          maxText = formatNumber(this.config.max);
-        }
-
+        const maxText = this._formatDisplayText(this.config.max, this.config, 'max');
         this.canvas.max.attr({ text: maxText });
       }
     }
@@ -778,6 +795,11 @@ export class JustGage {
     }
 
     this.config.value = val * 1;
+
+    // Invalidate geometry cache if min/max changed
+    if (isNumber(min) || isNumber(max)) {
+      this._invalidateGeometryCache();
+    }
 
     // Update value display
     if (!this.config.counter && !this.config.hideValue && this.canvas.value) {
@@ -1081,17 +1103,11 @@ export class JustGage {
     const config = this.config;
     let displayValue = value;
 
-    // Apply text formatting like original
+    // Apply text formatting
     if (config.textRenderer && config.textRenderer(displayValue) !== false) {
       displayValue = config.textRenderer(displayValue);
-    } else if (config.humanFriendly) {
-      displayValue = humanFriendlyNumber(displayValue, config.humanFriendlyDecimal) + config.symbol;
-    } else if (config.formatNumber) {
-      displayValue = formatNumber(displayValue) + config.symbol;
-    } else if (config.displayRemaining) {
-      displayValue = ((config.max - displayValue) * 1).toFixed(config.decimals) + config.symbol;
     } else {
-      displayValue = (displayValue * 1).toFixed(config.decimals) + config.symbol;
+      displayValue = this._formatDisplayText(value, config, 'value');
     }
 
     if (this.canvas.value && !this.config.hideValue) {
