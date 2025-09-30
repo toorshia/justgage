@@ -251,8 +251,7 @@ JustGage is a popular gauge visualization library with the following characteris
   - `dist/justgage.esm.js` - ES6 module build
   - `dist/justgage.cjs` - CommonJS build
   - `dist/justgage.umd.js` - UMD build for browsers
-- `docs/` - Documentation website and examples
-- `docs/examples/` - HTML examples demonstrating various features
+- `docs/` - Documentation website + playground
 
 ### Legacy Files (maintained for compatibility)
 
@@ -363,12 +362,10 @@ The `npm run build` command:
 
 ### Manual Testing
 
-- Test examples in `docs/examples/` directory (legacy v1.x examples)
-- Create modern test files using `dist/justgage.esm.js` imports
-- Verify responsive behavior and SVG rendering
-- Check animation performance with native SVG
-- Validate in multiple browsers for SVG compatibility
-- Test both legacy and modern API compatibility
+- Start documentation site (`docs/`) for interactive testing
+- Go to playground and apply configurations to test visually
+- Take screenshots for visual regression checks
+- Compare legacy with modern implementation in playground
 
 ## Documentation Guidelines
 
@@ -439,12 +436,6 @@ The `npm run build` command:
 - **API Compatibility**: Core API methods preserved for backward compatibility
 - **Performance**: Significant improvement due to native SVG vs RaphaelJS
 
-### Known Issues
-
-- Some v1.x examples may need updates for v2.x imports
-- Legacy RaphaelJS-based examples in `docs/examples/` need modernization
-- Need comprehensive test coverage for all SVG rendering methods
-
 ## Important Considerations
 
 ### Backward Compatibility
@@ -494,7 +485,6 @@ The `npm run build` command:
 
 - For v1.x issues, work with `justgage.js` and RaphaelJS
 - Consider if fix should be ported to v2.x architecture
-- Maintain compatibility with existing `docs/examples/`
 
 ### Documentation Updates
 

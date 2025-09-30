@@ -23,13 +23,17 @@ export class SVGRenderer {
    * Create a new SVG renderer instance
    *
    * @param {HTMLElement} container - DOM element to render SVG into
-   * @param {number} width - SVG canvas width in pixels
-   * @param {number} height - SVG canvas height in pixels
+   * @param {number|string} width - SVG canvas width (pixels or percentage)
+   * @param {number|string} height - SVG canvas height (pixels or percentage)
+   * @param {number} [viewBoxWidth] - ViewBox width (defaults to width)
+   * @param {number} [viewBoxHeight] - ViewBox height (defaults to height)
    */
-  constructor(container, width, height) {
+  constructor(container, width, height, viewBoxWidth, viewBoxHeight) {
     this.container = container;
     this.width = width;
     this.height = height;
+    this.viewBoxWidth = viewBoxWidth || width;
+    this.viewBoxHeight = viewBoxHeight || height;
     this.svg = null;
     this.elements = new Map();
     this.init();
@@ -40,8 +44,13 @@ export class SVGRenderer {
     this.svg = createSVGElement('svg');
     this.svg.setAttribute('width', this.width);
     this.svg.setAttribute('height', this.height);
-    this.svg.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
+    this.svg.setAttribute('viewBox', `0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}`);
     this.svg.style.overflow = 'hidden';
+
+    // Enable responsive scaling when using relative sizing
+    if (typeof this.width === 'string' && this.width.includes('%')) {
+      this.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    }
 
     // Clear container and add SVG
     this.container.innerHTML = '';

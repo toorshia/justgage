@@ -73,7 +73,7 @@ export interface JustGageConfig {
   donutStartAngle?: number;
   /** Differential gauge (fill from center) */
   differential?: boolean;
-  /** Relative gauge sizing */
+  /** Whether gauge size should follow container element size changes (responsive scaling) */
   relativeGaugeSize?: boolean;
   /** Human-friendly number formatting */
   humanFriendly?: boolean;

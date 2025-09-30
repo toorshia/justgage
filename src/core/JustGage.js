@@ -81,23 +81,44 @@ export class JustGage {
    * @private
    */
   _initializeGauge() {
-    // Determine dimensions like original JustGage
-    let width = this.config.width;
-    let height = this.config.height;
+    // Handle relative gauge sizing like legacy implementation
+    let width, height, viewBoxWidth, viewBoxHeight;
 
-    // If no dimensions specified, try to get from container
-    if (!width || !height) {
-      const rect = this.node.getBoundingClientRect();
-      if (!width) width = rect.width || 400;
-      if (!height) height = rect.height || 320;
+    if (this.config.relativeGaugeSize) {
+      // Use percentage-based sizing with fixed viewBox dimensions
+      width = '100%';
+      height = '100%';
 
-      // Update config with calculated dimensions
-      this.config.width = width;
-      this.config.height = height;
+      // Set viewBox dimensions based on gauge type (matching legacy behavior)
+      if (this.config.donut) {
+        viewBoxWidth = 200;
+        viewBoxHeight = 200;
+      } else {
+        viewBoxWidth = 200;
+        viewBoxHeight = 100;
+      }
+    } else {
+      // Use fixed dimensions like current implementation
+      width = this.config.width;
+      height = this.config.height;
+
+      // If no dimensions specified, try to get from container
+      if (!width || !height) {
+        const rect = this.node.getBoundingClientRect();
+        if (!width) width = rect.width || 400;
+        if (!height) height = rect.height || 320;
+
+        // Update config with calculated dimensions
+        this.config.width = width;
+        this.config.height = height;
+      }
+
+      viewBoxWidth = width;
+      viewBoxHeight = height;
     }
 
-    // Initialize SVG renderer
-    this.renderer = new SVGRenderer(this.node, width, height);
+    // Initialize SVG renderer with sizing configuration
+    this.renderer = new SVGRenderer(this.node, width, height, viewBoxWidth, viewBoxHeight);
 
     // Store references to drawn elements
     this.canvas = {
@@ -238,8 +259,16 @@ export class JustGage {
    */
   _calculateGaugeGeometry() {
     const config = this.config;
-    const w = config.width;
-    const h = config.height;
+
+    // Use viewBox dimensions for relative sizing, otherwise use config dimensions
+    let w, h;
+    if (config.relativeGaugeSize) {
+      w = this.renderer.viewBoxWidth;
+      h = this.renderer.viewBoxHeight;
+    } else {
+      w = config.width;
+      h = config.height;
+    }
 
     // Calculate widget dimensions and offsets like in _drawLabels
     let widgetW, widgetH, dx, dy;
