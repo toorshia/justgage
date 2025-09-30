@@ -4,6 +4,15 @@
  */
 
 /**
+ * Utility function to create SVG elements
+ * @param {string} tagName - SVG element tag name
+ * @returns {SVGElement} Created SVG element
+ */
+const createSVGElement = tagName => {
+  return document.createElementNS('http://www.w3.org/2000/svg', tagName);
+};
+
+/**
  * SVGRenderer - Native SVG rendering class for creating gauge graphics
  *
  * @class SVGRenderer
@@ -29,7 +38,7 @@ export class SVGRenderer {
 
   init() {
     // Create SVG element
-    this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this.svg = createSVGElement('svg');
     this.svg.setAttribute('width', this.width);
     this.svg.setAttribute('height', this.height);
     this.svg.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
@@ -44,7 +53,7 @@ export class SVGRenderer {
    * Create a circle element
    */
   circle(cx, cy, radius) {
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const circle = createSVGElement('circle');
     circle.setAttribute('cx', cx);
     circle.setAttribute('cy', cy);
     circle.setAttribute('r', radius);
@@ -57,7 +66,7 @@ export class SVGRenderer {
    * Create a rectangle element
    */
   rect(x, y, width, height) {
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    const rect = createSVGElement('rect');
     rect.setAttribute('x', x);
     rect.setAttribute('y', y);
     rect.setAttribute('width', width);
@@ -71,7 +80,7 @@ export class SVGRenderer {
    * Create a path element
    */
   path(pathData) {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const path = createSVGElement('path');
     path.setAttribute('d', pathData);
     this.svg.appendChild(path);
 
@@ -82,7 +91,7 @@ export class SVGRenderer {
    * Create a line element
    */
   line(x1, y1, x2, y2) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const line = createSVGElement('line');
     line.setAttribute('x1', x1);
     line.setAttribute('y1', y1);
     line.setAttribute('x2', x2);
@@ -96,7 +105,7 @@ export class SVGRenderer {
    * Create a text element
    */
   text(x, y, content) {
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    const text = createSVGElement('text');
     text.setAttribute('x', x);
     text.setAttribute('y', y);
     text.textContent = content;
@@ -280,7 +289,7 @@ export class SVGRenderer {
   getDefs() {
     let defs = this.svg.querySelector('defs');
     if (!defs) {
-      defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      defs = createSVGElement('defs');
       this.svg.appendChild(defs);
     }
     return defs;
@@ -305,24 +314,24 @@ export class SVGRenderer {
     }
 
     // Create filter element
-    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    const filter = createSVGElement('filter');
     filter.setAttribute('id', shadowId);
     defs.appendChild(filter);
 
     // Create offset for shadow
-    const feOffset = document.createElementNS('http://www.w3.org/2000/svg', 'feOffset');
+    const feOffset = createSVGElement('feOffset');
     feOffset.setAttribute('dx', 0);
     feOffset.setAttribute('dy', shadowConfig.verticalOffset || 0);
     filter.appendChild(feOffset);
 
     // Create blur effect
-    const feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+    const feGaussianBlur = createSVGElement('feGaussianBlur');
     feGaussianBlur.setAttribute('result', 'offset-blur');
     feGaussianBlur.setAttribute('stdDeviation', shadowConfig.size || 0);
     filter.appendChild(feGaussianBlur);
 
     // Create composite for inverse
-    const feComposite1 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    const feComposite1 = createSVGElement('feComposite');
     feComposite1.setAttribute('operator', 'out');
     feComposite1.setAttribute('in', 'SourceGraphic');
     feComposite1.setAttribute('in2', 'offset-blur');
@@ -330,14 +339,14 @@ export class SVGRenderer {
     filter.appendChild(feComposite1);
 
     // Create flood for shadow color
-    const feFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
+    const feFlood = createSVGElement('feFlood');
     feFlood.setAttribute('flood-color', 'black');
     feFlood.setAttribute('flood-opacity', shadowConfig.opacity || 0.5);
     feFlood.setAttribute('result', 'color');
     filter.appendChild(feFlood);
 
     // Create composite for shadow
-    const feComposite2 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    const feComposite2 = createSVGElement('feComposite');
     feComposite2.setAttribute('operator', 'in');
     feComposite2.setAttribute('in', 'color');
     feComposite2.setAttribute('in2', 'inverse');
@@ -345,7 +354,7 @@ export class SVGRenderer {
     filter.appendChild(feComposite2);
 
     // Create final composite
-    const feComposite3 = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    const feComposite3 = createSVGElement('feComposite');
     feComposite3.setAttribute('operator', 'over');
     feComposite3.setAttribute('in', 'shadow');
     feComposite3.setAttribute('in2', 'SourceGraphic');
