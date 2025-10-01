@@ -16,17 +16,22 @@
 Modern ES6+ JavaScript library for creating animated dashboard gauges using native SVG APIs
 
 <p align="center">
-  ⚡ **Zero Dependencies** •
-  💖 **Modern ES6+** •
-  🎛️ **Highly Customizable** •
-  📱 **Responsive Design** •
-  🚀 **High Performance** •
-  🛡️ **Battle Tested**
+  <span style="font-weight: bold;">⚡ Zero Dependencies</span> &bull;
+  <span style="font-weight: bold;">💖 Modern ES6+</span> &bull;
+  <span style="font-weight: bold;">🎛️ Highly Customizable</span> &bull;
+  <span style="font-weight: bold;">📱 Responsive Design</span> &bull;
+  <span style="font-weight: bold;">🚀 High Performance</span> &bull;
+  <span style="font-weight: bold;">🛡️ Battle Tested</span>
 </p>
 
 <p align="center">
-  🎮 **[Try Live Demo & Playground](https://toorshia.github.io/justgage)** •
-  📚 **[Full Documentation](https://toorshia.github.io/justgage/docs)**
+  <a href="https://toorshia.github.io/justgage" style="font-weight: bold; text-decoration: none;">
+    🎮 Try Live Demo &amp; Playground
+  </a>
+  &bull;
+  <a href="https://toorshia.github.io/justgage/docs" style="font-weight: bold; text-decoration: none;">
+    📚 Full Documentation
+  </a>
 </p>
 
 ## Quick Start
