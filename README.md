@@ -13,38 +13,27 @@
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/mit-license.php)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-[![NPM](https://nodei.co/npm/justgage.png?downloads=true)](https://nodei.co/npm/justgage/)
+Modern ES6+ JavaScript library for creating animated dashboard gauges using native SVG APIs
 
-JustGage is a handy JavaScript plugin for generating and animating nice &amp; clean dashboard gauges. **Version 2.0+ features a modern ES6+ implementation with native SVG rendering and zero dependencies.**
+⚡ **Zero Dependencies** •
+💖 **Modern ES6+** •
+🎛️ **Highly Customizable** •
+📱 **Responsive Design** •
+🚀 **High Performance** •
+🛡️ **Battle Tested**
 
-Live Demo & Documentation Site: [Demo](https://toorshia.github.io/justgage)
+🎮 **[Try Live Demo & Playground](https://toorshia.github.io/justgage)** •
+📚 **[Full Documentation](https://toorshia.github.io/justgage/docs)**
 
-> 🚀 **New in v2.0-alpha.1:** Zero dependencies, native SVG APIs, ES6 modules, TypeScript definitions, modular architecture, and significantly smaller bundle size! Migration from RaphaelJS to native browser SVG APIs.
+## Quick Start
 
-- [JustGage](#justgage)
-  - [Getting Started](#getting-started)
-    - [NPM Installation (Recommended)](#npm-installation-recommended)
-    - [ES6 Module Usage](#es6-module-usage)
-    - [Browser Module Usage](#browser-module-usage)
-    - [Legacy Browser Support (UMD)](#legacy-browser-support-umd)
-    - [CDN Usage](#cdn-usage)
-  - [Basic usage](#basic-usage)
-  - [Changelog](#changelog)
-  - [Contributing](#contributing)
-    - [Development Quick Start](#development-quick-start)
-    - [Important: Legacy Reference](#important-legacy-reference)
-  - [License](#license)
-  - [Author \& Maintainers](#author--maintainers)
-
-## Getting Started
-
-### NPM Installation (Recommended)
+### Installation
 
 ```bash
-npm install justgage --save
+npm install justgage
 ```
 
-### ES6 Module Usage
+### Basic Usage
 
 ```javascript
 import { JustGage } from 'justgage';
@@ -57,107 +46,12 @@ const gauge = new JustGage({
 });
 ```
 
-### Browser Module Usage
+## More Information
 
-```html
-<script type="module">
-  import { JustGage } from './node_modules/justgage/dist/justgage.esm.js';
-  // Your code here
-</script>
-```
-
-### Legacy Browser Support (UMD)
-
-```html
-<script src="./node_modules/justgage/dist/justgage.umd.js"></script>
-<script>
-  const gauge = new JustGage({
-    id: 'my-gauge',
-    value: 75,
-  });
-</script>
-```
-
-### CDN Usage
-
-```html
-<!-- ES Module from CDN -->
-<script type="module">
-  import { JustGage } from 'https://unpkg.com/justgage@2/dist/justgage.esm.js';
-  // Your code here
-</script>
-```
-
-## Basic usage
-
-**Html**
-
-```html
-<div id="gauge"></div>
-```
-
-**JS**
-
-```js
-var gauge = new JustGage({
-  id: 'gauge', // the id of the html element
-  value: 50,
-  min: 0,
-  max: 100,
-  decimals: 2,
-  gaugeWidthScale: 0.6,
-});
-
-// update the value randomly
-setInterval(() => {
-  gauge.refresh(Math.random() * 100);
-}, 5000);
-```
-
-## Changelog
-
-Check out the auto-generated [Changelog](CHANGELOG.md)
-
-Or [here](CHANGELOG_OLD.md) you can find the old changelog (up to version 1.2.9)
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
-
-- Development setup and workflow
-- Code standards and conventions
-- Testing requirements
-- Commit message format (Conventional Commits)
-- Pull request process
-
-### Development Quick Start
-
-```bash
-# Clone and setup
-git clone https://github.com/toorshia/justgage.git
-cd justgage
-npm install
-
-# Development
-npm run build          # Build all distributions
-npm test              # Run tests
-npm run lint          # Check code quality
-
-# Documentation site
-cd docs
-npm install
-npm run dev           # Start development server
-```
-
-### Important: Legacy Reference
-
-When working on features or fixes, always check `/docs/public/justgage.js` for the v1.x reference implementation (1728 lines). This file defines the expected behavior and API compatibility for migration from legacy versions.
-
-For more detailed information, see:
-
-- [GitHub Copilot Instructions](.github/copilot-instructions.md)
-- [Development Instructions](.copilot/instructions.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+- 📖 **[Complete Documentation](https://toorshia.github.io/justgage/docs)** - API reference, configuration options, and examples
+- 🎮 **[Interactive Playground](https://toorshia.github.io/justgage/playground)** - Try different configurations live
+- 🚀 **[Migration Guide](https://toorshia.github.io/justgage/docs#migration)** - Upgrading from v1.x to v2.0+
+- 🤝 **[Contributing](CONTRIBUTING.md)** - Development setup and contribution guidelines
 
 ## License
 
