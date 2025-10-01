@@ -186,10 +186,16 @@ export class JustGage {
     // Apply donut rotation to background gauge (like original)
     this._applyDonutRotation(this.canvas.gauge, config, widgetW, widgetH, dx, dy);
 
-    // Draw value level (start from appropriate value for animation)
-    // Differential gauges start from middle (0), regular gauges from min
-    const startValue = config.differential ? (config.max + config.min) / 2 : config.min;
-    this._drawLevel(startValue);
+    // Draw value level or sector colors based on configuration
+    if (config.showSectorColors) {
+      // Draw static sector colors once (uses customSectors, levelColors, or gaugeColor)
+      this._drawSectorColors();
+    } else {
+      // Draw value level (start from appropriate value for animation)
+      // Differential gauges start from middle (0), regular gauges from min
+      const startValue = config.differential ? (config.max + config.min) / 2 : config.min;
+      this._drawLevel(startValue);
+    }
 
     // Draw labels
     this._drawLabels();
@@ -212,6 +218,11 @@ export class JustGage {
    */
   _drawLevel(animateValue) {
     const config = this.config;
+
+    // If showSectorColors is enabled, skip drawing the level (sectors are drawn once during initialization)
+    if (config.showSectorColors) {
+      return;
+    }
 
     // Use provided animate value or config value
     const targetValue = animateValue !== undefined ? animateValue : config.value;
@@ -258,6 +269,100 @@ export class JustGage {
       // Apply donut rotation to start from top (like original)
       this._applyDonutRotation(this.canvas.level, config, widgetW, widgetH, dx, dy);
     }
+  }
+
+  /**
+   * Draw sector colors as filled arcs
+   * @private
+   */
+  _drawSectorColors() {
+    const config = this.config;
+    const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
+
+    // Clear existing sector elements if they exist
+    if (this.canvas.sectors) {
+      this.canvas.sectors.forEach(sector => sector.remove());
+    }
+    this.canvas.sectors = [];
+
+    // Determine colors to use: customSectors, levelColors, or gaugeColor as fallback
+    let colors = [];
+
+    if (
+      config.customSectors &&
+      config.customSectors.ranges &&
+      config.customSectors.ranges.length > 0
+    ) {
+      // Use custom sector colors
+      colors = config.customSectors.ranges.map(range => range.color);
+    } else if (Array.isArray(config.levelColors) && config.levelColors.length > 0) {
+      // Use level colors as fallback
+      colors = [...config.levelColors];
+    } else {
+      // Use gauge color as final fallback
+      colors = [config.gaugeColor];
+    }
+
+    // Calculate the total angle span for the gauge type
+    const totalAngleSpan = config.donut ? 360 : 180;
+    const anglePerSector = totalAngleSpan / colors.length;
+
+    // Draw each color sector as an equal portion of the gauge
+    colors.forEach((color, index) => {
+      // Calculate start and end angles for this sector
+      let startAngle, endAngle;
+
+      if (config.donut) {
+        // For donut: 0° at top, clockwise
+        startAngle = 90 - index * anglePerSector;
+        endAngle = 90 - (index + 1) * anglePerSector;
+
+        // Handle reverse for donut
+        if (config.reverse) {
+          startAngle = 90 + index * anglePerSector;
+          endAngle = 90 + (index + 1) * anglePerSector;
+        }
+      } else {
+        // For regular gauge: 180° at left, clockwise to 0° at right
+        startAngle = 180 - index * anglePerSector;
+        endAngle = 180 - (index + 1) * anglePerSector;
+
+        // Handle reverse for regular gauge
+        if (config.reverse) {
+          startAngle = index * anglePerSector;
+          endAngle = (index + 1) * anglePerSector;
+        }
+      }
+
+      // Calculate geometry
+      let Ro, Ri, Cx, Cy;
+      if (config.donut) {
+        Ro = widgetW / 2 - widgetW / 30;
+        Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * (config.gaugeWidthScale || 1.0);
+        Cx = widgetW / 2 + dx;
+        Cy = widgetH / 2 + dy;
+      } else {
+        Ro = widgetW / 2 - widgetW / 10;
+        Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * (config.gaugeWidthScale || 1.0);
+        Cx = widgetW / 2 + dx;
+        Cy = widgetH / 1.25 + dy;
+      }
+
+      // Create sector path using the sector method from SVGRenderer
+      const sectorPath = this.renderer.createSectorPath(Cx, Cy, Ri, Ro, startAngle, endAngle);
+
+      // Create sector element
+      const sectorElement = this.renderer.path(sectorPath).attr({
+        fill: color,
+        stroke: 'none',
+      });
+
+      // Apply donut rotation if needed
+      this._applyDonutRotation(sectorElement, config, widgetW, widgetH, dx, dy);
+
+      // Store reference
+      this.canvas.sectors.push(sectorElement);
+    });
   }
 
   /**
@@ -1039,6 +1144,38 @@ export class JustGage {
         this.config.titleFontColor = val;
         if (this.canvas.title) {
           this.canvas.title.attr({ fill: val });
+        }
+        break;
+
+      case 'showSectorColors':
+        this.config.showSectorColors = val;
+        // Clear existing sectors or level
+        if (this.canvas.sectors) {
+          this.canvas.sectors.forEach(sector => sector.remove());
+          this.canvas.sectors = null;
+        }
+        if (this.canvas.level) {
+          this.canvas.level.remove();
+          this.canvas.level = null;
+        }
+        // Redraw based on new setting
+        if (val) {
+          this._drawSectorColors();
+        } else {
+          this._drawLevel();
+        }
+        break;
+
+      case 'customSectors':
+        this.config.customSectors = val;
+        // If showSectorColors is enabled, redraw sectors
+        if (this.config.showSectorColors) {
+          this._drawSectorColors();
+        } else if (this.canvas.level) {
+          // Redraw regular level with potentially new sector-based colors
+          this.canvas.level.remove();
+          this.canvas.level = null;
+          this._drawLevel();
         }
         break;
 

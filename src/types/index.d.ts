@@ -113,10 +113,6 @@ export interface JustGageConfig {
   onAnimationEnd?: (() => void) | null;
   /** Default configuration to merge */
   defaults?: Partial<JustGageConfig>;
-  /** Gauge start angle */
-  startAngle?: number;
-  /** Gauge end angle */
-  endAngle?: number;
   /** Title text */
   title?: string;
   /** Title font color */
@@ -127,6 +123,8 @@ export interface JustGageConfig {
   titleFontWeight?: string;
   /** Title position relative to gauge */
   titlePosition?: 'above' | 'below';
+  /** Show sector colors as filled gauge instead of current level */
+  showSectorColors?: boolean;
 }
 
 export interface JustGageCustomSectors {

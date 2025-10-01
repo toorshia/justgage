@@ -372,6 +372,54 @@ export class SVGRenderer {
   }
 
   /**
+   * Create sector range path (from one value to another)
+   */
+  createSectorRangePath(
+    minValue,
+    maxValue,
+    totalMin,
+    totalMax,
+    widgetW,
+    widgetH,
+    dx,
+    dy,
+    gaugeWidthScale,
+    donut = false
+  ) {
+    // Calculate angles for start and end of sector
+    const range = totalMax - totalMin;
+    const startRatio = (minValue - totalMin) / range;
+    const endRatio = (maxValue - totalMin) / range;
+
+    let startAngle, endAngle;
+    let Ro; // outer radius
+    let Ri; // inner radius
+    let Cx; // center x
+    let Cy; // center y
+
+    if (donut) {
+      // For donut, full circle from 0° to 360°
+      startAngle = 90 - startRatio * 360;
+      endAngle = 90 - endRatio * 360;
+      Ro = widgetW / 2 - widgetW / 30;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
+      Cx = widgetW / 2 + dx;
+      Cy = widgetH / 2 + dy;
+    } else {
+      // For regular gauge, semicircle from 180° to 0°
+      startAngle = 180 - startRatio * 180;
+      endAngle = 180 - endRatio * 180;
+      Ro = widgetW / 2 - widgetW / 10;
+      Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
+      Cx = widgetW / 2 + dx;
+      Cy = widgetH / 1.25 + dy;
+    }
+
+    // Use the sector method to create the arc
+    return this.createSectorPath(Cx, Cy, Ri, Ro, startAngle, endAngle);
+  }
+
+  /**
    * Apply shadow filter to elements
    * @param {string} shadowId - Shadow filter ID
    * @param {SVGElement[]} elements - Elements to apply shadow to

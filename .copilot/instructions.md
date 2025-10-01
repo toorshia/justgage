@@ -56,6 +56,7 @@ When adding/modifying/removing ANY configuration option, you MUST update ALL THR
 - **README**: Options table must match TypeScript definitions exactly
 - **Examples**: Include both v1.x and v2.0+ code samples
 - **Triple-Sync Rule**: Always update types, README, and DocsView together
+- **Complex Types**: Always provide interfaces/examples for object and function settings in DocsView
 
 ### Code Patterns
 

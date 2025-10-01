@@ -10,6 +10,13 @@
           </div>
           <div class="d-flex ga-2 flex-wrap">
             <v-btn
+              :color="randomUpdatesEnabled ? 'success' : 'grey'"
+              :prepend-icon="randomUpdatesEnabled ? 'mdi-play' : 'mdi-play-outline'"
+              @click="toggleRandomUpdates"
+            >
+              {{ randomUpdatesEnabled ? 'Stop Random' : 'Start Random' }}
+            </v-btn>
+            <v-btn
               :color="showGrid ? 'success' : 'grey'"
               :prepend-icon="showGrid ? 'mdi-grid' : 'mdi-grid-off'"
               @click="toggleGrid"
@@ -328,7 +335,75 @@
                     label="No Gradient"
                     color="primary"
                     @update:model-value="debouncedUpdateGauges"
+                    class="mb-3"
                   />
+
+                  <v-switch
+                    v-model="config.showSectorColors"
+                    label="Show Sector Colors"
+                    color="primary"
+                    @update:model-value="debouncedUpdateGauges"
+                    class="mb-3"
+                  />
+
+                  <!-- Custom Sectors Configuration -->
+                  <div v-if="config.showSectorColors" class="mb-4">
+                    <h4 class="mb-3">Custom Sectors</h4>
+
+                    <v-switch
+                      v-model="config.customSectors.percents"
+                      label="Use Percentages"
+                      color="primary"
+                      @update:model-value="debouncedUpdateGauges"
+                      class="mb-3"
+                    />
+
+                    <div class="mb-3">
+                      <h5 class="mb-2">Sector Ranges</h5>
+                      <div
+                        v-for="(sector, index) in config.customSectors.ranges"
+                        :key="index"
+                        class="d-flex align-center mb-2 ga-2"
+                      >
+                        <v-text-field
+                          v-model.number="config.customSectors.ranges[index].lo"
+                          label="From"
+                          type="number"
+                          variant="outlined"
+                          density="compact"
+                          style="max-width: 80px"
+                          @input="debouncedUpdateGauges"
+                        />
+                        <v-text-field
+                          v-model.number="config.customSectors.ranges[index].hi"
+                          label="To"
+                          type="number"
+                          variant="outlined"
+                          density="compact"
+                          style="max-width: 80px"
+                          @input="debouncedUpdateGauges"
+                        />
+                        <input
+                          type="color"
+                          v-model="config.customSectors.ranges[index].color"
+                          @input="debouncedUpdateGauges"
+                          style="width: 40px; height: 35px; border: none; cursor: pointer"
+                        />
+                        <v-btn
+                          icon
+                          size="small"
+                          @click="removeSectorRange(index)"
+                          :disabled="config.customSectors.ranges.length <= 1"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </div>
+                      <v-btn size="small" @click="addSectorRange" color="primary">
+                        <v-icon class="mr-1">mdi-plus</v-icon>
+                        Add Sector
+                      </v-btn>
+                    </div>
+                  </div>
                 </v-expansion-panel-text>
               </v-expansion-panel>
 
@@ -797,7 +872,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive, nextTick, computed, watch } from 'vue';
+import { onMounted, onUnmounted, ref, reactive, nextTick, computed, watch } from 'vue';
 
 // Simple debounce function
 const debounce = (func: Function, wait: number) => {
@@ -820,6 +895,8 @@ const gaugeV1Ready = ref(false);
 const gaugeV2Error = ref(false);
 const gaugeV1Error = ref(false);
 const showGrid = ref(false);
+const randomUpdatesEnabled = ref(false);
+let randomUpdateInterval: any = null;
 
 // Gauge instances
 let gaugeV2: any = null;
@@ -859,6 +936,15 @@ const config = reactive({
   labelFontColor: '#b3b3b3',
   levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
   noGradient: false,
+  showSectorColors: false,
+  customSectors: {
+    percents: false,
+    ranges: [
+      { lo: 0, hi: 50, color: '#a9d70b' },
+      { lo: 50, hi: 80, color: '#f9c802' },
+      { lo: 80, hi: 100, color: '#ff0000' },
+    ],
+  },
 
   // Labels and Text
   title: '',
@@ -930,6 +1016,10 @@ const formatConfigCode = computed(() => {
   if (!config.pointer) {
     delete cleanConfig.pointerOptions;
   }
+  // Clean up custom sectors if not using sector colors
+  if (!config.showSectorColors) {
+    delete cleanConfig.customSectors;
+  }
   // Remove UI-specific properties
   delete cleanConfig.showTargetLine;
 
@@ -981,9 +1071,20 @@ const loadPreset = (preset: string) => {
     case 'custom-sectors':
       Object.assign(config, {
         noGradient: true,
-        levelColors: ['#ff0000', '#ff6600', '#ffcc00', '#66ff00', '#00ff66'],
+        showSectorColors: true,
+        customSectors: {
+          percents: true,
+          ranges: [
+            { lo: 0, hi: 30, color: '#ff0000' },
+            { lo: 30, hi: 60, color: '#ff6600' },
+            { lo: 60, hi: 80, color: '#ffcc00' },
+            { lo: 80, hi: 95, color: '#66ff00' },
+            { lo: 95, hi: 100, color: '#00ff66' },
+          ],
+        },
+        pointer: true,
         value: 80,
-        label: 'Custom',
+        label: 'Custom Sectors',
       });
       break;
 
@@ -1058,6 +1159,15 @@ const loadPreset = (preset: string) => {
         shadowOpacity: 0.2,
         shadowSize: 5,
         shadowVerticalOffset: 3,
+        showSectorColors: false,
+        customSectors: {
+          percents: false,
+          ranges: [
+            { lo: 0, hi: 50, color: '#a9d70b' },
+            { lo: 50, hi: 80, color: '#f9c802' },
+            { lo: 80, hi: 100, color: '#ff0000' },
+          ],
+        },
       });
   }
 
@@ -1410,6 +1520,48 @@ const createGrid = (width: number, height: number) => {
   return svg;
 };
 
+// Random value updates functionality
+const toggleRandomUpdates = () => {
+  randomUpdatesEnabled.value = !randomUpdatesEnabled.value;
+
+  if (randomUpdatesEnabled.value) {
+    startRandomUpdates();
+  } else {
+    stopRandomUpdates();
+  }
+};
+
+const startRandomUpdates = () => {
+  // Generate random values every 2 seconds
+  const update = () => {
+    const range = config.max - config.min;
+    const randomValue = Math.random() * range + config.min;
+
+    // Round to the specified number of decimals
+    const newValue =
+      Math.round(randomValue * Math.pow(10, config.decimals)) / Math.pow(10, config.decimals);
+
+    config.value = newValue;
+    updateExistingGauges();
+
+    console.log(`🎲 Random value update: ${newValue}`);
+  };
+
+  randomUpdateInterval = setInterval(update, 500);
+
+  update();
+
+  console.log('🎯 Random value updates started');
+};
+
+const stopRandomUpdates = () => {
+  if (randomUpdateInterval) {
+    clearInterval(randomUpdateInterval);
+    randomUpdateInterval = null;
+    console.log('⏹️ Random value updates stopped');
+  }
+};
+
 // Level colors management
 const addLevelColor = () => {
   config.levelColors.push('#ff0000');
@@ -1419,6 +1571,25 @@ const addLevelColor = () => {
 const removeLevelColor = (index: number) => {
   if (config.levelColors.length > 1) {
     config.levelColors.splice(index, 1);
+    debouncedUpdateGauges();
+  }
+};
+
+// Custom sectors management
+const addSectorRange = () => {
+  const lastRange = config.customSectors.ranges[config.customSectors.ranges.length - 1];
+  const newRange = {
+    lo: lastRange.hi,
+    hi: lastRange.hi + 20,
+    color: '#ff0000',
+  };
+  config.customSectors.ranges.push(newRange);
+  debouncedUpdateGauges();
+};
+
+const removeSectorRange = (index: number) => {
+  if (config.customSectors.ranges.length > 1) {
+    config.customSectors.ranges.splice(index, 1);
     debouncedUpdateGauges();
   }
 };
@@ -1439,6 +1610,12 @@ watch(
 onMounted(() => {
   console.log('PlaygroundView mounted');
   initializeGauges();
+});
+
+// Cleanup on unmount
+onUnmounted(() => {
+  stopRandomUpdates();
+  console.log('PlaygroundView unmounted, random updates stopped');
 });
 </script>
 
