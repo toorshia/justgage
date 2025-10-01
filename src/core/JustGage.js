@@ -285,75 +285,77 @@ export class JustGage {
     }
     this.canvas.sectors = [];
 
-    // Determine colors to use: customSectors, levelColors, or gaugeColor as fallback
-    let colors = [];
+    // Determine sectors to draw
+    let sectors = [];
 
     if (
       config.customSectors &&
       config.customSectors.ranges &&
       config.customSectors.ranges.length > 0
     ) {
-      // Use custom sector colors
-      colors = config.customSectors.ranges.map(range => range.color);
+      // Use custom sectors as-is
+      sectors = config.customSectors.ranges.map(range => ({
+        lo: config.customSectors.percents
+          ? config.min + (config.max - config.min) * (range.lo / 100)
+          : range.lo,
+        hi: config.customSectors.percents
+          ? config.min + (config.max - config.min) * (range.hi / 100)
+          : range.hi,
+        color: range.color,
+      }));
     } else if (Array.isArray(config.levelColors) && config.levelColors.length > 0) {
-      // Use level colors as fallback
-      colors = [...config.levelColors];
+      // Convert levelColors to sectors using the same logic as getColor function
+      const no = config.levelColors.length;
+      const inc = 1 / no; // Same as getColor with noGradient = true
+
+      sectors = config.levelColors.map((color, i) => {
+        const startPct = i * inc;
+        const endPct = (i + 1) * inc;
+        return {
+          lo: config.min + (config.max - config.min) * startPct,
+          hi: config.min + (config.max - config.min) * endPct,
+          color: color,
+        };
+      });
     } else {
-      // Use gauge color as final fallback
-      colors = [config.gaugeColor];
+      // No sectors to draw - let gauge background color handle it
+      return;
     }
 
-    // Calculate the total angle span for the gauge type
-    const totalAngleSpan = config.donut ? 360 : 180;
-    const anglePerSector = totalAngleSpan / colors.length;
+    // Draw each sector
+    // Iterate from last sector to first
+    for (let i = sectors.length - 1; i >= 0; i--) {
+      const sector = sectors[i];
 
-    // Draw each color sector as an equal portion of the gauge
-    colors.forEach((color, index) => {
-      // Calculate start and end angles for this sector
-      let startAngle, endAngle;
+      // Calculate start and end values, applying reverse if needed
+      let sectorMin = sector.lo;
+      let sectorMax = sector.hi;
 
-      if (config.donut) {
-        // For donut: 0° at top, clockwise
-        startAngle = 90 - index * anglePerSector;
-        endAngle = 90 - (index + 1) * anglePerSector;
-
-        // Handle reverse for donut
-        if (config.reverse) {
-          startAngle = 90 + index * anglePerSector;
-          endAngle = 90 + (index + 1) * anglePerSector;
-        }
-      } else {
-        // For regular gauge: 180° at left, clockwise to 0° at right
-        startAngle = 180 - index * anglePerSector;
-        endAngle = 180 - (index + 1) * anglePerSector;
-
-        // Handle reverse for regular gauge
-        if (config.reverse) {
-          startAngle = index * anglePerSector;
-          endAngle = (index + 1) * anglePerSector;
-        }
+      if (config.reverse) {
+        const temp = config.max + config.min - sectorMax;
+        sectorMax = config.max + config.min - sectorMin;
+        sectorMin = temp;
       }
 
-      // Calculate geometry
-      let Ro, Ri, Cx, Cy;
-      if (config.donut) {
-        Ro = widgetW / 2 - widgetW / 30;
-        Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * (config.gaugeWidthScale || 1.0);
-        Cx = widgetW / 2 + dx;
-        Cy = widgetH / 2 + dy;
-      } else {
-        Ro = widgetW / 2 - widgetW / 10;
-        Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * (config.gaugeWidthScale || 1.0);
-        Cx = widgetW / 2 + dx;
-        Cy = widgetH / 1.25 + dy;
-      }
+      // No need to calculate angles - createGaugePath handles this
 
-      // Create sector path using the sector method from SVGRenderer
-      const sectorPath = this.renderer.createSectorPath(Cx, Cy, Ri, Ro, startAngle, endAngle);
+      // Create sector path using gauge path logic for the specific range
+      const sectorPath = this.renderer.createGaugePath(
+        sectorMax,
+        sectorMin,
+        config.max,
+        widgetW,
+        widgetH,
+        dx,
+        dy,
+        config.gaugeWidthScale || 1.0,
+        config.donut,
+        config.differential
+      );
 
       // Create sector element
       const sectorElement = this.renderer.path(sectorPath).attr({
-        fill: color,
+        fill: sector.color,
         stroke: 'none',
       });
 
@@ -362,7 +364,7 @@ export class JustGage {
 
       // Store reference
       this.canvas.sectors.push(sectorElement);
-    });
+    }
   }
 
   /**

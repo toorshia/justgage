@@ -1072,16 +1072,6 @@ const loadPreset = (preset: string) => {
       Object.assign(config, {
         noGradient: true,
         showSectorColors: true,
-        customSectors: {
-          percents: true,
-          ranges: [
-            { lo: 0, hi: 30, color: '#ff0000' },
-            { lo: 30, hi: 60, color: '#ff6600' },
-            { lo: 60, hi: 80, color: '#ffcc00' },
-            { lo: 80, hi: 95, color: '#66ff00' },
-            { lo: 95, hi: 100, color: '#00ff66' },
-          ],
-        },
         pointer: true,
         value: 80,
         label: 'Custom Sectors',
