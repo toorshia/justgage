@@ -337,8 +337,6 @@ export class JustGage {
         sectorMin = temp;
       }
 
-      // No need to calculate angles - createGaugePath handles this
-
       // Create sector path using gauge path logic for the specific range
       const sectorPath = this.renderer.createGaugePath(
         sectorMax,
