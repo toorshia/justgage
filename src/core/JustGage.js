@@ -331,16 +331,15 @@ export class JustGage {
 
       // Create sector path using gauge path logic for the specific range
       const sectorPath = this.renderer.createGaugePath(
-        sectorMax,
-        sectorMin,
+        { from: sectorMin, to: sectorMax },
+        config.min,
         config.max,
         widgetW,
         widgetH,
         dx,
         dy,
         config.gaugeWidthScale || 1.0,
-        config.donut,
-        false // sectors are not differential
+        config.donut
       );
 
       // Create sector element
