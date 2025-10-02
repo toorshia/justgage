@@ -13,7 +13,7 @@
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/mit-license.php)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-Modern ES6+ JavaScript library for creating animated dashboard gauges using native SVG APIs
+> **The gauge library you know and love, completely reimagined for the modern web! 🎉**
 
 <p align="center">
   <b>⚡ Zero Dependencies</b> &bull;
@@ -21,7 +21,8 @@ Modern ES6+ JavaScript library for creating animated dashboard gauges using nati
   <b>🎛️ Highly Customizable</b> &bull;
   <b>📱 Responsive Design</b> &bull;
   <b>🚀 High Performance</b> &bull;
-  <b>🛡️ Battle Tested</b>
+  <b>🛡️ Battle Tested</b> &bull;
+  <b>📦 76% smaller </b> From 36.5 kB → 8.6 kB (27.9 kB saved!))
   </p>
 
   <p align="center">

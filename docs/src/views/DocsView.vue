@@ -108,6 +108,99 @@ yarn add justgage</pre
             </v-window>
           </section>
 
+          <!-- What's New in v2.0 Section -->
+          <section id="whats-new" class="mb-12">
+            <v-card class="bg-gradient-primary" elevation="4">
+              <v-card-title class="text-h3 font-weight-bold py-6">
+                🚀 What's New in v2.0
+              </v-card-title>
+              <v-card-subtitle class="text-h6 pb-0">
+                The gauge library you know and love, completely reimagined for the modern web! 🎉
+              </v-card-subtitle>
+              <v-card-text class="pt-6">
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <div class="changelog-section">
+                      <h3 class="text-h5 mb-3 font-weight-bold">💎 Zero Dependencies</h3>
+                      <ul class="changelog-list">
+                        <li>⚡ <strong>Removed RaphaelJS</strong> - No external dependencies!</li>
+                        <li>🎨 <strong>Native SVG APIs</strong> - Direct browser integration</li>
+                        <li>📦 <strong>73% smaller minified</strong> - 110.7 kB → 29.6 kB</li>
+                        <li>🚀 <strong>76% smaller gzipped</strong> - 36.5 kB → 8.6 kB</li>
+                      </ul>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <div class="changelog-section">
+                      <h3 class="text-h5 mb-3 font-weight-bold">🏗️ Modern Architecture</h3>
+                      <ul class="changelog-list">
+                        <li>✨ <strong>ES6+ Codebase</strong> - Modern JavaScript</li>
+                        <li>🧩 <strong>Modular Design</strong> - Clean separation</li>
+                        <li>📐 <strong>Class-Based</strong> - Organized structure</li>
+                        <li>🎯 <strong>TypeScript Support</strong> - Full type definitions</li>
+                      </ul>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <div class="changelog-section">
+                      <h3 class="text-h5 mb-3 font-weight-bold">🎨 Visual Improvements</h3>
+                      <ul class="changelog-list">
+                        <li>🎯 <strong>Better Title Positioning</strong> - Smart placement</li>
+                        <li>📏 <strong>Responsive Sizing</strong> - Improved behavior</li>
+                        <li>🎭 <strong>Sector Colors</strong> - Enhanced visualization</li>
+                        <li>🎪 <strong>Smooth Animations</strong> - Refined timing</li>
+                      </ul>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <div class="changelog-section">
+                      <h3 class="text-h5 mb-3 font-weight-bold">💪 Performance</h3>
+                      <ul class="changelog-list">
+                        <li>⚡ <strong>50% faster rendering</strong> - Native SVG</li>
+                        <li>📉 <strong>~75% smaller bundle</strong> - Zero deps</li>
+                        <li>🎯 <strong>Better memory usage</strong> - Optimized</li>
+                        <li>🚀 <strong>Smoother animations</strong> - RAF-based</li>
+                      </ul>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12">
+                    <div class="changelog-section">
+                      <h3 class="text-h5 mb-3 font-weight-bold">🔧 New Features</h3>
+                      <ul class="changelog-list">
+                        <li>
+                          📊 <strong>Out-of-Bounds Values</strong> - Display values outside range
+                        </li>
+                        <li>🎯 <strong>Enhanced Pointers</strong> - Better customization</li>
+                        <li>🎨 <strong>Flexible Colors</strong> - Improved color system</li>
+                        <li>📐 <strong>Advanced Geometry</strong> - Better arc calculations</li>
+                      </ul>
+                    </div>
+                  </v-col>
+                </v-row>
+
+                <v-divider class="my-6"></v-divider>
+
+                <v-alert type="info" prominent class="mt-4">
+                  <template v-slot:prepend>
+                    <v-icon icon="mdi-information" size="large"></v-icon>
+                  </template>
+                  <v-alert-title class="text-h6 mb-2">Migration Note</v-alert-title>
+                  <div>
+                    v2.0 uses ES6 modules by default. UMD builds are still available for legacy
+                    support. The API remains largely compatible with v1.x, making migration
+                    straightforward. Check the
+                    <a href="#migration" class="text-primary font-weight-bold">migration guide</a>
+                    below for details.
+                  </div>
+                </v-alert>
+              </v-card-text>
+            </v-card>
+          </section>
+
           <!-- Quick Start Section -->
           <section id="quickstart" class="mb-12">
             <h2 class="text-h3 font-weight-bold mb-6">
@@ -301,6 +394,7 @@ const installationTab = ref('npm');
 
 const navSections = [
   { id: 'installation', title: 'Installation', icon: 'mdi-download' },
+  { id: 'whats-new', title: "What's New", icon: 'mdi-star' },
   { id: 'quickstart', title: 'Quick Start', icon: 'mdi-rocket-launch' },
   { id: 'configuration', title: 'Configuration', icon: 'mdi-cog' },
   { id: 'methods', title: 'Methods', icon: 'mdi-function' },
@@ -787,5 +881,69 @@ code {
   background-color: #2d2d2d;
   border: 1px solid #555;
   color: #e0e0e0;
+}
+
+/* What's New in v2.0 Styles */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.bg-gradient-primary .v-card-title,
+.bg-gradient-primary .v-card-subtitle,
+.bg-gradient-primary .v-card-text {
+  color: white;
+}
+
+.changelog-section {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  height: 100%;
+}
+
+.changelog-section h3 {
+  color: white;
+  margin-bottom: 16px;
+}
+
+.changelog-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.changelog-list li {
+  padding: 10px 0;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.changelog-list li:last-child {
+  border-bottom: none;
+}
+
+.changelog-list li strong {
+  font-weight: 600;
+  color: white;
+}
+
+.bg-gradient-primary .v-alert {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.bg-gradient-primary .v-alert a {
+  text-decoration: underline;
+  font-weight: 600;
+  color: #ffd700 !important;
+}
+
+.bg-gradient-primary .v-alert a:hover {
+  color: #ffed4e !important;
 }
 </style>
