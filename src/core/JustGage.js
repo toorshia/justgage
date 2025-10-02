@@ -200,10 +200,7 @@ export class JustGage {
       this._drawPointer();
     }
 
-    // Draw target line if specified (after gauge elements for proper Z-order)
-    if (config.targetLine !== null && config.targetLine !== undefined) {
-      this._drawTargetLine();
-    }
+    this._drawTargetLine();
   }
 
   /**
@@ -343,7 +340,7 @@ export class JustGage {
         dy,
         config.gaugeWidthScale || 1.0,
         config.donut,
-        config.differential
+        false // sectors are not differential
       );
 
       // Create sector element
@@ -741,7 +738,7 @@ export class JustGage {
   _drawTargetLine() {
     const config = this.config;
 
-    if (config.targetLine === null) {
+    if (config.targetLine == null) {
       return;
     }
 
@@ -947,20 +944,6 @@ export class JustGage {
       this.canvas.value.attr({ text: displayVal });
     }
 
-    // Animation values will be calculated during redraw
-
-    // Remove target line before redrawing level to maintain Z-order
-    let hadTargetLine = false;
-    if (
-      this.config.targetLine !== null &&
-      this.config.targetLine !== undefined &&
-      this.canvas.targetLine
-    ) {
-      this.canvas.targetLine.remove();
-      this.canvas.targetLine = null;
-      hadTargetLine = true;
-    }
-
     // Animate level change with proper animation using new animator
     this.animator.animate({
       fromValue: currentValue,
@@ -979,11 +962,6 @@ export class JustGage {
           }
         : null,
       onComplete: () => {
-        // Redraw target line after animation completes
-        if (hadTargetLine) {
-          this._drawTargetLine();
-        }
-
         // Call animation end callback if provided
         if (this.config.onAnimationEnd && typeof this.config.onAnimationEnd === 'function') {
           this.config.onAnimationEnd.call(this);
