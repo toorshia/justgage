@@ -192,8 +192,12 @@ export class SVGRenderer {
       min = 0;
     }
 
+    const deltaV = value - min;
+    const range = max - min;
+    const pct = deltaV / range;
+
     if (donut) {
-      alpha = (1 - (2 * (value - min)) / (max - min)) * Math.PI;
+      alpha = (1 - 2 * pct) * Math.PI;
       Ro = widgetW / 2 - widgetW / 30;
       Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
@@ -205,20 +209,30 @@ export class SVGRenderer {
       Xi = Cx + Ri * Math.cos(alpha);
       Yi = Cy - Ri * Math.sin(alpha);
 
+      // Start at the inner left edge of the arc
       path = 'M' + (Cx - Ri) + ',' + Cy + ' ';
+      // Draw line to the outer left edge of the arc
       path += 'L' + (Cx - Ro) + ',' + Cy + ' ';
-      if (value - min > (max - min) / 2) {
+      // If the value is more than halfway, draw the left-to-right outer arc in two segments for >180deg
+      if (pct > 0.5) {
+        // Draw outer arc from left to right (first half)
         path += 'A' + Ro + ',' + Ro + ' 0 0 1 ' + (Cx + Ro) + ',' + Cy + ' ';
       }
+      // Draw outer arc from current point to the calculated arc endpoint (Xo, Yo)
       path += 'A' + Ro + ',' + Ro + ' 0 0 1 ' + Xo + ',' + Yo + ' ';
+      // Draw line from outer arc endpoint to corresponding inner arc endpoint
       path += 'L' + Xi + ',' + Yi + ' ';
-      if (value - min > (max - min) / 2) {
+      // If the value is more than halfway, draw the right-to-left inner arc in two segments for >180deg
+      if (pct > 0.5) {
+        // Draw inner arc from right to left (first half)
         path += 'A' + Ri + ',' + Ri + ' 0 0 0 ' + (Cx + Ri) + ',' + Cy + ' ';
       }
+      // Draw inner arc from current point back to the starting inner left edge
       path += 'A' + Ri + ',' + Ri + ' 0 0 0 ' + (Cx - Ri) + ',' + Cy + ' ';
+      // Close the path to complete the sector
       path += 'Z ';
     } else if (isDiff) {
-      alpha = (1 - (value - min) / (max - min)) * Math.PI;
+      alpha = (1 - pct) * Math.PI;
       Ro = widgetW / 2 - widgetW / 10;
       Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
@@ -230,9 +244,9 @@ export class SVGRenderer {
       Xi = Cx + Ri * Math.cos(alpha);
       Yi = Cy - Ri * Math.sin(alpha);
 
-      const middle = min + (max - min) / 2;
-      const So = value < middle ? 1 : 0; // sweep flag for outer arc
-      const Si = value < middle ? 0 : 1; // sweep flag for inner arc
+      const middle = min + range / 2;
+      const So = value < middle ? 1 : 0; // sweep flag for outer arc, use opposite direction if value < middle
+      const Si = value < middle ? 0 : 1; // sweep flag for inner arc, use opposite direction if value < middle
 
       path = 'M' + Cx + ',' + (Cy - Ri) + ' '; // start at bottom center
       path += 'L' + Cx + ',' + (Cy - Ro) + ' '; // line to top center (Cx, Cy - Ro)
@@ -242,7 +256,7 @@ export class SVGRenderer {
       path += 'Z '; // close path
     } else {
       // Standard gauge
-      alpha = (1 - (value - min) / (max - min)) * Math.PI;
+      alpha = (1 - pct) * Math.PI;
       Ro = widgetW / 2 - widgetW / 10;
       Ri = Ro - (widgetW / GAUGE_WIDTH_DIVISOR) * gaugeWidthScale;
 
@@ -254,11 +268,17 @@ export class SVGRenderer {
       Xi = Cx + Ri * Math.cos(alpha);
       Yi = Cy - Ri * Math.sin(alpha);
 
+      // Move to the starting point at the inner left edge of the arc
       path = 'M' + (Cx - Ri) + ',' + Cy + ' ';
+      // Draw a line to the outer left edge of the arc
       path += 'L' + (Cx - Ro) + ',' + Cy + ' ';
+      // Draw the outer arc from left to the calculated arc endpoint (Xo, Yo)
       path += 'A' + Ro + ',' + Ro + ' 0 0 1 ' + Xo + ',' + Yo + ' ';
+      // Draw a line from the outer arc endpoint to the corresponding inner arc endpoint
       path += 'L' + Xi + ',' + Yi + ' ';
+      // Draw the inner arc back to the starting inner left edge
       path += 'A' + Ri + ',' + Ri + ' 0 0 0 ' + (Cx - Ri) + ',' + Cy + ' ';
+      // Close the path to complete the gauge sector
       path += 'Z ';
     }
 
