@@ -518,7 +518,7 @@ export class JustGage {
       const titleX = dx + widgetW / 2;
       let titleY;
       if (config.donut) {
-        titleY = dy + widgetH / 11; // Legacy donut title positioning
+        titleY = dy + (config.titlePosition === 'below' ? widgetH + 15 : -5);
       } else {
         titleY = dy + (config.titlePosition === 'below' ? widgetH * 1.07 : widgetH / 6.4);
       }
