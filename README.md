@@ -7,7 +7,7 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/justgage.svg)](https://bundlephobia.com/package/justgage)
 
 [![Deploy Docs](https://github.com/toorshia/justgage/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/toorshia/justgage/actions/workflows/deploy-docs.yml)
-[![Tests](https://img.shields.io/github/actions/workflow/status/toorshia/justgage/build.yml?label=tests)](https://github.com/toorshia/justgage/actions/workflows/ci.yml)
+[![CI](https://github.com/toorshia/justgage/actions/workflows/ci.yml/badge.svg)](https://github.com/toorshia/justgage/actions/workflows/ci.yml)
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/mit-license.php)
