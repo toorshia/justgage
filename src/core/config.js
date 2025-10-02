@@ -276,9 +276,8 @@ export function createConfig(config, dataset = {}) {
  * @returns {object} Validated configuration
  */
 function validateConfig(config) {
-  // Clamp value within min/max range
-  if (config.value > config.max) config.value = config.max;
-  if (config.value < config.min) config.value = config.min;
+  // Allow values outside min/max range - they will be clamped visually but displayed as-is
+  // Visual clamping happens in _drawLevel and _drawPointer methods
 
   // Validate required fields
   if (!config.id && !config.parentNode) {

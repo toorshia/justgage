@@ -93,7 +93,7 @@ describe('JustGage Core Functionality', () => {
       assert.equal(gauge.getValue(), 75);
     });
 
-    test('should handle min/max bounds in constructor', () => {
+    test('should allow values outside min/max bounds in constructor', () => {
       const gauge = new JustGage({
         parentNode: container,
         value: 150,
@@ -101,11 +101,11 @@ describe('JustGage Core Functionality', () => {
         max: 100,
       });
 
-      // Value should be clamped to max
-      assert.equal(gauge.getValue(), 100);
+      // Value should be stored as-is (not clamped), visual clamping happens in rendering
+      assert.equal(gauge.getValue(), 150);
     });
 
-    test('should handle min/max bounds in refresh', () => {
+    test('should allow values outside min/max bounds in refresh', () => {
       const gauge = new JustGage({
         parentNode: container,
         value: 50,
@@ -114,10 +114,12 @@ describe('JustGage Core Functionality', () => {
       });
 
       gauge.refresh(150);
-      assert.equal(gauge.getValue(), 100);
+      // Value above max should be stored as-is
+      assert.equal(gauge.getValue(), 150);
 
       gauge.refresh(-50);
-      assert.equal(gauge.getValue(), 0);
+      // Value below min should be stored as-is
+      assert.equal(gauge.getValue(), -50);
     });
 
     test('should update min/max values with refresh', () => {

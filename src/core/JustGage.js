@@ -219,17 +219,20 @@ export class JustGage {
     // Use provided animate value or config value
     const targetValue = animateValue !== undefined ? animateValue : config.value;
 
+    // Clamp value to min/max for visual representation
+    const clampedValue = this._clampValue(targetValue);
+
     // Use consistent geometry calculations
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
     // Calculate reversed value if needed (same as original implementation)
-    let displayValue = targetValue;
+    let displayValue = clampedValue;
     if (config.reverse) {
-      displayValue = config.max + config.min - targetValue;
+      displayValue = config.max + config.min - clampedValue;
     }
 
-    // Get level color using original value (not reversed)
-    const color = this._getLevelColor(config.value);
+    // Get level color using clamped value (not reversed)
+    const color = this._getLevelColor(clampedValue);
 
     // Draw level arc using original path generation with potentially reversed value
     const levelPath = this.renderer.createGaugePath(
@@ -628,10 +631,13 @@ export class JustGage {
     const config = this.config;
     const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
 
+    // Clamp value to min/max for visual representation
+    const clampedValue = this._clampValue(config.value);
+
     // Calculate reversed value if needed (same as original implementation)
-    let value = config.value;
+    let value = clampedValue;
     if (config.reverse) {
-      value = config.max + config.min - config.value;
+      value = config.max + config.min - clampedValue;
     }
 
     const min = config.min;
@@ -803,10 +809,17 @@ export class JustGage {
   _getLevelColor(value) {
     const config = this.config;
     const range = config.max - config.min;
-    const ratio = (value - config.min) / range;
+    const clampedValue = this._clampValue(value);
+    const ratio = (clampedValue - config.min) / range;
 
     // Use the same getColor function as the original JustGage
-    return getColor(value, ratio, config.levelColors, config.noGradient, config.customSectors);
+    return getColor(
+      clampedValue,
+      ratio,
+      config.levelColors,
+      config.noGradient,
+      config.customSectors
+    );
   }
 
   /**
@@ -843,6 +856,17 @@ export class JustGage {
       const formatted = textType === 'value' ? (value * 1).toFixed(config.decimals) : value;
       return formatted + (textType === 'value' ? config.symbol : '');
     }
+  }
+
+  /**
+   * Clamp value to min/max range for visual representation
+   * @private
+   * @param {number} value - Value to clamp
+   * @returns {number} Clamped value within min/max boundaries
+   */
+  _clampValue(value) {
+    const config = this.config;
+    return Math.max(config.min, Math.min(config.max, value));
   }
 
   /**
@@ -910,16 +934,11 @@ export class JustGage {
       }
     }
 
-    // Validate and clamp value bounds
-    if (val * 1 > this.config.max * 1) {
-      val = this.config.max * 1;
-    }
-    if (val * 1 < this.config.min * 1) {
-      val = this.config.min * 1;
-    }
+    // Store the actual value (no clamping) - visual clamping happens in _drawLevel and _drawPointer
+    val = val * 1;
 
     // Format display value using original logic
-    let displayVal = originalVal; // Use original input value before clamping for display
+    let displayVal = originalVal; // Use original input value for display
 
     if (this.config.textRenderer && this.config.textRenderer(displayVal) !== false) {
       displayVal = this.config.textRenderer(displayVal);
