@@ -13,8 +13,7 @@ const baseConfig = {
   bundle: true,
   sourcemap: true,
   target: 'es2020',
-  platform: 'neutral',
-  mainFields: ['module', 'main'],
+  platform: 'browser',
   plugins: [
     {
       name: 'resolve-package-json',
@@ -37,12 +36,13 @@ const baseConfig = {
       },
     },
   ],
-  external: [], // No external dependencies - everything bundled
-  minify: false, // Keep readable for debugging
+  external: [],
+  minify: false,
   keepNames: true,
   treeShaking: true,
 };
 
+/** @type {import('esbuild').BuildOptions[]} */
 const configs = [
   // ES Module build
   {
@@ -54,18 +54,7 @@ const configs = [
     },
   },
 
-  // CommonJS build
-  {
-    ...baseConfig,
-    format: 'cjs',
-    outfile: `${distDir}/justgage.cjs`,
-    platform: 'node',
-    banner: {
-      js: `// JustGage v${version} - CommonJS build\n// Zero dependencies, native SVG rendering\n`,
-    },
-  },
-
-  // UMD build for browsers
+  // UMD build for browsers - expose constructor on window/global
   {
     ...baseConfig,
     format: 'iife',
@@ -74,6 +63,9 @@ const configs = [
     platform: 'browser',
     banner: {
       js: `// JustGage v${version} - UMD build\n// Zero dependencies, native SVG rendering\n`,
+    },
+    footer: {
+      js: `window.JustGage = JustGage.default;`,
     },
   },
 
@@ -89,7 +81,7 @@ const configs = [
     },
   },
 
-  // Minified UMD
+  // Minified UMD - same footer to expose constructor
   {
     ...baseConfig,
     format: 'iife',
@@ -100,6 +92,9 @@ const configs = [
     keepNames: false,
     banner: {
       js: `// JustGage v${version} - Minified UMD\n`,
+    },
+    footer: {
+      js: `window.JustGage = JustGage.default;`,
     },
   },
 ];
@@ -143,7 +138,7 @@ async function buildAll(watchMode = false) {
       return result;
     } catch (error) {
       console.error(`❌ Failed to build ${config.outfile}:`, error);
-      // eslint-disable-next-line no-undef
+
       process.exit(1);
     }
   });
@@ -173,7 +168,5 @@ async function buildAll(watchMode = false) {
   }
 }
 
-// Check if watch mode is requested
-// eslint-disable-next-line no-undef
 const watchMode = process.argv.includes('--watch');
 buildAll(watchMode).catch(console.error);

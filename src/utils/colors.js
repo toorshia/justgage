@@ -27,7 +27,7 @@ export function isHexColor(val) {
  * @param {number} pct - Percentage (0-1)
  * @param {string[]} col - Color array
  * @param {boolean} noGradient - Disable gradient
- * @param {object} custSec - Custom sectors configuration
+ * @param {import('../types/index.d.ts').CustomSectors} custSec - Custom sectors configuration
  * @returns {string} RGB color string
  */
 export function getColor(val, pct, col, noGradient, custSec) {

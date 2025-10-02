@@ -20,6 +20,33 @@
       </v-col>
     </v-row>
 
+    <!-- Live Gauges Section -->
+    <v-row class="py-16">
+      <v-col cols="12">
+        <h2 class="text-h3 text-center font-weight-bold mb-12">Live Examples</h2>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-card class="pa-4" style="min-height: 260px">
+              <div class="text-subtitle-1 text-center mb-2">Default Gauge</div>
+              <div ref="g1El" style="height: 220px"></div>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-card class="pa-4" style="min-height: 260px">
+              <div class="text-subtitle-1 text-center mb-2">Donut Gauge</div>
+              <div ref="g2El" style="height: 220px"></div>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-card class="pa-4" style="min-height: 260px">
+              <div class="text-subtitle-1 text-center mb-2">Custom Sectors + Pointer</div>
+              <div ref="g3El" style="height: 220px"></div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+
     <!-- Features Section -->
     <v-row class="py-16">
       <v-col cols="12">
@@ -118,7 +145,8 @@ const gauge = new JustGage({
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { JustGage } from 'justgage';
 
 const installTab = ref('npm');
 
@@ -154,4 +182,97 @@ const features = [
     icon: 'mdi-shield-check',
   },
 ];
+
+// Gauge element refs
+const g1El = ref<HTMLElement | null>(null);
+const g2El = ref<HTMLElement | null>(null);
+const g3El = ref<HTMLElement | null>(null);
+
+// Gauge instances
+let g1: any, g2: any, g3: any;
+let timer: any;
+
+onMounted(() => {
+  // Default gauge
+  g1 = new JustGage({
+    parentNode: g1El.value!,
+    value: 62,
+    min: 0,
+    max: 100,
+    title: 'CPU Load',
+    titlePosition: 'above',
+    relativeGaugeSize: true,
+    gaugeWidthScale: 1,
+    valueFontColor: '#111',
+    gaugeColor: '#e6e6e6',
+    levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
+    noGradient: true,
+  });
+
+  // Donut gauge (slightly smaller)
+  g2 = new JustGage({
+    parentNode: g2El.value!,
+    value: 45,
+    min: 0,
+    max: 100,
+    title: 'Storage',
+    titlePosition: 'above',
+    donut: true,
+    relativeGaugeSize: true,
+    gaugeWidthScale: 0.85,
+    gaugeColor: '#e6e6e6',
+    levelColors: ['#00bcd4', '#2196f3', '#3f51b5'],
+    noGradient: true,
+  });
+
+  // Custom sectors + pointer
+  g3 = new JustGage({
+    parentNode: g3El.value!,
+    value: 78,
+    min: 0,
+    max: 100,
+    title: 'Throughput',
+    titlePosition: 'above',
+    relativeGaugeSize: true,
+    showSectorColors: true,
+    customSectors: {
+      percents: false,
+      ranges: [
+        { lo: 0, hi: 30, color: '#ff3b30' },
+        { lo: 30, hi: 60, color: '#ffcc00' },
+        { lo: 60, hi: 85, color: '#34c759' },
+        { lo: 85, hi: 100, color: '#0b66ff' },
+      ],
+    },
+    pointer: true,
+    pointerOptions: {
+      toplength: 0.9,
+      bottomlength: 0.05,
+      bottomwidth: 6,
+      color: '#333',
+    },
+    noGradient: true,
+  });
+
+  // Random refresh loop
+  const rand = () => Math.round(Math.random() * 100);
+  timer = setInterval(() => {
+    g1?.refresh(rand());
+    g2?.refresh(rand());
+    g3?.refresh(rand());
+  }, 2000);
+});
+
+onBeforeUnmount(() => {
+  if (timer) clearInterval(timer);
+  try {
+    g1?.destroy();
+  } catch {}
+  try {
+    g2?.destroy();
+  } catch {}
+  try {
+    g3?.destroy();
+  } catch {}
+});
 </script>

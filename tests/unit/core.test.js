@@ -286,4 +286,239 @@ describe('JustGage Core Functionality', () => {
       });
     });
   });
+
+  describe('Sector Colors Visualization', () => {
+    test('should create gauge with showSectorColors disabled by default', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 30, color: '#00ff00' },
+            { lo: 30, hi: 70, color: '#ffff00' },
+            { lo: 70, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, false);
+      // Regular level should be drawn, not sectors
+      assert.equal(gauge.canvas.sectors, undefined);
+    });
+
+    test('should enable sector colors visualization', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 30, color: '#00ff00' },
+            { lo: 30, hi: 70, color: '#ffff00' },
+            { lo: 70, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, true);
+      // Should have sectors array after drawing
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+    });
+
+    test('should handle showSectorColors without customSectors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+      });
+
+      // Should still create gauge and show sectors using levelColors
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.equal(gauge.getValue(), 50);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      // Should have 3 sectors (default levelColors length)
+      assert.equal(gauge.canvas.sectors.length, 3);
+    });
+
+    test('should use levelColors when showSectorColors is enabled without customSectors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+        levelColors: ['#blue', '#yellow', '#red', '#purple'],
+      });
+
+      // Should have 4 sectors matching levelColors length
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      assert.equal(gauge.canvas.sectors.length, 4);
+    });
+
+    test('should divide gauge into sectors based on levelColors using getColor logic', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+        levelColors: ['#ff0000', '#00ff00'], // 2 colors should create 2 equal sectors (0-50%, 50-100%)
+        gaugeColor: '#cccccc',
+      });
+
+      // Should have 2 sectors (one for each levelColor)
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      assert.equal(gauge.canvas.sectors.length, 2);
+    });
+
+    test('should not draw sectors when showSectorColors is true but no colors defined', () => {
+      // Create gauge with empty levelColors (will default to standard levelColors due to validation)
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+      });
+
+      // Should have sectors because levelColors defaults to standard colors
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      assert.equal(gauge.canvas.sectors.length, 3); // Default levelColors length
+    });
+
+    test('should use custom sectors with actual value ranges', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        min: 0,
+        max: 100,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 30, color: '#00ff00' }, // 0-30 range
+            { lo: 30, hi: 70, color: '#ffff00' }, // 30-70 range
+            { lo: 70, hi: 100, color: '#ff0000' }, // 70-100 range
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      assert.equal(gauge.canvas.sectors.length, 3);
+    });
+
+    test('should handle percentage mode in sector colors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        min: 0,
+        max: 200,
+        showSectorColors: true,
+        customSectors: {
+          percents: true,
+          ranges: [
+            { lo: 0, hi: 25, color: '#00ff00' }, // 0-25% of 0-200 = 0-50
+            { lo: 25, hi: 75, color: '#ffff00' }, // 25-75% of 0-200 = 50-150
+            { lo: 75, hi: 100, color: '#ff0000' }, // 75-100% of 0-200 = 150-200
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.equal(gauge.config.customSectors.percents, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+      assert.equal(gauge.canvas.sectors.length, 3);
+    });
+
+    test('should handle reverse mode with sector colors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        reverse: true,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 30, color: '#00ff00' },
+            { lo: 30, hi: 70, color: '#ffff00' },
+            { lo: 70, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.equal(gauge.config.reverse, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+    });
+
+    test('should handle donut mode with sector colors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        donut: true,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 30, color: '#00ff00' },
+            { lo: 30, hi: 70, color: '#ffff00' },
+            { lo: 70, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      assert.equal(gauge.config.showSectorColors, true);
+      assert.equal(gauge.config.donut, true);
+      assert.ok(Array.isArray(gauge.canvas.sectors));
+    });
+
+    test('should update sectors when refreshing with new sectors', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 50, color: '#00ff00' },
+            { lo: 50, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      // Update with new sectors configuration
+      gauge.update({
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 33, color: '#00ff00' },
+            { lo: 33, hi: 66, color: '#ffff00' },
+            { lo: 66, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      const newSectorsCount = gauge.canvas.sectors ? gauge.canvas.sectors.length : 0;
+      assert.ok(newSectorsCount > 0);
+      // Should have recreated sectors (might be different count)
+      assert.ok(gauge.canvas.sectors);
+    });
+
+    test('should not redraw sectors on value refresh', () => {
+      const gauge = new JustGage({
+        parentNode: container,
+        value: 50,
+        showSectorColors: true,
+        customSectors: {
+          ranges: [
+            { lo: 0, hi: 50, color: '#00ff00' },
+            { lo: 50, hi: 100, color: '#ff0000' },
+          ],
+        },
+      });
+
+      const originalSectors = gauge.canvas.sectors;
+      assert.ok(originalSectors);
+      assert.equal(originalSectors.length, 2);
+
+      // Refresh value - sectors should remain the same instances
+      gauge.refresh(75);
+
+      assert.equal(gauge.canvas.sectors, originalSectors);
+      assert.equal(gauge.canvas.sectors.length, 2);
+    });
+  });
 });

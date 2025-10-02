@@ -91,19 +91,14 @@ export class JustGage {
       width = '100%';
       height = '100%';
 
-      // Set viewBox dimensions based on gauge type and title presence (matching legacy behavior)
       if (this.config.donut) {
+        // Donut gauges: square viewBox; add vertical room for title when present
         viewBoxWidth = 200;
-        viewBoxHeight = 200;
-        if (this.config.title.length > 0) {
-          viewBoxHeight = 150;
-        }
+        viewBoxHeight = this.config.title && this.config.title.length > 0 ? 240 : 200;
       } else {
+        // Semi gauge: classic 2:1 viewBox; add room for title when present
         viewBoxWidth = 200;
-        viewBoxHeight = 100;
-        if (this.config.title.length > 0) {
-          viewBoxHeight = 150;
-        }
+        viewBoxHeight = this.config.title && this.config.title.length > 0 ? 150 : 100;
       }
     } else {
       // Use fixed dimensions like current implementation
@@ -186,10 +181,16 @@ export class JustGage {
     // Apply donut rotation to background gauge (like original)
     this._applyDonutRotation(this.canvas.gauge, config, widgetW, widgetH, dx, dy);
 
-    // Draw value level (start from appropriate value for animation)
-    // Differential gauges start from middle (0), regular gauges from min
-    const startValue = config.differential ? (config.max + config.min) / 2 : config.min;
-    this._drawLevel(startValue);
+    // Draw value level or sector colors based on configuration
+    if (config.showSectorColors) {
+      // Draw static sector colors once (uses customSectors, levelColors, or gaugeColor)
+      this._drawSectorColors();
+    } else {
+      // Draw value level (start from appropriate value for animation)
+      // Differential gauges start from middle (0), regular gauges from min
+      const startValue = config.differential ? (config.max + config.min) / 2 : config.min;
+      this._drawLevel(startValue);
+    }
 
     // Draw labels
     this._drawLabels();
@@ -199,10 +200,7 @@ export class JustGage {
       this._drawPointer();
     }
 
-    // Draw target line if specified (after gauge elements for proper Z-order)
-    if (config.targetLine !== null && config.targetLine !== undefined) {
-      this._drawTargetLine();
-    }
+    this._drawTargetLine();
   }
 
   /**
@@ -212,6 +210,11 @@ export class JustGage {
    */
   _drawLevel(animateValue) {
     const config = this.config;
+
+    // If showSectorColors is enabled, skip drawing the level (sectors are drawn once during initialization)
+    if (config.showSectorColors) {
+      return;
+    }
 
     // Use provided animate value or config value
     const targetValue = animateValue !== undefined ? animateValue : config.value;
@@ -261,6 +264,99 @@ export class JustGage {
   }
 
   /**
+   * Draw sector colors as filled arcs
+   * @private
+   */
+  _drawSectorColors() {
+    const config = this.config;
+    const { widgetW, widgetH, dx, dy } = this._calculateGaugeGeometry();
+
+    // Clear existing sector elements if they exist
+    if (this.canvas.sectors) {
+      this.canvas.sectors.forEach(sector => sector.remove());
+    }
+    this.canvas.sectors = [];
+
+    // Determine sectors to draw
+    let sectors = [];
+
+    if (
+      config.customSectors &&
+      config.customSectors.ranges &&
+      config.customSectors.ranges.length > 0
+    ) {
+      // Use custom sectors as-is
+      sectors = config.customSectors.ranges.map(range => ({
+        lo: config.customSectors.percents
+          ? config.min + (config.max - config.min) * (range.lo / 100)
+          : range.lo,
+        hi: config.customSectors.percents
+          ? config.min + (config.max - config.min) * (range.hi / 100)
+          : range.hi,
+        color: range.color,
+      }));
+    } else if (Array.isArray(config.levelColors) && config.levelColors.length > 0) {
+      // Convert levelColors to sectors using the same logic as getColor function
+      const no = config.levelColors.length;
+      const inc = 1 / no; // Same as getColor with noGradient = true
+
+      sectors = config.levelColors.map((color, i) => {
+        const startPct = i * inc;
+        const endPct = (i + 1) * inc;
+        return {
+          lo: config.min + (config.max - config.min) * startPct,
+          hi: config.min + (config.max - config.min) * endPct,
+          color: color,
+        };
+      });
+    } else {
+      // No sectors to draw - let gauge background color handle it
+      return;
+    }
+
+    // Draw each sector
+    // Iterate from last sector to first
+    for (let i = sectors.length - 1; i >= 0; i--) {
+      const sector = sectors[i];
+
+      // Calculate start and end values, applying reverse if needed
+      let sectorMin = sector.lo;
+      let sectorMax = sector.hi;
+
+      if (config.reverse) {
+        const temp = config.max + config.min - sectorMax;
+        sectorMax = config.max + config.min - sectorMin;
+        sectorMin = temp;
+      }
+
+      // Create sector path using gauge path logic for the specific range
+      const sectorPath = this.renderer.createGaugePath(
+        { from: sectorMin, to: sectorMax },
+        config.min,
+        config.max,
+        widgetW,
+        widgetH,
+        dx,
+        dy,
+        config.gaugeWidthScale || 1.0,
+        config.donut
+      );
+
+      // Create sector element
+      const sectorElement = this.renderer.path(sectorPath).attr({
+        fill: sector.color,
+        stroke: 'none',
+      });
+
+      // Apply donut rotation if needed
+      this._applyDonutRotation(sectorElement, config, widgetW, widgetH, dx, dy);
+
+      // Store reference
+      this.canvas.sectors.push(sectorElement);
+    }
+  }
+
+  /**
    * Calculate consistent gauge geometry for both arc and text positioning
    * Uses caching to avoid redundant calculations
    * @private
@@ -283,16 +379,10 @@ export class JustGage {
     // Calculate widget dimensions using legacy logic with title adjustments
     let widgetW, widgetH, dx, dy;
     if (config.donut) {
-      if (h > w) {
-        widgetH = h;
-        widgetW = widgetH;
-      } else if (w < h) {
-        widgetW = w;
-        widgetH = widgetW;
-      } else {
-        widgetW = w;
-        widgetH = widgetW;
-      }
+      // Donut uses a square based on the smaller dimension to avoid overflow
+      const size = Math.min(w, h);
+      widgetW = size;
+      widgetH = size;
       dx = (w - widgetW) / 2;
       dy = (h - widgetH) / 2;
     } else {
@@ -424,7 +514,7 @@ export class JustGage {
       const titleX = dx + widgetW / 2;
       let titleY;
       if (config.donut) {
-        titleY = dy + widgetH / 11; // Legacy donut title positioning
+        titleY = dy + (config.titlePosition === 'below' ? widgetH + 15 : -5);
       } else {
         titleY = dy + (config.titlePosition === 'below' ? widgetH * 1.07 : widgetH / 6.4);
       }
@@ -647,7 +737,7 @@ export class JustGage {
   _drawTargetLine() {
     const config = this.config;
 
-    if (config.targetLine === null) {
+    if (config.targetLine == null) {
       return;
     }
 
@@ -853,20 +943,6 @@ export class JustGage {
       this.canvas.value.attr({ text: displayVal });
     }
 
-    // Animation values will be calculated during redraw
-
-    // Remove target line before redrawing level to maintain Z-order
-    let hadTargetLine = false;
-    if (
-      this.config.targetLine !== null &&
-      this.config.targetLine !== undefined &&
-      this.canvas.targetLine
-    ) {
-      this.canvas.targetLine.remove();
-      this.canvas.targetLine = null;
-      hadTargetLine = true;
-    }
-
     // Animate level change with proper animation using new animator
     this.animator.animate({
       fromValue: currentValue,
@@ -885,11 +961,6 @@ export class JustGage {
           }
         : null,
       onComplete: () => {
-        // Redraw target line after animation completes
-        if (hadTargetLine) {
-          this._drawTargetLine();
-        }
-
         // Call animation end callback if provided
         if (this.config.onAnimationEnd && typeof this.config.onAnimationEnd === 'function') {
           this.config.onAnimationEnd.call(this);
@@ -1039,6 +1110,38 @@ export class JustGage {
         this.config.titleFontColor = val;
         if (this.canvas.title) {
           this.canvas.title.attr({ fill: val });
+        }
+        break;
+
+      case 'showSectorColors':
+        this.config.showSectorColors = val;
+        // Clear existing sectors or level
+        if (this.canvas.sectors) {
+          this.canvas.sectors.forEach(sector => sector.remove());
+          this.canvas.sectors = null;
+        }
+        if (this.canvas.level) {
+          this.canvas.level.remove();
+          this.canvas.level = null;
+        }
+        // Redraw based on new setting
+        if (val) {
+          this._drawSectorColors();
+        } else {
+          this._drawLevel();
+        }
+        break;
+
+      case 'customSectors':
+        this.config.customSectors = val;
+        // If showSectorColors is enabled, redraw sectors
+        if (this.config.showSectorColors) {
+          this._drawSectorColors();
+        } else if (this.canvas.level) {
+          // Redraw regular level with potentially new sector-based colors
+          this.canvas.level.remove();
+          this.canvas.level = null;
+          this._drawLevel();
         }
         break;
 

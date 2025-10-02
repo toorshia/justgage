@@ -61,14 +61,13 @@ export const DEFAULT_CONFIG = {
   targetLineWidth: 1.5,
   textRenderer: null,
   onAnimationEnd: null,
+  showSectorColors: false,
   minTxt: false,
   maxTxt: false,
   defaults: false,
   parentNode: null,
   width: 400,
   height: 320,
-  startAngle: 135,
-  endAngle: 405,
   title: '',
   titleFontColor: '#999999',
   titleFontFamily: 'Arial',
@@ -255,13 +254,17 @@ export function createConfig(config, dataset = {}) {
     // Label font configuration
     labelFontWeight: kvLookup('labelFontWeight', config, dataset, DEFAULT_CONFIG.labelFontWeight),
 
-    // Gauge angles
-    startAngle: kvLookup('startAngle', config, dataset, DEFAULT_CONFIG.startAngle),
-    endAngle: kvLookup('endAngle', config, dataset, DEFAULT_CONFIG.endAngle),
-
     // Callbacks
     textRenderer: kvLookup('textRenderer', config, dataset, DEFAULT_CONFIG.textRenderer),
     onAnimationEnd: kvLookup('onAnimationEnd', config, dataset, DEFAULT_CONFIG.onAnimationEnd),
+
+    // Sector colors visualization
+    showSectorColors: kvLookup(
+      'showSectorColors',
+      config,
+      dataset,
+      DEFAULT_CONFIG.showSectorColors
+    ),
   };
 
   return validateConfig(processedConfig);

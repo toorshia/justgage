@@ -439,9 +439,35 @@ Before committing ANY configuration-related changes:
 ### Documentation Site Architecture
 
 - **`docs/src/views/DocsView.vue`** contains the `configOptions` array
-- Each option object requires: `{ name, type, default, description }`
+- Each option object requires: `{ name, type, default, description, example? }`
 - Types should match TypeScript notation (e.g., 'string|boolean', 'number[]')
 - Defaults should be valid JavaScript/JSON strings (e.g., "'string'", '{}', '[]')
+
+### Complex Configuration Types
+
+**MANDATORY for object and function settings:**
+
+- Always provide interfaces or concrete examples in DocsView.vue
+- Use the `example` field to show detailed interfaces for object types
+- Include function signatures with parameter types and return values
+- Format examples using `.example-code` CSS class for consistent styling
+
+**Examples:**
+
+```javascript
+// Object type with interface
+example: `interface JustGageCustomSectors {
+  percents: boolean;
+  ranges: Array<{
+    lo: number;
+    hi: number;
+    color: string;
+  }>;
+}`;
+
+// Function type with signature
+example: `(value: number, min: number, max: number) => string`;
+```
 
 ## Documentation Guidelines
 

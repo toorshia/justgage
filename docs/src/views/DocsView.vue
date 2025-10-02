@@ -170,6 +170,7 @@ const gauge = new JustGage({
                   <th>Type</th>
                   <th>Default</th>
                   <th>Description</th>
+                  <th>Example/Interface</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,6 +185,12 @@ const gauge = new JustGage({
                     <code>{{ option.default }}</code>
                   </td>
                   <td>{{ option.description }}</td>
+                  <td>
+                    <div v-if="option.example" class="text-caption">
+                      <pre class="example-code">{{ option.example }}</pre>
+                    </div>
+                    <span v-else class="text-grey">-</span>
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -589,6 +596,13 @@ const configOptions = [
     type: 'object',
     default: '{}',
     description: 'Custom sectors colors configuration',
+    example: `{
+  percents: true,
+  ranges: [
+    { lo: 0, hi: 50, color: '#a9d70b' },
+    { lo: 51, hi: 100, color: '#ff0000' }
+  ]
+}`,
   },
   {
     name: 'formatNumber',
@@ -607,6 +621,15 @@ const configOptions = [
     type: 'object',
     default: '{}',
     description: 'Pointer configuration options',
+    example: `{
+  toplength: 15,
+  bottomlength: 10,
+  bottomwidth: 12,
+  stroke: 'none',
+  stroke_width: 0,
+  stroke_linecap: 'square',
+  color: '#000000'
+}`,
   },
   {
     name: 'displayRemaining',
@@ -637,30 +660,26 @@ const configOptions = [
     type: 'function|null',
     default: 'null',
     description: 'Function applied before rendering text',
+    example: `(value) => {
+  return value.toFixed(1) + '%';
+  // Return false to use default formatting
+}`,
   },
   {
     name: 'onAnimationEnd',
     type: 'function|null',
     default: 'null',
     description: 'Function applied after animation is done',
+    example: `() => {
+  console.log('Animation completed!');
+  // Your custom logic here
+}`,
   },
   {
     name: 'defaults',
     type: 'object',
     default: '{}',
     description: 'Default configuration to merge',
-  },
-  {
-    name: 'startAngle',
-    type: 'number',
-    default: '135',
-    description: 'Gauge start angle',
-  },
-  {
-    name: 'endAngle',
-    type: 'number',
-    default: '45',
-    description: 'Gauge end angle',
   },
   {
     name: 'title',
@@ -691,6 +710,13 @@ const configOptions = [
     type: 'string',
     default: 'above',
     description: 'Title position relative to gauge (above or below)',
+  },
+  {
+    name: 'showSectorColors',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Show sector colors as filled gauge instead of current level. Requires customSectors to be defined.',
   },
 ];
 
@@ -742,5 +768,24 @@ code {
   padding: 2px 4px;
   border-radius: 4px;
   font-family: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+.example-code {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.85em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  margin: 4px 0;
+}
+
+.v-theme--dark .example-code {
+  background-color: #2d2d2d;
+  border: 1px solid #555;
+  color: #e0e0e0;
 }
 </style>

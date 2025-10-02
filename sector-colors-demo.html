@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JustGage - Fixed Sector Colors Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .gauge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .gauge-card {
+            background: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 300px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 0;
+            color: #666;
+        }
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.toggle {
+            background: #28a745;
+        }
+        button.toggle:hover {
+            background: #1e7e34;
+        }
+        .description {
+            background: #e9ecef;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 JustGage - Fixed Sector Colors Demo</h1>
+
+        <div class="description">
+            <strong>New Feature:</strong> When <code>showSectorColors: true</code> is enabled, the gauge displays
+            static colored sections instead of the current level. Each section represents an equal portion
+            of the gauge, divided by the number of available colors (customSectors, levelColors, or gaugeColor as fallback).
+        </div>
+
+        <h2>🔄 Regular Gauges vs Sector Colors</h2>
+        <div class="gauge-row">
+            <div class="gauge-card">
+                <h3>Regular Gauge (Level Changes)</h3>
+                <div id="regular-gauge1" style="width: 280px; height: 180px;"></div>
+                <p>Shows current value level</p>
+            </div>
+
+            <div class="gauge-card">
+                <h3>Sector Colors (Static)</h3>
+                <div id="sector-gauge1" style="width: 280px; height: 180px;"></div>
+                <p>Shows equal color sections</p>
+            </div>
+        </div>
+
+        <h2>🍩 Donut Gauges</h2>
+        <div class="gauge-row">
+            <div class="gauge-card">
+                <h3>Regular Donut</h3>
+                <div id="regular-donut" style="width: 220px; height: 220px;"></div>
+                <p>Traditional level display</p>
+            </div>
+
+            <div class="gauge-card">
+                <h3>Donut with Sector Colors</h3>
+                <div id="sector-donut" style="width: 220px; height: 220px;"></div>
+                <p>Equal colored sections</p>
+            </div>
+        </div>
+
+        <h2>⚙️ Different Color Sources</h2>
+        <div class="gauge-row">
+            <div class="gauge-card">
+                <h3>Using Custom Sectors</h3>
+                <div id="custom-sectors" style="width: 280px; height: 180px;"></div>
+                <p>3 custom sector colors</p>
+            </div>
+
+            <div class="gauge-card">
+                <h3>Using Level Colors</h3>
+                <div id="level-colors" style="width: 280px; height: 180px;"></div>
+                <p>4 level colors</p>
+            </div>
+        </div>
+
+        <h2>🔄 Reverse Mode</h2>
+        <div class="gauge-row">
+            <div class="gauge-card">
+                <h3>Normal Direction</h3>
+                <div id="normal-direction" style="width: 280px; height: 180px;"></div>
+                <p>Left to right</p>
+            </div>
+
+            <div class="gauge-card">
+                <h3>Reverse Direction</h3>
+                <div id="reverse-direction" style="width: 280px; height: 180px;"></div>
+                <p>Right to left</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>🎮 Interactive Controls</h3>
+            <button onclick="updateValue(20)">Set 20%</button>
+            <button onclick="updateValue(40)">Set 40%</button>
+            <button onclick="updateValue(60)">Set 60%</button>
+            <button onclick="updateValue(80)">Set 80%</button>
+            <br><br>
+            <button class="toggle" onclick="toggleSectorColors()">Toggle Sector Colors ON/OFF</button>
+            <br><br>
+            <p><strong>Notice:</strong> Value changes affect text display and regular gauges, but sector colors remain static!</p>
+        </div>
+    </div>
+
+    <script src="./dist/justgage.umd.js"></script>
+    <script>
+        // Store all gauges for easy access
+        const gauges = {};
+
+        // Regular gauge with level colors
+        gauges.regular1 = new JustGage({
+            id: 'regular-gauge1',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'CPU Usage',
+            label: '%',
+            levelColors: ['#00ff00', '#ffff00', '#ff8c00', '#ff0000']
+        });
+
+        // Sector colors gauge
+        gauges.sector1 = new JustGage({
+            id: 'sector-gauge1',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Memory Usage',
+            label: '%',
+            showSectorColors: true,
+            levelColors: ['#00ff00', '#ffff00', '#ff8c00', '#ff0000']
+        });
+
+        // Regular donut
+        gauges.regularDonut = new JustGage({
+            id: 'regular-donut',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Storage',
+            label: 'GB',
+            donut: true,
+            levelColors: ['#00ff00', '#ffff00', '#ff0000']
+        });
+
+        // Donut with sector colors
+        gauges.sectorDonut = new JustGage({
+            id: 'sector-donut',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Network',
+            label: 'MB/s',
+            donut: true,
+            showSectorColors: true,
+            levelColors: ['#00ff00', '#ffff00', '#ff0000']
+        });
+
+        // Using custom sectors
+        gauges.customSectors = new JustGage({
+            id: 'custom-sectors',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Temperature',
+            label: '°C',
+            showSectorColors: true,
+            customSectors: {
+                ranges: [
+                    { lo: 0, hi: 40, color: '#00bfff' },   // Cold - Blue
+                    { lo: 40, hi: 70, color: '#32cd32' },  // Normal - Green
+                    { lo: 70, hi: 100, color: '#ff4500' }  // Hot - Red
+                ]
+            }
+        });
+
+        // Using level colors (4 colors)
+        gauges.levelColors = new JustGage({
+            id: 'level-colors',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Bandwidth',
+            label: 'Mbps',
+            showSectorColors: true,
+            levelColors: ['#9400d3', '#4169e1', '#32cd32', '#ff1493']
+        });
+
+        // Normal direction
+        gauges.normalDirection = new JustGage({
+            id: 'normal-direction',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Progress',
+            label: '%',
+            showSectorColors: true,
+            levelColors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4']
+        });
+
+        // Reverse direction
+        gauges.reverseDirection = new JustGage({
+            id: 'reverse-direction',
+            value: 48,
+            min: 0,
+            max: 100,
+            title: 'Countdown',
+            label: '%',
+            reverse: true,
+            showSectorColors: true,
+            levelColors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4']
+        });
+
+        function updateValue(value) {
+            console.log(`Updating all gauges to ${value}%`);
+            Object.values(gauges).forEach(gauge => {
+                gauge.refresh(value);
+            });
+        }
+
+        let sectorColorsEnabled = true;
+        function toggleSectorColors() {
+            sectorColorsEnabled = !sectorColorsEnabled;
+            console.log(`Toggling sector colors: ${sectorColorsEnabled ? 'ON' : 'OFF'}`);
+
+            // Toggle for gauges that support it
+            [gauges.sector1, gauges.sectorDonut, gauges.customSectors,
+             gauges.levelColors, gauges.normalDirection, gauges.reverseDirection].forEach(gauge => {
+                gauge.update('showSectorColors', sectorColorsEnabled);
+            });
+        }
+
+        console.log('JustGage Sector Colors Demo loaded!');
+        console.log('Available gauges:', Object.keys(gauges));
+
+        // Demo the static nature of sector colors
+        setTimeout(() => {
+            console.log('Automatically changing values to demonstrate static sectors...');
+            updateValue(75);
+        }, 3000);
+
+        setTimeout(() => {
+            updateValue(25);
+        }, 6000);
+    </script>
+</body>
+</html>
