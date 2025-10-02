@@ -91,19 +91,14 @@ export class JustGage {
       width = '100%';
       height = '100%';
 
-      // Set viewBox dimensions based on gauge type and title presence (matching legacy behavior)
       if (this.config.donut) {
+        // Donut gauges: square viewBox; add vertical room for title when present
         viewBoxWidth = 200;
-        viewBoxHeight = 200;
-        if (this.config.title.length > 0) {
-          viewBoxHeight = 150;
-        }
+        viewBoxHeight = this.config.title && this.config.title.length > 0 ? 240 : 200;
       } else {
+        // Semi gauge: classic 2:1 viewBox; add room for title when present
         viewBoxWidth = 200;
-        viewBoxHeight = 100;
-        if (this.config.title.length > 0) {
-          viewBoxHeight = 150;
-        }
+        viewBoxHeight = this.config.title && this.config.title.length > 0 ? 150 : 100;
       }
     } else {
       // Use fixed dimensions like current implementation
@@ -388,16 +383,10 @@ export class JustGage {
     // Calculate widget dimensions using legacy logic with title adjustments
     let widgetW, widgetH, dx, dy;
     if (config.donut) {
-      if (h > w) {
-        widgetH = h;
-        widgetW = widgetH;
-      } else if (w < h) {
-        widgetW = w;
-        widgetH = widgetW;
-      } else {
-        widgetW = w;
-        widgetH = widgetW;
-      }
+      // Donut uses a square based on the smaller dimension to avoid overflow
+      const size = Math.min(w, h);
+      widgetW = size;
+      widgetH = size;
       dx = (w - widgetW) / 2;
       dy = (h - widgetH) / 2;
     } else {
