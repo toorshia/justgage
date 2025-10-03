@@ -18,8 +18,8 @@ describe('Configuration System', () => {
       assert.equal(config.min, 0);
       assert.equal(config.max, 100);
       assert.equal(config.value, 0);
-      assert.equal(config.width, 400);
-      assert.equal(config.height, 320);
+      assert.equal(config.width, null);
+      assert.equal(config.height, null);
       assert.equal(config.decimals, 0);
       assert.equal(config.symbol, '');
     });
@@ -39,8 +39,8 @@ describe('Configuration System', () => {
       assert.equal(config.title, 'Custom Gauge');
       assert.equal(config.decimals, 2);
       // Should still have defaults for non-specified values
-      assert.equal(config.width, 400);
-      assert.equal(config.height, 320);
+      assert.equal(config.valueFontColor, '#010101');
+      assert.equal(config.gaugeColor, '#edebeb');
     });
 
     test('should handle nested object configuration', () => {

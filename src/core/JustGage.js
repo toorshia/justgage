@@ -108,8 +108,8 @@ export class JustGage {
       // If no dimensions specified, try to get from container
       if (!width || !height) {
         const rect = this.node.getBoundingClientRect();
-        if (!width) width = rect.width || 400;
-        if (!height) height = rect.height || 320;
+        if (!width) width = rect.width || 200;
+        if (!height) height = rect.height || 100;
 
         // Update config with calculated dimensions
         this.config.width = width;

@@ -59,8 +59,8 @@ describe('JustGage Core Functionality', () => {
       const config = gauge.getConfig();
       assert.equal(config.min, 0);
       assert.equal(config.max, 100);
-      assert.equal(config.width, 400);
-      assert.equal(config.height, 320);
+      assert.equal(config.width, 200);
+      assert.equal(config.height, 100);
     });
 
     test('should merge custom configuration with defaults', () => {
