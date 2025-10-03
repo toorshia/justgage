@@ -914,85 +914,89 @@ const presets = [
   { key: 'advanced', title: 'Advanced' },
 ];
 
+function getBaseConfig() {
+  return {
+    // Basic Values
+    value: 67,
+    min: 0,
+    max: 100,
+    decimals: 0,
+    symbol: '',
+    reverse: false,
+
+    // Dimensions
+    width: 400,
+    height: 320,
+    relativeGaugeSize: false,
+    gaugeWidthScale: 1.0,
+
+    // Colors
+    gaugeColor: '#edebeb',
+    valueFontColor: '#010101',
+    labelFontColor: '#b3b3b3',
+    levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
+    noGradient: false,
+    showSectorColors: false,
+    customSectors: {
+      percents: false,
+      ranges: [
+        { lo: 0, hi: 50, color: '#a9d70b' },
+        { lo: 50, hi: 80, color: '#f9c802' },
+        { lo: 80, hi: 100, color: '#ff0000' },
+      ],
+    },
+
+    // Labels and Text
+    title: '',
+    titleFontColor: '#010101',
+    titleFontFamily: 'Arial',
+    titleFontWeight: 'bold',
+    titlePosition: 'above',
+    label: 'units',
+    minTxt: '',
+    maxTxt: '',
+    hideValue: false,
+    hideMinMax: false,
+    humanFriendly: false,
+    formatNumber: false,
+
+    // Gauge Types
+    donut: false,
+    donutStartAngle: 90,
+    differential: false,
+    displayRemaining: false,
+
+    // Pointer
+    pointer: false,
+    pointerOptions: {
+      color: '#8e2de2',
+      toplength: 14,
+      bottomlength: 27,
+      bottomwidth: 4,
+    },
+
+    // Target Line
+    showTargetLine: false,
+    targetLine: null as number | null,
+    targetLineColor: '#000000',
+    targetLineWidth: 1.5,
+
+    // Animation
+    startAnimationTime: 700,
+    startAnimationType: '>',
+    refreshAnimationTime: 700,
+    counter: false,
+
+    // Shadow
+    showInnerShadow: false,
+    shadowOpacity: 0.2,
+    shadowSize: 5,
+    shadowVerticalOffset: 3,
+  };
+}
+
 // Comprehensive Configuration (all features from visual-diff-tool)
-const config = reactive({
-  // Basic Values
-  value: 67,
-  min: 0,
-  max: 100,
-  decimals: 0,
-  symbol: '',
-  reverse: false,
-
-  // Dimensions
-  width: 400,
-  height: 320,
-  relativeGaugeSize: false,
-  gaugeWidthScale: 1.0,
-
-  // Colors
-  gaugeColor: '#edebeb',
-  valueFontColor: '#010101',
-  labelFontColor: '#b3b3b3',
-  levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
-  noGradient: false,
-  showSectorColors: false,
-  customSectors: {
-    percents: false,
-    ranges: [
-      { lo: 0, hi: 50, color: '#a9d70b' },
-      { lo: 50, hi: 80, color: '#f9c802' },
-      { lo: 80, hi: 100, color: '#ff0000' },
-    ],
-  },
-
-  // Labels and Text
-  title: '',
-  titleFontColor: '#010101',
-  titleFontFamily: 'Arial',
-  titleFontWeight: 'bold',
-  titlePosition: 'above',
-  label: 'units',
-  minTxt: '',
-  maxTxt: '',
-  hideValue: false,
-  hideMinMax: false,
-  humanFriendly: false,
-  formatNumber: false,
-
-  // Gauge Types
-  donut: false,
-  donutStartAngle: 90,
-  differential: false,
-  displayRemaining: false,
-
-  // Pointer
-  pointer: false,
-  pointerOptions: {
-    color: '#8e2de2',
-    toplength: 14,
-    bottomlength: 27,
-    bottomwidth: 4,
-  },
-
-  // Target Line
-  showTargetLine: false,
-  targetLine: null as number | null,
-  targetLineColor: '#000000',
-  targetLineWidth: 1.5,
-
-  // Animation
-  startAnimationTime: 700,
-  startAnimationType: '>',
-  refreshAnimationTime: 700,
-  counter: false,
-
-  // Shadow
-  showInnerShadow: false,
-  shadowOpacity: 0.2,
-  shadowSize: 5,
-  shadowVerticalOffset: 3,
-});
+let config = reactive(getBaseConfig());
 
 const animationTypes = [
   { title: 'Linear', value: 'linear' },
@@ -1032,18 +1036,20 @@ const gauge = new JustGage(config);`;
 const loadPreset = (preset: string) => {
   switch (preset) {
     case 'donut':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         donut: true,
         donutStartAngle: 90,
         hideMinMax: true,
         value: 75,
         label: 'Progress',
         levelColors: ['#00ff66', '#ffcc00', '#ff3300'],
-      });
+      };
       break;
 
     case 'pointer':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         pointer: true,
         donut: false,
         value: 60,
@@ -1054,42 +1060,46 @@ const loadPreset = (preset: string) => {
           bottomlength: 30,
           bottomwidth: 6,
         },
-      });
+      };
       break;
 
     case 'differential':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         differential: true,
         min: -50,
         max: 50,
         value: 25,
         label: 'Differential',
         levelColors: ['#ff0000', '#ffff00', '#00ff00'],
-      });
+      };
       break;
 
     case 'custom-sectors':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         noGradient: true,
         showSectorColors: true,
         pointer: true,
         value: 80,
         label: 'Custom Sectors',
-      });
+      };
       break;
 
     case 'minimal':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         hideMinMax: true,
         title: '',
         label: '',
         showInnerShadow: false,
         levelColors: ['#999999'],
-      });
+      };
       break;
 
     case 'advanced':
-      Object.assign(config, {
+      config = {
+        ...getBaseConfig(),
         pointer: true,
         showTargetLine: true,
         targetLine: 75,
@@ -1098,67 +1108,11 @@ const loadPreset = (preset: string) => {
         humanFriendly: true,
         title: 'Advanced Gauge',
         label: 'Performance',
-      });
+      };
       break;
 
     default: // 'default'
-      Object.assign(config, {
-        value: 67,
-        min: 0,
-        max: 100,
-        decimals: 0,
-        symbol: '',
-        reverse: false,
-        width: 400,
-        height: 320,
-        relativeGaugeSize: false,
-        gaugeWidthScale: 1.0,
-        gaugeColor: '#edebeb',
-        valueFontColor: '#010101',
-        labelFontColor: '#b3b3b3',
-        levelColors: ['#a9d70b', '#f9c802', '#ff0000'],
-        noGradient: false,
-        title: '',
-        label: 'units',
-        minTxt: '',
-        maxTxt: '',
-        hideValue: false,
-        hideMinMax: false,
-        humanFriendly: false,
-        formatNumber: false,
-        donut: false,
-        donutStartAngle: 90,
-        differential: false,
-        displayRemaining: false,
-        pointer: false,
-        pointerOptions: {
-          color: '#8e2de2',
-          toplength: 14,
-          bottomlength: 27,
-          bottomwidth: 4,
-        },
-        showTargetLine: false,
-        targetLine: null,
-        targetLineColor: '#000000',
-        targetLineWidth: 1.5,
-        startAnimationTime: 700,
-        startAnimationType: '>',
-        refreshAnimationTime: 700,
-        counter: false,
-        showInnerShadow: false,
-        shadowOpacity: 0.2,
-        shadowSize: 5,
-        shadowVerticalOffset: 3,
-        showSectorColors: false,
-        customSectors: {
-          percents: false,
-          ranges: [
-            { lo: 0, hi: 50, color: '#a9d70b' },
-            { lo: 50, hi: 80, color: '#f9c802' },
-            { lo: 80, hi: 100, color: '#ff0000' },
-          ],
-        },
-      });
+      config = getBaseConfig();
   }
 
   // Trigger immediate update
