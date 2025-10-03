@@ -28,6 +28,7 @@
     "test:watch": "node --test --watch tests/**/*.test.js",
     "lint": "eslint src/ tests/",
     "lint:fix": "eslint --fix src/ tests/",
+    "docs": "cd docs && npm run dev",
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
   "repository": {

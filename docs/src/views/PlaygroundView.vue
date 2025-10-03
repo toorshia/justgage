@@ -1168,13 +1168,16 @@ const loadPreset = (preset: string) => {
 // Load legacy v1.x scripts
 const loadLegacyScripts = async () => {
   return new Promise((resolve, reject) => {
+    // Get base URL for correct path resolution in production
+    const baseUrl = import.meta.env.BASE_URL || '/';
+
     // Load Raphael first
     const raphaelScript = document.createElement('script');
-    raphaelScript.src = '/raphael.min.js';
+    raphaelScript.src = `${baseUrl}raphael.min.js`;
     raphaelScript.onload = () => {
       // Then load JustGage v1
       const justgageScript = document.createElement('script');
-      justgageScript.src = '/justgage.js';
+      justgageScript.src = `${baseUrl}justgage.js`;
       justgageScript.onload = () => resolve(true);
       justgageScript.onerror = () => reject(new Error('Failed to load justgage.js'));
       document.head.appendChild(justgageScript);
