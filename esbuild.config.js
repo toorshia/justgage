@@ -101,6 +101,11 @@ const configs = [
 
 // Build all configurations
 async function buildAll(watchMode = false) {
+  if (await fs.stat(distDir).catch(() => false)) {
+    console.log('🧹 Cleaning output directory...');
+    await fs.rm(distDir, { recursive: true, force: true });
+  }
+
   console.log(`🚀 Building JustGage v${version} with esbuild...`);
 
   if (watchMode) {
