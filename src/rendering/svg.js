@@ -165,7 +165,7 @@ export class SVGRenderer {
 
   /**
    * Create gauge path
-   * @param {number|{from: number, to: number}} sector
+   * @param {number|{from: number, to: number}} sectorPctOrValue
    * @param {number} min
    * @param {number} max
    * @param {number} widgetW
@@ -178,7 +178,7 @@ export class SVGRenderer {
    * @returns {string} SVG path data for the gauge
    */
   createGaugePath(
-    sector,
+    sectorPctOrValue,
     min,
     max,
     widgetW,
@@ -198,21 +198,54 @@ export class SVGRenderer {
     let Xstart, Ystart, XstartInner, YstartInner; // start point coordinates
     let path; // SVG path string
 
+    // Track if sector was originally a number (absolute value)
+    const sectorWasNumber = typeof sectorPctOrValue === 'number';
+
     if (min < 0 && !isDiff) {
       max -= min;
-      sector -= min;
+      if (sectorWasNumber) {
+        sectorPctOrValue -= min;
+      }
       min = 0;
     }
 
-    if (typeof sector === 'number') {
-      sector = { from: min, to: sector };
+    if (sectorWasNumber) {
+      sectorPctOrValue = { from: min, to: sectorPctOrValue };
     }
 
-    const deltaVStart = sector.from - min;
-    const deltaVEnd = sector.to - min;
+    // Calculate range (needed for differential gauge middle calculation)
     const range = max - min;
-    const pctStart = deltaVStart / range;
-    const pctEnd = deltaVEnd / range;
+
+    // Determine percentage values based on input format
+    let pctStart, pctEnd;
+
+    if (sectorWasNumber) {
+      // When sector was a number, it's an absolute value, so convert it
+      const deltaVStart = sectorPctOrValue.from - min;
+      const deltaVEnd = sectorPctOrValue.to - min;
+      pctStart = deltaVStart / range;
+      pctEnd = deltaVEnd / range;
+    } else if (
+      typeof sectorPctOrValue.from === 'number' &&
+      typeof sectorPctOrValue.to === 'number'
+    ) {
+      // Sector is an object, check if values are normalized (0-1) or percentage (0-100)
+      if (sectorPctOrValue.from <= 1 && sectorPctOrValue.to <= 1) {
+        // Already normalized (0-1 range)
+        pctStart = sectorPctOrValue.from;
+        pctEnd = sectorPctOrValue.to;
+      } else {
+        // Percentage format (0-100 range), convert to 0-1
+        pctStart = sectorPctOrValue.from / 100;
+        pctEnd = sectorPctOrValue.to / 100;
+      }
+    } else {
+      // Fallback: treat as absolute values (legacy behavior)
+      const deltaVStart = sectorPctOrValue.from - min;
+      const deltaVEnd = sectorPctOrValue.to - min;
+      pctStart = deltaVStart / range;
+      pctEnd = deltaVEnd / range;
+    }
 
     if (donut) {
       // Calculate end point angle
@@ -296,9 +329,9 @@ export class SVGRenderer {
       Xi = Cx + Ri * Math.cos(alpha);
       Yi = Cy - Ri * Math.sin(alpha);
 
-      const middle = min + range / 2;
-      const So = sector.to < middle ? 1 : 0; // sweep flag for outer arc, use opposite direction if value < middle
-      const Si = sector.to < middle ? 0 : 1; // sweep flag for inner arc, use opposite direction if value < middle
+      const middlePct = 0.5; // 50% is the middle of the differential gauge
+      const So = pctEnd < middlePct ? 1 : 0; // sweep flag for outer arc, use opposite direction if value < middle
+      const Si = pctEnd < middlePct ? 0 : 1; // sweep flag for inner arc, use opposite direction if value < middle
 
       path = 'M' + Cx + ',' + (Cy - Ri) + ' '; // start at bottom center
       path += 'L' + Cx + ',' + (Cy - Ro) + ' '; // line to top center (Cx, Cy - Ro)
