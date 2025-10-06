@@ -1,14 +1,17 @@
 <template>
   <v-container fluid>
     <!-- Header -->
-    <v-row class="py-4">
+    <v-row class="py-2 py-md-4">
       <v-col cols="12">
-        <div class="d-flex align-center justify-space-between mb-6">
+        <div class="d-flex align-center justify-space-between mb-3 mb-md-6">
           <div>
-            <h1 class="text-h2 font-weight-bold">JustGage Playground</h1>
-            <p class="text-h6 text-grey-darken-1">Interactive configuration and visual diff tool</p>
+            <h1 class="text-h4 text-md-h2 font-weight-bold">JustGage Playground</h1>
+            <p class="text-body-2 text-md-h6 text-grey-darken-1 d-none d-sm-block">
+              Interactive configuration and visual diff tool
+            </p>
           </div>
-          <div class="d-flex ga-2 flex-wrap">
+          <!-- Desktop buttons -->
+          <div class="d-none d-md-flex ga-2 flex-wrap">
             <v-btn
               :color="randomUpdatesEnabled ? 'success' : 'grey'"
               :prepend-icon="randomUpdatesEnabled ? 'mdi-play' : 'mdi-play-outline'"
@@ -26,82 +29,165 @@
             <v-btn color="primary" prepend-icon="mdi-download" @click="exportConfig">
               Export Config
             </v-btn>
-            <v-btn color="secondary" prepend-icon="mdi-upload" @click="importConfig">
+            <v-btn color="secondary" prepend-icon="mdi-upload" @click="importConfig" size="small">
               Import Config
             </v-btn>
           </div>
+          <!-- Mobile menu button -->
+          <v-btn
+            class="d-md-none"
+            icon="mdi-dots-vertical"
+            variant="text"
+            @click="showMobileMenu = true"
+          >
+          </v-btn>
         </div>
 
-        <!-- Responsive Testing Controls -->
-        <div class="mb-4 pa-4 bg-blue-grey-lighten-5 rounded">
-          <h3 class="text-h6 mb-3">
-            <v-icon class="mr-2">mdi-resize</v-icon>
-            📏 Responsive Testing Controls
-          </h3>
-          <p class="text-body-2 mb-3">
-            Test relativeGaugeSize setting by changing container dimensions:
-          </p>
+        <!-- Responsive Testing Controls (collapsed by default) -->
+        <v-expansion-panels v-model="responsiveControlsExpanded" class="mb-4">
+          <v-expansion-panel value="responsive">
+            <v-expansion-panel-title class="bg-blue-grey-lighten-5">
+              <div>
+                <v-icon class="mr-2">mdi-resize</v-icon>
+                <strong>📏 Responsive Testing Controls</strong>
+              </div>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text class="bg-blue-grey-lighten-5">
+              <p class="text-body-2 mb-3">
+                Test relativeGaugeSize setting by changing container dimensions:
+              </p>
 
-          <v-switch
-            v-model="config.relativeGaugeSize"
-            label="Relative Gauge Size"
-            color="primary"
-            hide-details
-            @update:model-value="debouncedUpdateGauges"
-            class="mb-3"
-          />
+              <v-switch
+                v-model="config.relativeGaugeSize"
+                label="Relative Gauge Size"
+                color="primary"
+                hide-details
+                @update:model-value="debouncedUpdateGauges"
+                class="mb-3"
+              />
 
-          <div v-if="config.relativeGaugeSize" class="d-flex flex-wrap ga-2 mb-2">
-            <v-btn
-              size="small"
-              color="orange"
-              @click="resizeContainers(0.5)"
-              :disabled="!config.relativeGaugeSize"
-            >
-              50% Size
-            </v-btn>
-            <v-btn
-              size="small"
-              color="orange"
-              @click="resizeContainers(0.75)"
-              :disabled="!config.relativeGaugeSize"
-            >
-              75% Size
-            </v-btn>
-            <v-btn size="small" color="orange" @click="resizeContainers(1.0)"> 100% Size </v-btn>
-            <v-btn
-              size="small"
-              color="orange"
-              @click="resizeContainers(1.25)"
-              :disabled="!config.relativeGaugeSize"
-            >
-              125% Size
-            </v-btn>
-            <v-btn
-              size="small"
-              color="orange"
-              @click="resizeContainers(1.5)"
-              :disabled="!config.relativeGaugeSize"
-            >
-              150% Size
-            </v-btn>
-            <v-btn
-              size="small"
-              color="deep-orange"
-              prepend-icon="mdi-animation-play"
-              @click="animateResize"
-              :disabled="!config.relativeGaugeSize"
-            >
-              Animate Resize
-            </v-btn>
-          </div>
-        </div>
+              <div v-if="config.relativeGaugeSize" class="d-flex flex-wrap ga-2 mb-2">
+                <v-btn
+                  size="small"
+                  color="orange"
+                  @click="resizeContainers(0.5)"
+                  :disabled="!config.relativeGaugeSize"
+                >
+                  50% Size
+                </v-btn>
+                <v-btn
+                  size="small"
+                  color="orange"
+                  @click="resizeContainers(0.75)"
+                  :disabled="!config.relativeGaugeSize"
+                >
+                  75% Size
+                </v-btn>
+                <v-btn size="small" color="orange" @click="resizeContainers(1.0)">
+                  100% Size
+                </v-btn>
+                <v-btn
+                  size="small"
+                  color="orange"
+                  @click="resizeContainers(1.25)"
+                  :disabled="!config.relativeGaugeSize"
+                >
+                  125% Size
+                </v-btn>
+                <v-btn
+                  size="small"
+                  color="orange"
+                  @click="resizeContainers(1.5)"
+                  :disabled="!config.relativeGaugeSize"
+                >
+                  150% Size
+                </v-btn>
+                <v-btn
+                  size="small"
+                  color="deep-orange"
+                  prepend-icon="mdi-animation-play"
+                  @click="animateResize"
+                  :disabled="!config.relativeGaugeSize"
+                >
+                  Animate Resize
+                </v-btn>
+              </div>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
 
     <v-row>
-      <!-- Configuration Panel -->
-      <v-col cols="12" lg="4">
+      <!-- Gauge Display (shown first on mobile) -->
+      <v-col cols="12" lg="8" order="1" order-lg="2">
+        <v-row>
+          <!-- Modern v2.0 Gauge -->
+          <v-col cols="12" md="6">
+            <v-card class="h-100">
+              <v-card-title class="d-flex align-center">
+                <v-chip color="success" size="small" class="mr-2">v2.0</v-chip>
+                Modern (Native SVG)
+              </v-card-title>
+              <v-card-text class="gauge-container-wrapper">
+                <div class="gauge-inner-container">
+                  <div id="gauge-v2" ref="gaugeV2Container" class="gauge-content">
+                    <v-progress-circular v-if="!gaugeV2Ready" indeterminate color="primary" />
+                    <div v-else-if="gaugeV2Error" class="text-center">
+                      <v-icon color="error" size="48">mdi-alert-circle</v-icon>
+                      <p class="text-error mt-2">Failed to load v2.0</p>
+                    </div>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <!-- Legacy v1.x Gauge -->
+          <v-col cols="12" md="6">
+            <v-card class="h-100">
+              <v-card-title class="d-flex align-center">
+                <v-chip color="warning" size="small" class="mr-2">v1.x</v-chip>
+                Legacy (RaphaelJS)
+              </v-card-title>
+              <v-card-text class="gauge-container-wrapper">
+                <div class="gauge-inner-container">
+                  <div id="gauge-v1" ref="gaugeV1Container" class="gauge-content">
+                    <v-progress-circular v-if="!gaugeV1Ready" indeterminate color="warning" />
+                    <div v-else-if="gaugeV1Error" class="text-center">
+                      <v-icon color="error" size="48">mdi-alert-circle</v-icon>
+                      <p class="text-error mt-2">Failed to load v1.x</p>
+                    </div>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <!-- Configuration Output -->
+        <v-row class="mt-4">
+          <v-col cols="12">
+            <v-expansion-panels v-model="configExpanded">
+              <v-expansion-panel value="config">
+                <v-expansion-panel-title>
+                  <v-icon class="mr-2">mdi-code-json</v-icon>
+                  Generated Configuration
+                </v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <pre
+                    class="text-caption bg-grey-darken-4 pa-3 text-green-accent-2 overflow-x-auto"
+                    >{{ formatConfigCode }}</pre
+                  >
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
+      </v-col>
+
+      <!-- Configuration Panel (shown second on mobile) -->
+      <v-col cols="12" lg="4" order="2" order-lg="1">
         <v-card class="sticky-config">
           <v-card-title class="d-flex align-center">
             <v-icon icon="mdi-cog" class="mr-2"></v-icon>
@@ -800,74 +886,84 @@
           </v-card-text>
         </v-card>
       </v-col>
-
-      <!-- Gauge Display -->
-      <v-col cols="12" lg="8">
-        <v-row>
-          <!-- Modern v2.0 Gauge -->
-          <v-col cols="12" md="6">
-            <v-card class="h-100">
-              <v-card-title class="d-flex align-center">
-                <v-chip color="success" size="small" class="mr-2">v2.0</v-chip>
-                Modern (Native SVG)
-              </v-card-title>
-              <v-card-text class="gauge-container-wrapper">
-                <div class="gauge-inner-container">
-                  <div id="gauge-v2" ref="gaugeV2Container" class="gauge-content">
-                    <v-progress-circular v-if="!gaugeV2Ready" indeterminate color="primary" />
-                    <div v-else-if="gaugeV2Error" class="text-center">
-                      <v-icon color="error" size="48">mdi-alert-circle</v-icon>
-                      <p class="text-error mt-2">Failed to load v2.0</p>
-                    </div>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <!-- Legacy v1.x Gauge -->
-          <v-col cols="12" md="6">
-            <v-card class="h-100">
-              <v-card-title class="d-flex align-center">
-                <v-chip color="warning" size="small" class="mr-2">v1.x</v-chip>
-                Legacy (RaphaelJS)
-              </v-card-title>
-              <v-card-text class="gauge-container-wrapper">
-                <div class="gauge-inner-container">
-                  <div id="gauge-v1" ref="gaugeV1Container" class="gauge-content">
-                    <v-progress-circular v-if="!gaugeV1Ready" indeterminate color="warning" />
-                    <div v-else-if="gaugeV1Error" class="text-center">
-                      <v-icon color="error" size="48">mdi-alert-circle</v-icon>
-                      <p class="text-error mt-2">Failed to load v1.x</p>
-                    </div>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <!-- Configuration Output -->
-        <v-row class="mt-4">
-          <v-col cols="12">
-            <v-expansion-panels v-model="configExpanded">
-              <v-expansion-panel value="config">
-                <v-expansion-panel-title>
-                  <v-icon class="mr-2">mdi-code-json</v-icon>
-                  Generated Configuration
-                </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <pre
-                    class="text-caption bg-grey-darken-4 pa-3 text-green-accent-2 overflow-x-auto"
-                    >{{ formatConfigCode }}</pre
-                  >
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-col>
-        </v-row>
-      </v-col>
     </v-row>
+
+    <!-- Mobile Bottom Sheet Menu -->
+    <v-bottom-sheet v-model="showMobileMenu">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Controls</span>
+          <v-btn icon="mdi-close" variant="text" @click="showMobileMenu = false"></v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item
+              @click="
+                () => {
+                  toggleRandomUpdates();
+                  showMobileMenu = false;
+                }
+              "
+            >
+              <template v-slot:prepend>
+                <v-icon :color="randomUpdatesEnabled ? 'success' : 'grey'">
+                  {{ randomUpdatesEnabled ? 'mdi-play' : 'mdi-play-outline' }}
+                </v-icon>
+              </template>
+              <v-list-item-title>
+                {{ randomUpdatesEnabled ? 'Stop Random Updates' : 'Start Random Updates' }}
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              @click="
+                () => {
+                  toggleGrid();
+                  showMobileMenu = false;
+                }
+              "
+            >
+              <template v-slot:prepend>
+                <v-icon :color="showGrid ? 'success' : 'grey'">
+                  {{ showGrid ? 'mdi-grid' : 'mdi-grid-off' }}
+                </v-icon>
+              </template>
+              <v-list-item-title>
+                {{ showGrid ? 'Hide Grid' : 'Show Grid' }}
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              @click="
+                () => {
+                  exportConfig();
+                  showMobileMenu = false;
+                }
+              "
+            >
+              <template v-slot:prepend>
+                <v-icon color="primary">mdi-download</v-icon>
+              </template>
+              <v-list-item-title>Export Config</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              @click="
+                () => {
+                  importConfig();
+                  showMobileMenu = false;
+                }
+              "
+            >
+              <template v-slot:prepend>
+                <v-icon color="secondary">mdi-upload</v-icon>
+              </template>
+              <v-list-item-title>Import Config</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -896,6 +992,8 @@ const gaugeV2Error = ref(false);
 const gaugeV1Error = ref(false);
 const showGrid = ref(false);
 const randomUpdatesEnabled = ref(false);
+const showMobileMenu = ref(false);
+const responsiveControlsExpanded = ref<string[]>([]); // Collapsed by default
 let randomUpdateInterval: any = null;
 
 // Gauge instances
@@ -1568,10 +1666,17 @@ onUnmounted(() => {
 
 <style scoped>
 .sticky-config {
-  position: sticky;
-  top: 20px;
-  max-height: 80vh;
-  overflow-y: auto;
+  /* Only sticky on large screens */
+  position: relative;
+}
+
+@media (min-width: 1280px) {
+  .sticky-config {
+    position: sticky;
+    top: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
 }
 
 code {
@@ -1583,11 +1688,18 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  padding: 20px;
+  min-height: 280px;
+  padding: 12px;
   background: #fafafa;
   border: 2px solid #ddd;
   border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .gauge-container-wrapper {
+    min-height: 400px;
+    padding: 20px;
+  }
 }
 
 .gauge-inner-container {
@@ -1595,9 +1707,17 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 400px;
-  height: 350px;
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .gauge-inner-container {
+    width: 400px;
+    height: 350px;
+  }
 }
 
 .gauge-content {
