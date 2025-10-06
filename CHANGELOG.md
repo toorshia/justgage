@@ -1,5 +1,42 @@
 # Changelog
 
+# [2.0.0](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0) (2025-10-06)
+
+
+### Bug Fixes
+
+* **docs:** update script loading paths to use base URL for production ([800ed06](https://github.com/toorshia/justgage/commit/800ed0646095a15c01ca3effc92f330e8f84a2f7))
+* sectors not shown when min is negative ([5eedc81](https://github.com/toorshia/justgage/commit/5eedc8104e1bb15538080b63824b61a85c87da6b)), closes [#404](https://github.com/toorshia/justgage/issues/404)
+* update deploy-pages action to version 4 ([fed500d](https://github.com/toorshia/justgage/commit/fed500d37e976dbfc028145dd44b9a4f5f9d2aa6))
+
+
+
+# [2.0.0-beta.2](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0) (2025-10-03)
+
+
+### Bug Fixes
+
+* update CI badge in README for consistency ([2e5c42c](https://github.com/toorshia/justgage/commit/2e5c42ceb8cc472f19bdbc7e8b9d41eeab3b8d76))
+* width/height defaults to match v1 sizing ([c37c2d5](https://github.com/toorshia/justgage/commit/c37c2d5d2cad4b8537a6d4dc380f1e9a722d8b09))
+
+
+
+# [2.0.0-beta.1](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0) (2025-10-02)
+
+
+### Bug Fixes
+
+* allow values out of range ([4e7b95d](https://github.com/toorshia/justgage/commit/4e7b95de047eaf16fb289f02aea420120ca0accb))
+
+
+### Features
+
+* add support for fixed sector colors ([#403](https://github.com/toorshia/justgage/issues/403)) ([f8cf485](https://github.com/toorshia/justgage/commit/f8cf485bd27bad548b41e16b8c9ab127c5acb877))
+
+
+
+# [2.0.0-beta.0](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0) (2025-09-30)
+
 # [2.0.0-beta.2](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0-beta.2) (2025-10-03)
 
 
