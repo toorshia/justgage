@@ -35,35 +35,6 @@
     "type": "git",
     "url": "https://github.com/toorshia/justgage.git"
   },
-  "release-it": {
-    "github": {
-      "release": true,
-      "assets": [
-        "dist/*"
-      ]
-    },
-    "git": {
-      "tagName": "v${version}"
-    },
-    "hooks": {
-      "before:init": [
-        "npm run lint",
-        "npm test"
-      ],
-      "after:bump": [
-        "npm run build"
-      ]
-    },
-    "npm": {
-      "publish": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular",
-        "infile": "CHANGELOG.md"
-      }
-    }
-  },
   "keywords": [
     "gauge",
     "meter",
