@@ -70,4 +70,4 @@ This project is licensed under [MIT](LICENSE) License
 ## Author & Maintainers
 
 - **Original Author**: [Bojan Djuricic](https://github.com/toorshia)
-- **v2.0 Modernization & Maintenance**: [Daniel Sorridi (robertsLando)](https://github.com/robertsLando)
+- **v2.0 Modernization & Maintenance**: [robertsLando](https://github.com/robertsLando)
