@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/toorshia/justgage/compare/v2.0.0...v2.0.1) (2025-10-13)
+
+
+### Bug Fixes
+
+* sectors colors not handling negative values correctly ([ff5fac4](https://github.com/toorshia/justgage/commit/ff5fac4a0587ca0d834624b9a93384fa347c4622)), closes [#405](https://github.com/toorshia/justgage/issues/405)
+
 # [2.0.0](https://github.com/toorshia/justgage/compare/v1.7.0...v2.0.0) (2025-10-06)
 
 
