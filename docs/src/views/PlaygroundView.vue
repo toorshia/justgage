@@ -401,12 +401,7 @@
                           margin-right: 8px;
                         "
                       />
-                      <v-btn
-                        icon
-                        size="small"
-                        @click="removeLevelColor(index)"
-                        :disabled="config.levelColors.length <= 1"
-                      >
+                      <v-btn icon size="small" @click="removeLevelColor(index)">
                         <v-icon>mdi-close</v-icon>
                       </v-btn>
                     </div>
@@ -475,12 +470,7 @@
                           @input="debouncedUpdateGauges"
                           style="width: 40px; height: 35px; border: none; cursor: pointer"
                         />
-                        <v-btn
-                          icon
-                          size="small"
-                          @click="removeSectorRange(index)"
-                          :disabled="config.customSectors.ranges.length <= 1"
-                        >
+                        <v-btn icon size="small" @click="removeSectorRange(index)">
                           <v-icon>mdi-close</v-icon>
                         </v-btn>
                       </div>
@@ -1614,10 +1604,8 @@ const addLevelColor = () => {
 };
 
 const removeLevelColor = (index: number) => {
-  if (config.levelColors.length > 1) {
-    config.levelColors.splice(index, 1);
-    debouncedUpdateGauges();
-  }
+  config.levelColors.splice(index, 1);
+  debouncedUpdateGauges();
 };
 
 // Custom sectors management
@@ -1633,10 +1621,8 @@ const addSectorRange = () => {
 };
 
 const removeSectorRange = (index: number) => {
-  if (config.customSectors.ranges.length > 1) {
-    config.customSectors.ranges.splice(index, 1);
-    debouncedUpdateGauges();
-  }
+  config.customSectors.ranges.splice(index, 1);
+  debouncedUpdateGauges();
 };
 
 // Watch for target line changes
