@@ -289,15 +289,26 @@ export class JustGage {
       config.customSectors.ranges.length > 0
     ) {
       // Use custom sectors as-is
-      sectors = config.customSectors.ranges.map(range => ({
-        lo: config.customSectors.percents
-          ? config.min + (config.max - config.min) * (range.lo / 100)
-          : range.lo,
-        hi: config.customSectors.percents
-          ? config.min + (config.max - config.min) * (range.hi / 100)
-          : range.hi,
-        color: range.color,
-      }));
+      sectors = config.customSectors.ranges.map(range => {
+        if (config.customSectors.percents) {
+          // Use lo/hi as percent values directly
+          return {
+            lo: range.lo,
+            hi: range.hi,
+            color: range.color,
+          };
+        } else {
+          const min = config.min;
+          const max = config.max;
+          const span = max - min;
+
+          return {
+            lo: (range.lo - min) / span,
+            hi: (range.hi - min) / span,
+            color: range.color,
+          };
+        }
+      });
     } else if (Array.isArray(config.levelColors) && config.levelColors.length > 0) {
       // Convert levelColors to sectors using the same logic as getColor function
       const no = config.levelColors.length;
